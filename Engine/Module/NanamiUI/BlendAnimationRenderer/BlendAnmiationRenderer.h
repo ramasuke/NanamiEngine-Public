@@ -1,0 +1,44 @@
+﻿#pragma once
+#include "Engine/Core/Api/NanamiApi.h"
+#include "../../../Core/Object/Field/Field.h"
+#include "../../Component/ComponentBase.h"
+#include "../../Component/BlendImageRenderer/BlendImageRenderer.h"
+
+namespace NanamiEngine::Module::NanamiUi
+{
+    class NANAMI_API BlendAnimationRenderer final : public Component::ComponentBase,
+                                         public LifeCycleCallback::IAwakable,
+                                         public LifeCycleCallback::IUpdatable
+    {
+    public:
+        [[nodiscard]] int GetAddBlendRate_secs() const { return addBlendRate_secs_; }
+        void SetAddBlendRate_secs(int value);
+
+    private:
+        void OnAwake () override;
+        void OnUpdate() override;
+
+        FIELD(BlendImageRenderer) blendImageRenderer_;
+        float currentBlendRate_  = 0.0f;
+        int   addBlendRate_secs_ = 1;
+
+#pragma region Serialization Function
+    public:
+        void OnDrawGui() override;
+        
+        template<class Archive>
+        void save(Archive& archive, const std::uint32_t version) const {
+            archive(cereal::base_class<ComponentBase>(this));
+            archive(CEREAL_NVP(addBlendRate_secs_));
+        }
+
+        template<class Archive>
+        void load(Archive& archive, const std::uint32_t version) {
+            archive(cereal::base_class<ComponentBase>(this));
+            if (version >= 0) archive(CEREAL_NVP(addBlendRate_secs_));
+        }
+#pragma endregion
+    };
+}
+
+CEREAL_CLASS_VERSION(NanamiUi::BlendAnimationRenderer, 0);

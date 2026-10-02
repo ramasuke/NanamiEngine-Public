@@ -1,0 +1,52 @@
+﻿#pragma once
+#include "../../../Enemy_Behaviour_ActionBase.h"
+#include "Engine/Core/Object/Field/Field.h"
+#include "Engine/Module/Asset/PrefabGameObject/PrefabGameObjectFile.h"
+#include "../../../../../../../../../Editor/Npc/Enemy/Behaviour/Action/Enemy_Behaviour_ActionFactory.h"
+#include "../../../../../../../Damage/Physics/Game_Damage_PhysicsPower.h"
+#include "../../../Position/Enemy_Behaviour_Action_Position.h"
+
+namespace GameCore::Npc::Enemy::Behaviour::Action
+{
+    class RadiateProjectile final : public ActionBase
+    {
+        TickStatus DoTick(const TickContext& context) override;
+        void DoDrawGui() override;
+
+    private:
+        [[serialize(5)]] Damage::PhysicsPower physicsDamage_;
+        [[serialize(3)]] Position spawnPosition_;
+        [[serialize(3)]] Position targetPosition_;
+        [[serialize(3)]] float moveSpeed_ = 5.0f;
+        [[serialize(3)]] FIELD(Asset::PrefabGameObjectFile) projectilePrefab_;
+        [[serialize(4)]] bool isFinishedProjectileDestroy_ = false;
+
+#pragma region Serialization
+    public:
+        template<class Archive>
+        void save(Archive& archive, const std::uint32_t) const {
+            archive(cereal::base_class<ActionBase>(this));
+            archive(CEREAL_NVP(physicsDamage_));
+            archive(CEREAL_NVP(spawnPosition_));
+            archive(CEREAL_NVP(targetPosition_));
+            archive(CEREAL_NVP(moveSpeed_));
+            archive(CEREAL_NVP(projectilePrefab_));
+            archive(CEREAL_NVP(isFinishedProjectileDestroy_));
+        }
+
+        template<class Archive>
+        void load(Archive& archive, const std::uint32_t version) {
+            if (version >= 5) archive(CEREAL_NVP(physicsDamage_));
+            if (version >= 3) archive(CEREAL_NVP(spawnPosition_));
+            if (version >= 3) archive(CEREAL_NVP(targetPosition_)); 
+            if (version >= 3) archive(CEREAL_NVP(moveSpeed_)); 
+            if (version >= 3) archive(CEREAL_NVP(projectilePrefab_)); 
+            if (version >= 4) archive(CEREAL_NVP(isFinishedProjectileDestroy_)); 
+        }
+#pragma endregion
+    };
+
+    REGISTER_ENEMY_ACTION_WITH_NAME(RadiateProjectile, "GameObject::RadiateProjectile")
+}
+
+CEREAL_CLASS_VERSION(GameCore::Npc::Enemy::Behaviour::Action::RadiateProjectile, 5)

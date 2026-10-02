@@ -1,0 +1,63 @@
+﻿#pragma once
+#include "Engine/Core/Object/Field/Field.h"
+#include "../../../Enemy_Behaviour_ActionBase.h"
+#include "../../../../../../../../../Editor/Npc/Enemy/Behaviour/Action/Enemy_Behaviour_ActionFactory.h"
+
+namespace GameCore::Npc::Enemy::Behaviour::Action
+{
+    class FallIsland final : public ActionBase
+    {
+        TickStatus DoTick(const TickContext& context) override;
+        void DoDrawGui() override;
+
+        [[serialize(0)]] FIELD(GameObject::IGameObject) target_;
+        [[serialize(2)]] FIELD(GameObject::IGameObject) pivotPos_; 
+        [[serialize(0)]] glm::vec3 tiltAxis_ = {0.0f, 0.0f, 1.0f};
+        [[serialize(0)]] float tiltAngleDeg_ = 12.0f;
+        [[serialize(0)]] float tiltSecs_     = 1.5f;
+        [[serialize(0)]] float fallAngleDeg_ = 30.0f;               
+        [[serialize(0)]] float fallDistance_ = 900.0f;
+        [[serialize(0)]] float fallSecs_     = 4.5f;
+        [[serialize(1)]] float tiltSinkDistance_ = 6.0f;            
+
+    public:
+        template<class Archive>
+        void save(Archive& archive, const std::uint32_t version) const
+        {
+            archive(cereal::base_class<ActionBase>(this));
+            archive(CEREAL_NVP(target_));
+            archive(CEREAL_NVP(pivotPos_));
+            archive(CEREAL_NVP(tiltAxis_));
+            archive(CEREAL_NVP(tiltAngleDeg_));
+            archive(CEREAL_NVP(tiltSecs_));
+            archive(CEREAL_NVP(fallAngleDeg_));
+            archive(CEREAL_NVP(fallDistance_));
+            archive(CEREAL_NVP(fallSecs_));
+            archive(CEREAL_NVP(tiltSinkDistance_));
+        }
+
+        template<class Archive>
+        void load(Archive& archive, const std::uint32_t version)
+        {
+            archive(cereal::base_class<ActionBase>(this));
+            if (version >= 0) archive(CEREAL_NVP(target_));
+            if (version <= 1)
+            {
+                [[serialize(0)]] glm::vec3 pivot_ = {};
+                archive(CEREAL_NVP(pivot_));
+            }
+            if (version >= 2) archive(CEREAL_NVP(pivotPos_));
+            if (version >= 0) archive(CEREAL_NVP(tiltAxis_));
+            if (version >= 0) archive(CEREAL_NVP(tiltAngleDeg_));
+            if (version >= 0) archive(CEREAL_NVP(tiltSecs_));
+            if (version >= 0) archive(CEREAL_NVP(fallAngleDeg_));
+            if (version >= 0) archive(CEREAL_NVP(fallDistance_));
+            if (version >= 0) archive(CEREAL_NVP(fallSecs_));
+            if (version >= 1) archive(CEREAL_NVP(tiltSinkDistance_));
+        }
+    };
+
+    REGISTER_ENEMY_ACTION_WITH_NAME(FallIsland, "GameObject::FallIsland")
+}
+
+CEREAL_CLASS_VERSION(GameCore::Npc::Enemy::Behaviour::Action::FallIsland, 2)

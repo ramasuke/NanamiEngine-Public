@@ -1,0 +1,187 @@
+﻿#include "CineMachineVirtualCamera.h"
+
+#include <algorithm>
+
+#include "../../../Engine/Core/Application/Configuration/DebugDraw/ApplicationConfiguration_DebugDraw.h"
+#include "../../../Engine/Core/Application/Window/Main/Game/GameWindow.h"
+#include "../../../Engine/Module/GameObject/Transform/Transform.h"
+#include "../Brain/CinemachineCameraBrain.h"
+#include "Behaviour/Follow/VirtualCameraFollowBehaviour.h"
+#include "Behaviour/LockOn/LockOnCameraBehaviour.h"
+#include "Behaviour/LookAt/VirtualCameraLookAtBehaviour.h"
+#include "Behaviour/Noise/NoiseCameraBehaviour.h"
+#include "Behaviour/Shake/ShakeCameraBehaviour.h"
+#include "Behaviour/ThirdPerson/ThirdPersonCameraBehaviour.h"
+#include "../../../Engine/Module/Serialization/Engine_Module_SerializationRegistration.h"
+
+void CineMachine::CineMachineVirtualCamera::SetPriority(const int priority)
+{
+    priority_.Value(priority);
+}
+
+float CineMachine::CineMachineVirtualCamera::Fov() const
+{
+    if (overrideFov_)
+        return fov_;
+
+    const auto* brain = CinemachineCameraBrain::Instance();
+    return brain ? brain->DefaultFov() : SAMPLE_CAMERA_FOV;
+}
+
+void CineMachine::CineMachineVirtualCamera::UpdateBehaviours() const
+{
+    for (const auto& cameraBehaviour : cameraBehaviours_)
+    {
+        if (const auto behaviour = cameraBehaviour.lock())
+            behaviour->OnCameraUpdate();
+    }
+}
+
+void CineMachine::CineMachineVirtualCamera::MainCameraCallback() const
+{
+    for (const auto& cameraBehaviour : cameraBehaviours_)
+    {
+        cameraBehaviour.lock()->MainCameraCallback();
+    }
+}
+
+void CineMachine::CineMachineVirtualCamera::OnBecameLive() const
+{
+    for (const auto& cameraBehaviour : cameraBehaviours_)
+    {
+        cameraBehaviour.lock()->OnBecameLive();
+    }
+}
+
+std::optional<CineMachine::BlendIn> CineMachine::CineMachineVirtualCamera::CustomBlendIn() const
+{
+    if (!overrideBlendIn_)
+        return std::nullopt;
+    return BlendIn{ blendIn_secs_, blendInEase_ };
+}
+
+void CineMachine::CineMachineVirtualCamera::SetBlendIn(const float duration_secs, const LibCore::EaseType ease)
+{
+    overrideBlendIn_ = true;
+    blendIn_secs_    = duration_secs;
+    blendInEase_     = ease;
+}
+
+bool CineMachine::CineMachineVirtualCamera::WantsImmediateApply() const
+{
+    if (isImmediateApply_)
+        return true;
+
+    for (const auto& cameraBehaviour : cameraBehaviours_)
+    {
+        if (cameraBehaviour.lock()->WantsImmediateApply())
+            return true;
+    }
+    return false;
+}
+
+void CineMachine::CineMachineVirtualCamera::OnAwake()
+{
+    CinemachineCameraBrain::SubscribeVirtualCamera(Components().Catch<CineMachineVirtualCamera>());
+}
+
+void CineMachine::CineMachineVirtualCamera::OnStart()
+{
+    // ThirdPerson/LockOnがOnAwakeでRequireComponentするFollow/LookAtも拾えるよう、全員のAwake後に集める
+    cameraBehaviours_ = Components().Catches<IVirtualCameraBehaviour>();
+    std::ranges::stable_sort(cameraBehaviours_, {}, [](const std::weak_ptr<IVirtualCameraBehaviour>& behaviour)
+    {
+        const auto locked = behaviour.lock();
+        return locked ? locked->Stage() : VirtualCameraStage::Aim;
+    });
+}
+
+void CineMachine::CineMachineVirtualCamera::OnDestroy()
+{
+    CinemachineCameraBrain::UnSubscribeVirtualCamera(Components().Catch<CineMachineVirtualCamera>());
+}
+
+void CineMachine::CineMachineVirtualCamera::OnDrawGui()
+{
+    ImGuiHelper::OnDrawInputField("priority_", priority_);
+    ImGuiHelper::OnDrawInputField("overrideFov_", overrideFov_);
+    if (overrideFov_)
+        ImGuiHelper::OnDrawInputField("fov_", fov_);
+    ImGuiHelper::OnDrawInputField("isImmediateApply_", isImmediateApply_);
+    ImGuiHelper::OnDrawInputField("overrideBlendIn_", overrideBlendIn_);
+    if (overrideBlendIn_)
+    {
+        ImGuiHelper::OnDrawInputField("blendIn_secs_", blendIn_secs_);
+        static constexpr const char* EASE_NAMES[] = {
+            "Linear", "OutQuad", "InQuad", "InOutQuad", "OutBack", "InBack",
+            "InOutSine", "OutCubic", "InCubic", "InOutCubic", "SmoothStep" };
+        int ease = static_cast<int>(blendInEase_);
+        if (ImGui::Combo("blendInEase_", &ease, EASE_NAMES, IM_ARRAYSIZE(EASE_NAMES)))
+            blendInEase_ = static_cast<LibCore::EaseType>(ease);
+    }
+
+    if (ImGui::Button("AddCameraBehaviour"))
+    {
+        ImGui::OpenPopup("AddCameraBehaviourPopup");
+    }
+
+    if (ImGui::BeginPopup("AddCameraBehaviourPopup"))
+    {
+        ImGui::Text("Virtual Camera Behaviour");
+        ImGui::Separator();
+
+        if (ImGui::Button("Add Follow"     )) Components().Add<Behaviour::VirtualCameraFollowBehaviour>();
+        if (ImGui::Button("Add LookAt"     )) Components().Add<Behaviour::VirtualCameraLookAtBehaviour>();
+        if (ImGui::Button("Add ThirdPerson")) Components().Add<Behaviour::ThirdPersonCameraBehaviour  >();
+        if (ImGui::Button("Add LockOn"     )) Components().Add<Behaviour::LockOnCameraBehaviour       >();
+        if (ImGui::Button("Add Shake"      )) Components().Add<Behaviour::ShakeCameraBehaviour        >();
+        if (ImGui::Button("Add Noise"      )) Components().Add<Behaviour::NoiseCameraBehaviour        >();
+        ImGui::EndPopup();
+    }
+
+    if (ImGui::Button("Move EditorCamera Here"))
+    {
+        const auto gameWindow = Core::Application::ApplicationBase::GameWindow();
+        gameWindow->SetCameraPosition(Transform().GetWorldPos());
+        gameWindow->SetCameraRotation(Transform().GetWorldRot());
+    }
+}
+
+void CineMachine::CineMachineVirtualCamera::OnDebugRender()
+{
+    if (!Core::Application::Configuration::DebugDrawConfiguration::ShouldDrawVirtualCameraFrustum())
+        return;
+
+    const glm::vec3 eye     = Transform().GetWorldPos();
+    const glm::vec3 forward = Transform().GetWorldRot() * glm::vec3(0, 0, 1);
+    constexpr auto worldUp = glm::vec3(0, 1, 0);
+
+    glm::vec3 right = glm::normalize(glm::cross(forward, worldUp));
+    glm::vec3 up    = glm::normalize(glm::cross(right, forward));
+
+    int screenWidth, screenHeight;
+    GetScreenState(&screenWidth, &screenHeight, nullptr);
+    const float aspectRatio = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
+
+    const float fovRad = Fov() * DX_PI_F / 180.0f;
+    constexpr float debugFar = 80.0f;
+    const float halfHeight = tanf(fovRad * 0.5f) * debugFar;
+    const float halfWidth = halfHeight * aspectRatio;
+    const glm::vec3 farCenter = eye + forward * debugFar;
+    
+    const glm::vec3 p1 = farCenter + up * halfHeight + right * halfWidth;
+    const glm::vec3 p2 = farCenter + up * halfHeight - right * halfWidth;
+    const glm::vec3 p3 = farCenter - up * halfHeight - right * halfWidth;
+    const glm::vec3 p4 = farCenter - up * halfHeight + right * halfWidth;
+
+    const int color = GetColor(200, 200, 200);
+
+    DrawTriangle3D({eye.x, eye.y, eye.z}, {p1.x, p1.y, p1.z}, {p2.x, p2.y, p2.z}, color, false);
+    DrawTriangle3D({eye.x, eye.y, eye.z}, {p2.x, p2.y, p2.z}, {p3.x, p3.y, p3.z}, color, false);
+    DrawTriangle3D({eye.x, eye.y, eye.z}, {p3.x, p3.y, p3.z}, {p4.x, p4.y, p4.z}, color, false);
+    DrawTriangle3D({eye.x, eye.y, eye.z}, {p4.x, p4.y, p4.z}, {p1.x, p1.y, p1.z}, color, false);
+}
+
+#pragma region SerializationMacro
+ENGINE_REGISTER_COMPONENT(NanamiEngine::CineMachine::CineMachineVirtualCamera);
+#pragma endregion

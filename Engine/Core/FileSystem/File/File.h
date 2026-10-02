@@ -1,0 +1,33 @@
+﻿#pragma once
+#include "Engine/Core/Api/NanamiApi.h"
+#include <memory>
+#include <string>
+
+#include "../../../Module/Asset/AssetBase.h"
+
+namespace NanamiEngine::Core::FileSystem
+{
+    class NANAMI_API File final
+    {
+    public:
+        [[nodiscard]] static File LoadFileForMeta(const std::string& filePath, std::string fileName);
+        [[nodiscard]] static File CreateOrLoadFile(std::string filePath, std::string fileName);
+
+        [[nodiscard]] const std::string& GetName() const { return fileName_; }
+        [[nodiscard]] const std::string& GetPath() const { return filePath_; }
+        [[nodiscard]] const std::shared_ptr<Module::Asset::AssetBase>& GetContent() const { return content_; }
+        [[nodiscard]] File Copy() const;
+        bool Rename(const std::string& newFileName);
+
+        void OnSave()        const;
+        void OnClick()       const;
+        void OnDoubleClick() const;
+
+    private:
+        explicit File() = default;
+        
+        std::string filePath_;
+        std::string fileName_;
+        std::shared_ptr<Module::Asset::AssetBase> content_;
+    };
+}

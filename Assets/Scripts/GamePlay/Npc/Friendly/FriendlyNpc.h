@@ -1,0 +1,71 @@
+﻿#pragma once
+#include "Engine/Core/Object/Field/Field.h"
+#include "Engine/Module/Component/ComponentBase.h"
+#include "../../../../Data/FriendlyNpcBehviour/Data_FriendNpcBehaviourFile.h"
+#include "../../../../Data/FriendlyNpcStatus/Base/Data_FriendlyNpcBaseStatus.h"
+#include "../../../Core/Game/Npc/Friendly/IFriendlyNpc.h"
+#include "../../../Core/Game/PlayerAvatar/Interactable/IPlayerInteractable.h"
+#include "../../Ui/BillBoardNpcChatIcon/BillBoardNpcChatIcon.h"
+#include "../../Ui/NpcChatting/Ui_NpcChatting.h"
+
+namespace GamePlay::Npc::Friendly
+{
+    class FriendlyNpcReaction;
+
+    class FriendlyNpc final : public Component::ComponentBase,
+                              public LifeCycleCallback::IAwakable,
+                              public LifeCycleCallback::IUpdatable,
+                              public GameCore::PlayerAvatar::IPlayerInteractable,
+                              public GameCore::Npc::IFriendlyNpc
+    {
+    public:
+        explicit FriendlyNpc();
+        ~FriendlyNpc() override;
+        [[nodiscard]] std::shared_ptr<GameCore::Npc::Friendly::BehaviourTree> BehaviourTree() const { return behaviour_; }
+        [[nodiscard]] std::shared_ptr<Ui::BillBoardNpcChatIcon> ChatIcon() const { return billboardNpcChatIcon_.get(); }
+        [[nodiscard]] bool IsChatting() const { return isChatting_; }
+
+    private:
+        void OnAwake        () override;
+        void OnUpdate       () override;
+        void OnInteractable    () override;
+        void OnExitInteractable() override;
+        void OnInteract         () override;
+        [[nodiscard]] const GameObject::Transform& InteractableTransform() const override;
+
+        [[serialize(0)]] std::string name_;
+        [[serialize(0)]] FIELD(Asset::FriendNpcBehaviourFile) friendlyNpcBehaviourFile_;
+        [[serialize(2)]] FIELD(Asset::FriendlyNpcResources) baseStatus_;
+        [[serialize(6)]] FIELD(Ui::BillBoardNpcChatIcon) billboardNpcChatIcon_;
+        
+        std::shared_ptr<GameCore::Npc::Friendly::BehaviourTree> behaviour_;
+        std::weak_ptr<FriendlyNpcReaction> reaction_;
+        bool isChatting_  = false;
+
+#pragma region Serialization Function
+    public:
+        void OnDrawGui() override;
+
+        template<class Archive>
+        void save(Archive& archive, const std::uint32_t version) const
+        {
+            archive(cereal::base_class<ComponentBase>(this));
+            archive(CEREAL_NVP(name_));
+            archive(CEREAL_NVP(friendlyNpcBehaviourFile_));
+            archive(CEREAL_NVP(baseStatus_));
+            archive(CEREAL_NVP(billboardNpcChatIcon_));
+        }
+        template<class Archive>
+        void load(Archive& archive, const std::uint32_t version)
+        {
+            archive(cereal::base_class<ComponentBase>(this));
+            if (version >= 0) archive(CEREAL_NVP(name_));
+            if (version >= 0) archive(CEREAL_NVP(friendlyNpcBehaviourFile_));
+            if (version >= 2) archive(CEREAL_NVP(baseStatus_));
+            if (version >= 6) archive(CEREAL_NVP(billboardNpcChatIcon_));
+        }
+#pragma endregion
+    };
+}
+
+CEREAL_CLASS_VERSION(GamePlay::Npc::Friendly::FriendlyNpc, 6);

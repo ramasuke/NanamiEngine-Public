@@ -1,0 +1,62 @@
+﻿#pragma once
+#include "Engine/Core/Api/NanamiApi.h"
+#include "../../../Core/Object/IObject.h"
+#include "../Mark/GameObjectMark.h"
+
+namespace NanamiEngine::Module::GameObject
+{
+    class ComponentGroup;
+}
+
+namespace NanamiEngine::Module::GameObject
+{
+    class Transform;
+}
+
+namespace NanamiEngine::Module::GameObject
+{
+    class NANAMI_API IGameObject : public Object::IObject
+    {
+    public:
+        template <class Archive>
+        void save(Archive& archive, const std::uint32_t version) const
+        {
+            archive(cereal::base_class<IObject>(this));  
+        }
+
+        template <class Archive>
+        void load(Archive& archive, const std::uint32_t version)
+        {
+            archive(cereal::base_class<IObject>(this));
+        }
+        
+        virtual ~IGameObject() = default;
+        virtual void InitGameObject(const std::weak_ptr<IGameObject>& parent, const std::shared_ptr<IGameObject>& ownPtr) = 0;
+        virtual void InitForCopied(
+            const std::shared_ptr<IGameObject>& ownPtr,
+            bool isActive,
+            std::string name,
+            GameObjectMark mark,
+            ComponentGroup components,
+            Transform transform) = 0;
+        virtual void InvokeInitAwakeCallbacks() = 0;
+        virtual void InvokeInitStartCallbacks() = 0;
+        virtual std::shared_ptr<IGameObject> CopyForInstantiate() = 0;
+        [[nodiscard]] virtual const std::string& Name     () const = 0;
+        virtual void SetName(std::string name) = 0;
+        [[nodiscard]] virtual GameObjectMark     Mark     () const = 0;
+        virtual void SetMark(GameObjectMark mark) = 0;
+        [[nodiscard]] virtual Transform&         Transform() = 0;
+        [[nodiscard]] virtual ComponentGroup&    Components() = 0;
+        /** @brief GameObjectの全ての機能の有効無効を切り替える */
+        virtual bool IsEnable () = 0;
+        virtual void SetEnable(bool enable) = 0;
+        virtual void OnDrawTreeGui(bool drawChildren = true) = 0;
+        virtual void OnDestroy() const {}
+        
+        ///WARNING: EngineApiなのでEngine内部コードでしか使用しないで下さい。
+        virtual void ImplementDestroy() {}
+    };
+}
+
+CEREAL_CLASS_VERSION(NanamiEngine::Module::GameObject::IGameObject, 0);

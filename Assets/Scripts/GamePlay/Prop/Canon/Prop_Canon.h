@@ -1,0 +1,103 @@
+﻿#pragma once
+#include "Engine/Core/Object/Field/Field.h"
+#include "Engine/Module/Asset/PrefabGameObject/PrefabGameObjectFile.h"
+#include "Engine/Module/Asset/Sound/SoundFile.h"
+#include "Engine/Module/Component/ComponentBase.h"
+#include "Engine/Module/GameObject/Interface/IGameObject.h"
+#include "Packages/Cinemachine/VirtualCamera/CineMachineVirtualCamera.h"
+#include "../../../Core/Game/PlayerAvatar/Interactable/IPlayerInteractable.h"
+#include "../../Ui/CannonCooldownGauge/Ui_CannonCooldownGauge.h"
+#include "../LibCore/cereal/glm/GlmHelper.h"
+
+namespace GamePlay::Prop
+{
+    class Canon final : public Component::ComponentBase,
+                        public LifeCycleCallback::IAwakable,
+                        public LifeCycleCallback::IUpdatable,
+                        public GameCore::PlayerAvatar::IPlayerInteractable
+    {
+    public:
+        void Use();
+        void Leave();
+        void Shoot();
+        void RightRotate();
+        void LeftRotate();
+
+        void Lock  () { isLocked_ = true;  }
+        void Unlock() { isLocked_ = false; }
+        [[nodiscard]] bool IsLocked() const { return isLocked_; }
+        [[nodiscard]] bool IsBoardRequested() const { return isBoardRequested_; }
+
+    private:
+        void OnAwake() override;
+        void OnUpdate() override;
+        void OnInteractable    () override { isPlayerInRange_ = true;  }
+        void OnExitInteractable() override { isPlayerInRange_ = false; }
+        void OnInteract        () override { isBoardRequested_ = true; }
+        [[nodiscard]] bool CanInteract() const override { return !isLocked_ && !isInUse_; }
+        [[nodiscard]] const GameObject::Transform& InteractableTransform() const override { return Transform(); }
+        [[nodiscard]] GameCore::PlayerAvatar::PlayerInteractKind InteractKind() const override { return GameCore::PlayerAvatar::PlayerInteractKind::Board; }
+
+        
+        glm::vec3 position_;
+        bool isLocked_         = true;
+        bool isInUse_          = false;
+        bool isPlayerInRange_  = false;
+        bool isBoardRequested_ = false;
+        bool isBoardHintShown_ = true;
+        int  prevCameraPriority_ = 0;
+
+        [[serialize(0)]] FIELD(Asset::PrefabGameObjectFile) bulletPrefab_;
+        [[serialize(0)]] float bulletForceSpeed_ = 10.0f;
+        [[serialize(0)]] FIELD(Asset::SoundFile) shootSound_;
+        [[serialize(1)]] float addRotateTorque_ = 3.0f;
+        [[serialize(2)]] FIELD(CineMachine::CineMachineVirtualCamera) shootCamera_;
+        [[serialize(2)]] FIELD(GameObject::IGameObject) shootBulletPos_;
+        [[serialize(3)]] glm::vec3 shootBulletDirection_ = glm::vec3(0.0f, 0.0f, 0.0f);
+        
+        [[serialize(4)]] float shootCooldown_secs_ = 10.0f;
+        float shootCooldownDuring_secs_ = 0.0f;
+
+        [[serialize(5)]] FIELD(GamePlay::Ui::CannonCooldownGauge) cannonUi_;
+        [[serialize(6)]] FIELD(GameObject::IGameObject) boardHint_;
+        
+        
+#pragma region Serialization Function
+    public:
+        void OnDrawGui() override;
+        template<class Archive>
+        void save(Archive& archive, const std::uint32_t version) const {
+            archive(cereal::base_class<ComponentBase>(this));
+            archive(CEREAL_NVP(bulletPrefab_));
+            archive(CEREAL_NVP(bulletForceSpeed_));
+            archive(CEREAL_NVP(shootSound_));
+            archive(CEREAL_NVP(addRotateTorque_));
+            archive(CEREAL_NVP(shootCamera_));
+            archive(CEREAL_NVP(shootBulletPos_));
+            archive(CEREAL_NVP(shootBulletDirection_));
+            archive(CEREAL_NVP(shootCooldown_secs_));
+            archive(CEREAL_NVP(cannonUi_));
+            archive(CEREAL_NVP(boardHint_));
+        }
+
+        template<class Archive>
+        void load(Archive& archive, const std::uint32_t version) {
+            archive(cereal::base_class<ComponentBase>(this));
+            if (version >= 0) archive(CEREAL_NVP(bulletPrefab_));
+            if (version >= 0) archive(CEREAL_NVP(bulletForceSpeed_));
+            if (version >= 0) archive(CEREAL_NVP(shootSound_));
+            if (version >= 1) archive(CEREAL_NVP(addRotateTorque_));
+            if (version >= 2) archive(CEREAL_NVP(shootCamera_));
+            if (version >= 2) archive(CEREAL_NVP(shootBulletPos_));
+            if (version >= 3) archive(CEREAL_NVP(shootBulletDirection_));
+            if (version >= 4) archive(CEREAL_NVP(shootCooldown_secs_));
+            if (version >= 5) archive(CEREAL_NVP(cannonUi_));
+            if (version >= 6) archive(CEREAL_NVP(boardHint_));
+        }
+#pragma endregion
+    };
+
+    
+}
+
+CEREAL_CLASS_VERSION(GamePlay::Prop::Canon, 6);

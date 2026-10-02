@@ -1,0 +1,22 @@
+﻿#include "Engine_Physics_RaycastHit.h"
+
+#include <memory>
+
+NanamiEngine::Module::Physics::RaycastHit::RaycastHit(
+    const bool hit,
+    const glm::vec3& position,
+    const glm::vec3& normal,
+    const float distance,
+    const std::weak_ptr<GameObject::IGameObject>& hitObject)
+    : hit_(hit),
+      position_(position),
+      normal_(normal),
+      distance_(distance),
+      hitObject_(hitObject)
+{
+}
+
+bool NanamiEngine::Module::Physics::RaycastHit::Hit() const
+{
+    return hit_ && !hitObject_.expired();
+}

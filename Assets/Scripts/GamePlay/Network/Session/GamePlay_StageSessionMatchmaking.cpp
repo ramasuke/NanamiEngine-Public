@@ -1,0 +1,122 @@
+﻿#include "GamePlay_StageSessionMatchmaking.h"
+
+#include <random>
+#include <utility>
+#include "Engine/Core/Application/Time/Time.h"
+#include "Engine/Core/Coroutine/Awaitable/WaitUntil/Coroutine_WaitUntil.h"
+#include "Engine/Core/Coroutine/Awaitable/Yield/Coroutine_WaitYield.h"
+#include "Engine/Core/Network/Discovery/LanSessionFinder.h"
+#include "Engine/Module/Log/NanamiEngine_Module_Log.h"
+#include "../Game_CustomNetworkRunner.h"
+#include "../Relay/RelayServerSettings.h"
+
+namespace GamePlay::Network
+{
+    namespace
+    {
+        constexpr int STAGE_SESSION_SEARCH_MSECS          = 1000;
+        // 同時に入った 2 人が揃ってホストにならないよう、探す長さを人ごとにずらす
+        constexpr int STAGE_SESSION_SEARCH_JITTER_MSECS   = 500;
+        constexpr int STAGE_SESSION_CONNECT_TIMEOUT_MSECS = 5000;
+    }
+
+    void StageMatchmaker::SetNextRoom(RelayRoom room)
+    {
+        nextRoom_ = std::move(room);
+    }
+
+    Coroutine::Task<std::optional<std::string>> StageMatchmaker::JoinOrHostAsync(std::weak_ptr<CustomNetworkRunner> runner, std::string stageKey)
+    {
+        return JoinOrHostAsync(std::move(runner), std::move(stageKey), std::exchange(nextRoom_, RelayRoom{}));
+    }
+
+    bool StageMatchmaker::IsConnectAttemptSettled(const std::weak_ptr<CustomNetworkRunner>& runner, const int startedMs)
+    {
+        const auto locked = runner.lock();
+        return !locked
+            || locked->GetConnectionState() != Core::Network::ConnectionState::Connecting
+            || Time::NowMilliseconds() - startedMs >= STAGE_SESSION_CONNECT_TIMEOUT_MSECS;
+    }
+
+    Coroutine::Task<std::optional<std::string>> StageMatchmaker::JoinOrHostAsync(
+        const std::weak_ptr<CustomNetworkRunner> runner, const std::string stageKey, const RelayRoom room)
+    {
+        // 中継サーバーに任せる。公開部屋は失敗したら LAN で探し、非公開部屋はそこで諦める
+        const auto relay = RelayServerSettings::Load();
+        if (room.IsPrivate() && !relay.IsEnabled())
+            co_return std::string("中継サーバーを使う設定になっていないので、部屋を使えません");
+
+        if (relay.IsEnabled())
+        {
+            {
+                const auto locked = runner.lock();
+                if (!locked)
+                    co_return std::nullopt;
+                locked->StartRelay(stageKey, relay, room);
+            }
+
+            const int relayStartedMs = Time::NowMilliseconds();
+            co_await Coroutine::WaitUntil([runner, relayStartedMs] { return IsConnectAttemptSettled(runner, relayStartedMs); });
+
+            const auto locked = runner.lock();
+            if (!locked || locked->GetConnectionState() == Core::Network::ConnectionState::Connected)
+                co_return std::nullopt;
+
+            if (room.IsPrivate())
+            {
+                // Shutdown で理由も消えるので先に読む
+                const std::string failure = locked->RelayFailure().value_or("中継サーバーにつながりませんでした");
+                Module::LogWarning("StageSession: 非公開の部屋に入れませんでした: " + failure);
+                locked->Shutdown();
+                co_return failure;
+            }
+
+            Module::LogWarning("StageSession: 中継サーバー経由で参加できなかったので、LAN で探します");
+            locked->Shutdown();
+        }
+
+        // runner はステージシーンのコンポーネント。待っている間にシーンごと消えうるので、待機をまたいで握らない
+        std::optional<Core::Network::HostEndpoint> host;
+        {
+            Core::Network::LanSessionFinder finder(stageKey);
+            static std::mt19937 jitterEngine{ std::random_device{}() };
+            const int searchMsecs = STAGE_SESSION_SEARCH_MSECS + std::uniform_int_distribution<int>(0, STAGE_SESSION_SEARCH_JITTER_MSECS)(jitterEngine);
+            const int startedMs   = Time::NowMilliseconds();
+            while (true)
+            {
+                finder.Update();
+                if (finder.Found() || Time::NowMilliseconds() - startedMs >= searchMsecs)
+                    break;
+                co_await Coroutine::WaitYield();
+            }
+            host = finder.Found();
+        }
+
+        if (host)
+        {
+            {
+                const auto locked = runner.lock();
+                if (!locked)
+                    co_return std::nullopt;
+                locked->StartClient(*host);
+            }
+
+            const int connectStartedMs = Time::NowMilliseconds();
+            co_await Coroutine::WaitUntil([runner, connectStartedMs] { return IsConnectAttemptSettled(runner, connectStartedMs); });
+
+            const auto locked = runner.lock();
+            if (!locked || locked->GetConnectionState() == Core::Network::ConnectionState::Connected)
+                co_return std::nullopt;
+
+            // 見つけたホストが直前に抜けた・満員だった
+            Module::LogWarning("StageSession: " + host->address + " に参加できなかったので、自分がホストになります");
+            locked->Shutdown();
+            locked->StartHost(stageKey);
+            co_return std::nullopt;
+        }
+
+        if (const auto locked = runner.lock())
+            locked->StartHost(stageKey);
+        co_return std::nullopt;
+    }
+}

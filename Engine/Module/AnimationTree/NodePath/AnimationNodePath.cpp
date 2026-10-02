@@ -1,0 +1,155 @@
+﻿#include "AnimationNodePath.h"
+
+#include "../../../Core/Application/Time/Time.h"
+#include "../../Serialization/Engine_Module_SerializationRegistration.h"
+
+void AnimationTree::AnimationNodePath::InitNodePath(
+    const std::shared_ptr<BlackBoard::ParameterGroup>& additionParams,
+    const std::function<std::weak_ptr<IAnimationNode>(const Guid&)>& findNode,
+    const std::function<void(const std::shared_ptr<IAnimationNode>&)>& onAddCurrentNode,
+    const std::function<void(const std::shared_ptr<IAnimationNode>&)>& onRemoveCurrentNode,
+    const std::function<void(AnimationNodePath*, float)>& onAddNextCurrentNodePath)
+{
+    additionParams_ = additionParams;
+    fromNode_       = findNode(fromNodeGuid_);
+    nextNode_       = findNode(nextNodeGuid_);
+    visualFromNode_ = findNode(visualFromNodeGuid_);
+
+    onAddCurrentNode_         = onAddCurrentNode;
+    onRemoveCurrentNode_      = onRemoveCurrentNode;
+    onAddNextCurrentNodePath_ = onAddNextCurrentNodePath;
+
+    SubscribeUpdateNodeAnimationCallback();
+}
+
+void AnimationTree::AnimationNodePath::SetFromNode(const std::shared_ptr<IAnimationNode>& node)
+{
+    isFirstBlendingAnimation_ = true;
+    isBlending_               = false;
+    transitionDuring_secs_    = 0;
+    fromNode_     = node;
+    fromNodeGuid_ = node->GetGuid();
+    SubscribeUpdateNodeAnimationCallback();
+}
+
+void AnimationTree::AnimationNodePath::SetFromNodeForGraphEditorGui(const std::shared_ptr<IAnimationNode>& visualNode,const std::shared_ptr<IAnimationNode>& node)
+{
+    SetFromNode(node);
+    visualFromNode_     = visualNode;
+    visualFromNodeGuid_ = visualNode->GetGuid();
+}
+
+void AnimationTree::AnimationNodePath::SetTargetNode(const std::shared_ptr<IAnimationNode>& node)
+{
+    nextNode_     = node           ;
+    nextNodeGuid_ = node->GetGuid();
+}
+
+void AnimationTree::AnimationNodePath::RemoveCurrentNodePath()
+{
+    std::cout << "EndBlendAnimation" << std::endl;
+    isBlending_ = false;
+    onRemoveCurrentNode_(fromNode_.lock());
+    nextNode_.lock()->OnUpdateBlendRate(1.0f);
+    transitionDuring_secs_ = 0.0f;
+}
+
+void AnimationTree::AnimationNodePath::TryAddNextCurrentNodePath(
+    const IAnimationNode::UpdateCallbackContext context)
+{
+    if (fromNode_.lock() == nextNode_.lock())
+        return;
+
+    if (!hasExitTime_)
+    {
+        if (!isBlending_ && additionConditionGroup_->Check(*additionParams_))
+        {
+            // NOTE: AddCurrentNodePath がその場で遷移元ノードを更新してこのパスが再び呼ばれるため、先に立てる
+            isBlending_ = true;
+            onAddCurrentNode_(nextNode_.lock());
+            onAddNextCurrentNodePath_(this, context.timeScale_);
+        }
+        return;
+    }
+
+    // NOTE: 非ループのクリップは during == duration でクランプされるので、< だと遷移時間 0 の遷移が永遠に起きない
+    if (fromNode_.lock()->GetAnimDuration_secs() - transitionDuration_secs_ <= context.during_secs_)
+    {
+        if (isFirstBlendingAnimation_)
+        {
+            isFirstBlendingAnimation_ = false;
+
+            if (additionConditionGroup_->Check(*additionParams_))
+            {
+                // std::cerr << "StartBlendAnimation" << std::endl;
+                if (!isBlending_)
+                {
+                    isBlending_ = true;
+                    onAddCurrentNode_(nextNode_.lock());
+                    onAddNextCurrentNodePath_(this, context.timeScale_);
+                }
+            }
+        }
+    }
+
+    // <= : 非ループのクリップは終端でクランプされ続けるので、終端に居る間は毎フレーム再判定させる
+    if (fromNode_.lock()->GetAnimDuration_secs() <= context.during_secs_)
+    {
+        isFirstBlendingAnimation_ = true;
+    }
+}
+
+void AnimationTree::AnimationNodePath::OnDrawGui()
+{
+    ImGuiHelper::OnDrawInputField("additionConditionGroup_", additionConditionGroup_);
+    ImGuiHelper::OnDrawInputField("transitionDuration_secs_", transitionDuration_secs_);
+    ImGuiHelper::OnDrawInputField("hasExitTime_", hasExitTime_);
+    ImGuiHelper::OnDrawInputField("fromNodeGuid_", fromNodeGuid_);
+    ImGuiHelper::OnDrawInputField("nextNodeGuid_", nextNodeGuid_);
+    ImGuiHelper::OnDrawInputField("visualFromNodeGuid_", visualFromNodeGuid_);
+}
+
+
+void AnimationTree::AnimationNodePath::OnUpdateNodeAnimationBlend(const float timeScale)
+{
+    if (isBlending_)
+    {
+        transitionDuring_secs_ += Time::DeltaTime() * timeScale;
+        // 遷移時間 0 は即時切り替え。DeltaTime が 0 のフレーム（シーン遷移直後）に 0/0 の NaN を作らないよう割らずに済ませる
+        const float blendRate = transitionDuration_secs_ > 0.0f
+            ? std::clamp(transitionDuring_secs_ / transitionDuration_secs_, 0.0f, 1.0f)
+            : 1.0f;
+
+        fromNode_.lock()->OnUpdateBlendRate(1 - blendRate);
+        nextNode_.lock()->OnUpdateBlendRate(blendRate);
+    }
+    else
+    {
+        nextNode_.lock()->OnUpdateBlendRate(1.0f);
+    }
+}
+
+const Guid& AnimationTree::AnimationNodePath::GetGuid() const
+{
+    // NOTE: 遷移は GUID を持たないので空を返す。{} を返すと一時オブジェクトへの参照になる
+    static const Guid EMPTY_GUID{};
+    return EMPTY_GUID;
+}
+
+void AnimationTree::AnimationNodePath::SubscribeUpdateNodeAnimationCallback()
+{
+    const auto node = fromNode_.lock();
+    if (!node)
+        return;
+
+    // 新しい購読を張ってから古い方を解除する
+    fromNodeSubscription_.Set(node->OnUpdated().Subscribe(
+        [this](const IAnimationNode::UpdateCallbackContext context)
+        {
+            TryAddNextCurrentNodePath(context);
+        }));
+}
+
+#pragma region SerializationMacro
+NANAMI_REGISTER_TYPE(NanamiEngine::Module::AnimationTree::AnimationNodePath, NanamiEngine::Module::Object::IObject);
+#pragma endregion

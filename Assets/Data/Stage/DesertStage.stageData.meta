@@ -1,0 +1,84 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "NanamiEngine::Module::Asset::StageData",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 3,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    },
+                    "contentPath_": "Assets\\Data\\Stage/DesertStage.stageData",
+                    "guid_": {
+                        "cereal_class_version": 0,
+                        "value_": "17FD88B4-4757-4B84-9AD5-F1D4E03FBDA6"
+                    }
+                },
+                "displayName_": "砂漠地帯",
+                "sceneType_": 4,
+                "mapMarkerPosition_": {
+                    "value0": 960.0,
+                    "value1": 540.0
+                },
+                "isCleared_": false,
+                "thumbnailSprite_": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483650,
+                            "data": {
+                                "cereal_class_version": 0,
+                                "value0": {
+                                    "value_": "51AE15FB-F9E2-48B8-864D-CCF439A772D2"
+                                }
+                            }
+                        }
+                    }
+                },
+                "elementSprite_": {
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483651,
+                            "data": {
+                                "value0": {
+                                    "value_": "3DFC91C5-753C-4C26-8770-557604C09958"
+                                }
+                            }
+                        }
+                    }
+                },
+                "difficulty_": 2,
+                "tagText_": "中級 ・ 光属性",
+                "descriptionLines_": [
+                    "泉の涸れかけた砂の海と、",
+                    "砂に沈んだ城塞が待つ地。"
+                ],
+                "unlockConditions_": [
+                    {
+                        "polymorphic_id": 2147483650,
+                        "polymorphic_name": "GameCore::Condition::StoryFlagCondition",
+                        "ptr_wrapper": {
+                            "id": 2147483652,
+                            "data": {
+                                "cereal_class_version": 0,
+                                "value0": {
+                                    "cereal_class_version": 0
+                                },
+                                "storyFlag_": 3
+                            }
+                        }
+                    }
+                ],
+                "lockedDescriptionLines_": [
+                    "緑の心臓が島に戻れば、",
+                    "この地への航路が開ける。"
+                ]
+            }
+        }
+    }
+}

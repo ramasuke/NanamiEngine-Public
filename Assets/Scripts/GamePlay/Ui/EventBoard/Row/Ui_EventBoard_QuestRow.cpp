@@ -1,0 +1,109 @@
+﻿#include "Ui_EventBoard_QuestRow.h"
+
+#include "Engine/Module/GameObject/Transform/Transform.h"
+#include "../../../Sound/UiSoundBank.h"
+#include "Engine/Module/Serialization/Engine_Module_SerializationRegistration.h"
+
+namespace GamePlay::Ui
+{
+    std::shared_ptr<Asset::SpriteFile> QuestBoardStampSprites::For(const QuestBoardState state) const
+    {
+        switch (state)
+        {
+        case QuestBoardState::Taking:    return taking;
+        case QuestBoardState::Cleared:   return cleared;
+        case QuestBoardState::Preparing: return preparing;
+        case QuestBoardState::Locked:    return locked;
+        case QuestBoardState::Open:      return nullptr;
+        }
+        return nullptr;
+    }
+
+    void EventBoardQuestRow::EnsureComponents()
+    {
+        if (selectButton_ && ticketRenderer_)
+            return;
+
+        selectButton_   = RequireComponent<NanamiUi::Button>();
+        ticketRenderer_ = RequireComponent<Component::ImageRenderer>();
+        baseScale_      = Transform().GetLocalScale();
+    }
+
+    void EventBoardQuestRow::OnAwake()
+    {
+        EnsureComponents();
+
+        selectButton_->OnHover().Subscribe([this](auto)
+        {
+            Sound::UiSoundBank::Play(uiSounds_, hoverSound_, Sound::UiSe::Cursor);
+            isHovering_ = true;
+            RefreshAppearance();
+        }).AddTo(this);
+        selectButton_->OnHoverExit().Subscribe([this](auto)
+        {
+            isHovering_ = false;
+            RefreshAppearance();
+        }).AddTo(this);
+    }
+
+    void EventBoardQuestRow::Bind(const QuestBoardEntry& entry)
+    {
+        EnsureComponents();
+
+        titleText_ ->SetText(entry.titleText);
+        placeText_ ->SetText(entry.placeText);
+        rewardText_->SetText(entry.rewardText);
+        eventChip_->SetEnable(entry.isEventQuest);
+
+        const QuestBoardStampSprites stamps{ takingStampSprite_.get(), clearedStampSprite_.get(), preparingStampSprite_.get(), lockedStampSprite_.get() };
+        const auto stamp = stamps.For(entry.state);
+        stateStamp_->SetEnable(stamp != nullptr);
+        if (stamp)
+            stateStamp_->SetSprite(stamp);
+    }
+
+    void EventBoardQuestRow::SubscribeOnClickSelectButton(std::function<void()> onClick)
+    {
+        EnsureComponents();
+        selectButton_->OnClick().Subscribe([onClick](NanamiUi::MouseState)
+        {
+            onClick();
+        }).AddTo(this);
+    }
+
+    void EventBoardQuestRow::SetHighlighted(const bool isHighlighted)
+    {
+        isHighlighted_ = isHighlighted;
+        RefreshAppearance();
+    }
+
+    void EventBoardQuestRow::RefreshAppearance() const
+    {
+        ticketRenderer_->SetSprite(isHighlighted_ || isHovering_ ? selectedTicketSprite_.get() : unselectedTicketSprite_.get());
+        waxSeal_->SetEnable(isHighlighted_);
+        Transform().SetLocalScale(isHighlighted_ ? baseScale_ * selectedScale_ : baseScale_);
+    }
+
+    void EventBoardQuestRow::OnDrawGui()
+    {
+        ImGuiHelper::OnDrawInputField("titleText_", titleText_);
+        ImGuiHelper::OnDrawInputField("placeText_", placeText_);
+        ImGuiHelper::OnDrawInputField("rewardText_", rewardText_);
+        ImGuiHelper::OnDrawInputField("eventChip_", eventChip_);
+        ImGuiHelper::OnDrawInputField("stateStamp_", stateStamp_);
+        ImGuiHelper::OnDrawInputField("waxSeal_", waxSeal_);
+        ImGuiHelper::OnDrawInputField("takingStampSprite_", takingStampSprite_);
+        ImGuiHelper::OnDrawInputField("clearedStampSprite_", clearedStampSprite_);
+        ImGuiHelper::OnDrawInputField("preparingStampSprite_", preparingStampSprite_);
+        ImGuiHelper::OnDrawInputField("lockedStampSprite_", lockedStampSprite_);
+        ImGuiHelper::OnDrawInputField("selectedTicketSprite_", selectedTicketSprite_);
+        ImGuiHelper::OnDrawInputField("unselectedTicketSprite_", unselectedTicketSprite_);
+        ImGuiHelper::OnDrawInputField("hoverSound_", hoverSound_);
+        ImGuiHelper::OnDrawInputField("selectedScale_", selectedScale_);
+        ImGuiHelper::OnDrawInputField("uiSounds_", uiSounds_);
+    }
+}
+
+#pragma region SerializationMacro
+ENGINE_REGISTER_COMPONENT(GamePlay::Ui::EventBoardQuestRow);
+#pragma endregion

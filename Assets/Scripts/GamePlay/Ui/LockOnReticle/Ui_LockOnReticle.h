@@ -1,0 +1,148 @@
+﻿#pragma once
+#include "Engine/Core/Object/Field/Field.h"
+#include "Engine/Module/Asset/Sprite/SpriteFile.h"
+#include "Engine/Module/Component/ComponentBase.h"
+#include "Libs/LibCore/Tween/Player/TweenPlayer.h"
+#include "../../Sound/UiSoundBank.h"
+
+namespace GameCore::PlayerAvatar
+{
+    class PlayerAvatarCameraGroupBase;
+}
+
+namespace GamePlay::Ui
+{
+    // ロック中の対象に照準を、未ロック時は次に狙う候補にマーカーを重ねる
+    // NOTE: 親の CameraGroup の状態を毎フレーム参照する
+    class LockOnReticle final : public Component::ComponentBase,
+                                public LifeCycleCallback::IInitRenderable,
+                                public LifeCycleCallback::IUserInterfaceRenderable,
+                                public LifeCycleCallback::IUpdatable
+    {
+    private:
+        enum class Phase
+        {
+            Hidden,
+            Engaging,  // ロック確定の瞬間: 大きい所から縮んでスナップ
+            Locked,
+            Releasing, // 解除: 広がりながらフェードアウト
+        };
+
+        void InitRenderer() override;
+        void OnUpdate() override;
+        void OnUserInterfaceRender() override;
+        [[nodiscard]] int GetRenderOrder() const override { return renderOrder_; }
+
+        [[nodiscard]] std::shared_ptr<GameCore::PlayerAvatar::PlayerAvatarCameraGroupBase> CatchCameraGroup();
+        // カメラから遠いほど小さく、近いほど大きくする倍率
+        [[nodiscard]] float DistanceScaleRate(const glm::vec3& worldPos) const;
+        void DrawSprite(
+            const std::shared_ptr<Asset::SpriteFile>& sprite,
+            const glm::vec3& worldPos,
+            float scale,
+            float angle,
+            float alpha) const;
+        void PlayEngage();
+        void PlayRelease();
+
+        std::weak_ptr<GameCore::PlayerAvatar::PlayerAvatarCameraGroupBase> cameraGroup_;
+
+        Phase     phase_           = Phase::Hidden;
+        float     elapsed_secs_    = 0.0f;
+        float     ringAngle_       = 0.0f;
+        bool      wasEngaged_      = false;
+        std::weak_ptr<GameObject::IGameObject> lockedTarget_;
+        glm::vec3 lockOnPointWorld_ = {};
+        // 確定・解除演出。3本とも同じ長さで、終わりは scaleRateTween_ で判定する
+        LibCore::Tween::TweenPlayer<float> scaleRateTween_;
+        LibCore::Tween::TweenPlayer<float> alphaTween_;
+        LibCore::Tween::TweenPlayer<float> bracketAngleTween_;
+
+        LibCore::Tween::TweenPlayer<float> candidateFade_;
+        std::weak_ptr<GameObject::IGameObject> candidateTarget_;
+        glm::vec3 candidatePointWorld_ = {};
+
+        [[serialize(0)]] int   renderOrder_           = 0;
+        [[serialize(0)]] FIELD(Asset::SpriteFile) ringSprite_;
+        [[serialize(0)]] FIELD(Asset::SpriteFile) bracketSprite_;
+        [[serialize(0)]] FIELD(Asset::SpriteFile) candidateSprite_;
+        [[serialize(0)]] float reticleScale_          = 0.6f;
+        [[serialize(0)]] float candidateScale_        = 0.7f;
+        [[serialize(0)]] float candidateAlpha_        = 0.6f;
+        [[serialize(0)]] float ringRotateSpeed_       = 0.25f;
+        [[serialize(0)]] float lockedBreathScale_     = 0.005f;
+        [[serialize(0)]] float engageDuration_secs_   = 0.12f;
+        [[serialize(0)]] float engageStartScaleRate_  = 2.0f;
+        [[serialize(0)]] float releaseDuration_secs_  = 0.22f;
+        [[serialize(0)]] float releaseEndScaleRate_   = 1.5f;
+        // reticleScale_ / candidateScale_ はこの距離での大きさ
+        [[serialize(1)]] float referenceDistance_     = 60.0f;
+        [[serialize(1)]] float minDistanceScale_      = 0.15f;
+        [[serialize(1)]] float maxDistanceScale_      = 1.6f;
+        [[serialize(2)]] FIELD(Asset::UiSoundBankData) uiSounds_;
+        [[serialize(3)]] float candidateFade_secs_         = 0.15f;
+        [[serialize(3)]] float candidatePulsePeriod_secs_  = 1.4f;
+        [[serialize(3)]] float lockedBreathPeriod_secs_    = 1.6f;
+        /** 確定演出でブラケットが回りながらスナップしてくる角度 */
+        [[serialize(3)]] float engageBracketAngle_rad_     = 3.14159265f * 0.25f;
+
+#pragma region Serialization Function
+    public:
+        void OnDrawGui() override;
+
+        template<class Archive>
+        void save(Archive& archive, const std::uint32_t version) const {
+            archive(cereal::base_class<ComponentBase>(this));
+            archive(CEREAL_NVP(renderOrder_));
+            archive(CEREAL_NVP(ringSprite_));
+            archive(CEREAL_NVP(bracketSprite_));
+            archive(CEREAL_NVP(candidateSprite_));
+            archive(CEREAL_NVP(reticleScale_));
+            archive(CEREAL_NVP(candidateScale_));
+            archive(CEREAL_NVP(candidateAlpha_));
+            archive(CEREAL_NVP(ringRotateSpeed_));
+            archive(CEREAL_NVP(lockedBreathScale_));
+            archive(CEREAL_NVP(engageDuration_secs_));
+            archive(CEREAL_NVP(engageStartScaleRate_));
+            archive(CEREAL_NVP(releaseDuration_secs_));
+            archive(CEREAL_NVP(releaseEndScaleRate_));
+            archive(CEREAL_NVP(referenceDistance_));
+            archive(CEREAL_NVP(minDistanceScale_));
+            archive(CEREAL_NVP(maxDistanceScale_));
+            archive(CEREAL_NVP(uiSounds_));
+            archive(CEREAL_NVP(candidateFade_secs_));
+            archive(CEREAL_NVP(candidatePulsePeriod_secs_));
+            archive(CEREAL_NVP(lockedBreathPeriod_secs_));
+            archive(CEREAL_NVP(engageBracketAngle_rad_));
+        }
+
+        template<class Archive>
+        void load(Archive& archive, const std::uint32_t version) {
+            archive(cereal::base_class<ComponentBase>(this));
+            if (version >= 0) archive(CEREAL_NVP(renderOrder_));
+            if (version >= 0) archive(CEREAL_NVP(ringSprite_));
+            if (version >= 0) archive(CEREAL_NVP(bracketSprite_));
+            if (version >= 0) archive(CEREAL_NVP(candidateSprite_));
+            if (version >= 0) archive(CEREAL_NVP(reticleScale_));
+            if (version >= 0) archive(CEREAL_NVP(candidateScale_));
+            if (version >= 0) archive(CEREAL_NVP(candidateAlpha_));
+            if (version >= 0) archive(CEREAL_NVP(ringRotateSpeed_));
+            if (version >= 0) archive(CEREAL_NVP(lockedBreathScale_));
+            if (version >= 0) archive(CEREAL_NVP(engageDuration_secs_));
+            if (version >= 0) archive(CEREAL_NVP(engageStartScaleRate_));
+            if (version >= 0) archive(CEREAL_NVP(releaseDuration_secs_));
+            if (version >= 0) archive(CEREAL_NVP(releaseEndScaleRate_));
+            if (version >= 1) archive(CEREAL_NVP(referenceDistance_));
+            if (version >= 1) archive(CEREAL_NVP(minDistanceScale_));
+            if (version >= 1) archive(CEREAL_NVP(maxDistanceScale_));
+            if (version >= 2) archive(CEREAL_NVP(uiSounds_));
+            if (version >= 3) archive(CEREAL_NVP(candidateFade_secs_));
+            if (version >= 3) archive(CEREAL_NVP(candidatePulsePeriod_secs_));
+            if (version >= 3) archive(CEREAL_NVP(lockedBreathPeriod_secs_));
+            if (version >= 3) archive(CEREAL_NVP(engageBracketAngle_rad_));
+        }
+#pragma endregion
+    };
+}
+
+CEREAL_CLASS_VERSION(GamePlay::Ui::LockOnReticle, 3);

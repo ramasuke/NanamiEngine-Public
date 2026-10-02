@@ -1,0 +1,72 @@
+﻿#include "Engine_Physics_BoxCollider.h"
+
+#include "../../../../3DRender/Shapes/Shapes.h"
+#include "../../../../GameObject/Transform/Transform.h"
+#include "../../../JoltUtility/Engine_Physics_JoltUtility.h"
+#include "../../../../Serialization/Engine_Module_SerializationRegistration.h"
+
+void Component::BoxCollider::OnDrawGui()
+{
+    ImGui::Checkbox("isTrigger_", &isSensor_);
+    glm::vec3 size = size_;
+    if(ImGui::DragFloat3(("size##" + GetGuid().Value()).c_str(), &size.x, 0.01f))
+    {
+        size_ = size;
+    }
+    glm::vec3 offset = offset_;
+    if(ImGui::DragFloat3(("offset##" + GetGuid().Value()).c_str(), &offset.x, 0.01f))
+    {
+        offset_ = offset;
+    }
+    glm::vec3 offsetRot = offsetRotation_;
+    if(ImGui::DragFloat3(("offsetRotation##" + GetGuid().Value()).c_str(), &offsetRot.x, 0.1f))
+    {
+        offsetRotation_ = offsetRot;
+    }
+
+    int layerIndex = Physics::ToIndex(layer_);
+    if (ImGui::Combo("Layer", &layerIndex, Physics::PhysicsLayers::Names(), Physics::PhysicsLayers::Count()))
+        SetLayer(Physics::PhysicsLayers::ToLayer(layerIndex));
+    OnDebugDraw();
+}
+
+void Component::BoxCollider::OnDebugDraw() const
+{
+    const glm::vec3 worldPos  = Transform().GetWorldPos() + Transform().GetWorldRot() * offset_ * Transform().GetWorldScale();
+    const glm::quat offsetRot = glm::quat(glm::radians(offsetRotation_));
+    const glm::quat worldRot  = Transform().GetWorldRot() * offsetRot;
+    const glm::vec3 halfSize  = size_ * Transform().GetWorldScale() * 0.5f;
+
+    // OnDebugDrawDxCube
+    std::array localVertices = {
+        glm::vec3{-halfSize.x, -halfSize.y, -halfSize.z},
+        glm::vec3{ halfSize.x, -halfSize.y, -halfSize.z},
+        glm::vec3{ halfSize.x,  halfSize.y, -halfSize.z},
+        glm::vec3{-halfSize.x,  halfSize.y, -halfSize.z},
+        glm::vec3{-halfSize.x, -halfSize.y,  halfSize.z},
+        glm::vec3{ halfSize.x, -halfSize.y,  halfSize.z},
+        glm::vec3{ halfSize.x,  halfSize.y,  halfSize.z},
+        glm::vec3{-halfSize.x,  halfSize.y,  halfSize.z}
+    };
+
+    // 回転, 平行移動を適用
+    for (auto& v : localVertices)
+    {
+        v = worldPos + worldRot * v;
+    }
+
+    Render3D::Shapes::DrawCube3DFromVertices(localVertices, DebugDrawColor(GetColor(0,200,0)));
+}
+
+JPH::RefConst<JPH::Shape> Component::BoxCollider::CreateColliderShape() const
+{
+    const auto transformScale = Transform().GetWorldScale();
+    const auto colliderScale = size_ * transformScale * 0.5f;
+    const auto colliderShapeScale = JPH::Vec3(colliderScale.x, colliderScale.y, colliderScale.z);
+    
+    return Physics::CreateBoxShape(colliderShapeScale);
+}
+
+#pragma region SerializationMacro
+ENGINE_REGISTER_COMPONENT(NanamiEngine::Module::Component::BoxCollider);
+#pragma endregion

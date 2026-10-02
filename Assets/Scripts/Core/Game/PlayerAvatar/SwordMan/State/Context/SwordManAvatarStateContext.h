@@ -1,0 +1,85 @@
+﻿#pragma once
+#include <memory>
+
+#include "../../../IPlayerAvatar.h"
+#include "Engine/Module/Namespace/EngineNamespace.h"
+#include "Engine/Module/GameObject/Interface/IGameObject.h"
+#include "../../../AttackArea/PlayerAvatarAttackArea.h"
+#include "../../../State/Context/IPlayerAvatarStateContext.h"
+#include "../../CameraGroup/SwordManAvatarCameraGroup.h"
+#include "../../../../../../GamePlay/PlayerAvatar/LockOnDetectionArea/LockOnDetectionArea.h"
+
+namespace NanamiEngine::Module::Asset
+{
+    class SwordManAvatarResource;
+}
+
+namespace NanamiEngine::Module::Asset
+{
+    class SoundFile;
+}
+
+namespace NanamiEngine::Module::Component
+{
+    class ParticleSystem;
+}
+
+namespace GameCore::PlayerAvatar::SwordMan
+{
+    class SwordManAvatarInputAction;
+    class SwordManAvatarStatus;
+
+    class SwordManAvatarStateContext final : public IPlayerAvatarStateContext
+    {
+    public:
+        explicit SwordManAvatarStateContext(const std::shared_ptr<SwordManAvatarStatus     >& status      ,
+                                            const std::shared_ptr<SwordManAvatarInputAction>& inputAction ,
+                                            const std::weak_ptr<GameObject::IGameObject  >& playerAvatar,
+                                            const std::weak_ptr<SwordManAvatarCameraGroup>& cameraGroup ,
+                                            const std::weak_ptr<PlayerAttackArea>& normalAttackArea,
+                                            const std::weak_ptr<PlayerAttackArea>& dashAttackArea,
+                                            const std::weak_ptr<GamePlay::PlayerAvatar::LockOnDetectionArea>& lockOnDetectionArea,
+                                            const std::weak_ptr<Component::ParticleSystem>& successAvoidRollingParticle,
+                                            const std::weak_ptr<Asset::SwordManAvatarResource>& resources);
+        
+        [[nodiscard]] SwordManAvatarStatus     & Status () const { return *status_;             }
+        [[nodiscard]] SwordManAvatarInputAction& Input  () const { return *inputAction_;        }
+        [[nodiscard]] SwordManAvatarCameraGroup& Camera () const { return *cameraGroup_.lock(); }
+        [[nodiscard]] bool ExpiredCamera                () const { return cameraGroup_.expired(); }
+
+        [[nodiscard]] std::shared_ptr<GameObject::IGameObject> PlayerAvatarObject     () const override { return playerAvatarObject_.lock();                     }
+        [[nodiscard]] GameObject::Transform                &   PlayerAvatarTransform  () const override { return playerAvatarObject_.lock()->Transform();     }
+        [[nodiscard]] PlayerAvatarCameraGroupBase          &   CameraGroup            () const override { return *cameraGroup_      .lock();                     }
+        [[nodiscard]] GamePlay::Ui::NpcChatting            &   NpcChattingUi          () const override { return playerAvatar_      .lock()->NpcChattingUi();    }
+        [[nodiscard]] Component::RigidBody                 &   PlayerAvatarRigidBody  () const override { return playerAvatar_      .lock()->RigidBody();        }
+        [[nodiscard]] GamePlay::PlayerAvatar::InteractableArea&   InteractableArea          () const override { return playerAvatar_      .lock()->InteractableArea();    }
+        [[nodiscard]] GamePlay::PlayerAvatar::WakeUpArea   &   WakeUpArea             () const override { return playerAvatar_      .lock()->WakeUpArea();       }
+        [[nodiscard]] const glm::vec3&                         PlayerAvatarFeatStepPos() const override { return playerAvatar_      .lock()->FeatStepPosition(); }
+        [[nodiscard]] float                                    GroundCheckRadius      () const override;
+        [[nodiscard]] float                                    GroundCheckUpOffset    () const override;
+        [[nodiscard]] float                                    GroundCheckDistance    () const override;
+        [[nodiscard]] float                                    MaxWalkableSlope_deg   () const override;
+        [[nodiscard]] float                                    SlopeCheckRadius       () const override;
+        [[nodiscard]] float                                    SlopeCheckUpOffset     () const override;
+        [[nodiscard]] float                                    SlopeCheckDistance     () const override;
+        [[nodiscard]] PlayerAttackArea& NormalAttackArea   () const { return *normalAttackArea_   .lock(); }
+        [[nodiscard]] PlayerAttackArea& DashAttackArea     () const { return *dashAttackArea_     .lock(); }
+        [[nodiscard]] bool ExpiredLockOnDetectionArea() const { return lockOnDetectionArea_.expired(); }
+        [[nodiscard]] GamePlay::PlayerAvatar::LockOnDetectionArea& LockOnDetectionArea() const { return *lockOnDetectionArea_.lock(); }
+        [[nodiscard]] Component::ParticleSystem& SuccessAvoidRollingParticle() const { return *successAvoidRollingParticle_.lock(); }
+        [[nodiscard]] const Asset::SwordManAvatarResource   & Resources          () const { return *resources_  .lock(); }
+
+
+    private:
+        const std::shared_ptr<SwordManAvatarStatus     > status_;
+        const std::weak_ptr  <GameObject::IGameObject  > playerAvatarObject_;
+        const std::weak_ptr  <IPlayerAvatar            > playerAvatar_;
+        const std::shared_ptr<SwordManAvatarInputAction> inputAction_;
+        const std::weak_ptr  <SwordManAvatarCameraGroup> cameraGroup_;
+        const std::weak_ptr  <PlayerAttackArea> normalAttackArea_;
+        const std::weak_ptr  <PlayerAttackArea> dashAttackArea_;
+        const std::weak_ptr  <GamePlay::PlayerAvatar::LockOnDetectionArea> lockOnDetectionArea_;
+        const std::weak_ptr  <Component::ParticleSystem> successAvoidRollingParticle_;
+        const std::weak_ptr<Asset::SwordManAvatarResource> resources_;
+    };
+}

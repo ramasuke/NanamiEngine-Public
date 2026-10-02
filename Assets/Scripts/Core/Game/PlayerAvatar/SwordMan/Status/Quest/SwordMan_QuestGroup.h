@@ -1,0 +1,81 @@
+﻿#pragma once
+#include <memory>
+#include <vector>
+#include <cstdint>
+
+#include "SwordMan_ITakeableSwordManQuest.h"
+#include "../ControlGuideFocus/SwordMan_IControlGuideFocusRequest.h"
+#include "../../../Quest/PlayerAvatar_IQuestGroup.h"
+#include "../../../Quest/PlayerAvatar_QuestList.h"
+#include "../../../Quest/Completed/PlayerAvatar_IComplteQuestGroup.h"
+#include "../../../Wallet/PlayerAvatar_Wallet.h"
+#include "cereal/cereal.hpp"
+
+namespace GameCore::PlayerAvatar::SwordMan
+{
+    class QuestGroup final : public IQuestGroup,
+                             public Quest::ICompleteQuestGroup
+    {
+    public:
+        explicit QuestGroup(
+            const std::vector<std::shared_ptr<Npc::Friendly::Behaviour::Action::ITakeableSwordManQuest>>& quests = {});
+        ~QuestGroup() override;
+
+        void Init(const std::shared_ptr<IObservableStatusEvent>& event,
+                  const std::shared_ptr<IControlGuideFocusRequest>& guideFocus,
+                  const std::shared_ptr<Wallet>& wallet);
+        bool Subscribe(const std::shared_ptr<Quest::ITakeableQuest>& addQuest) override;
+        /** @return 同じ QuestType を受注中なら受けずに false */
+        bool Subscribe(const std::shared_ptr<Npc::Friendly::Behaviour::Action::ITakeableSwordManQuest>& addQuest);
+        void OnDrawGui();
+        [[nodiscard]] std::unique_ptr<QuestGroup> DeepCoy() const;
+        [[nodiscard]] bool IsTaking(const QuestType& quest) const override;
+        [[nodiscard]] std::vector<std::shared_ptr<Quest::ITakeableQuest>> ReleaseLegacyQuests() override;
+        
+    private:
+        void CompleteQuest(const QuestType& completeQuest) override;
+        [[nodiscard]] bool CheckCompleted(const QuestType& quest) const override;
+        
+        [[serialize(0)]] std::vector<std::shared_ptr<Npc::Friendly::Behaviour::Action::ITakeableSwordManQuest>> quests_;
+        // version 1 のセーブだけが持つ、職業を問わないクエスト。今は QuestJournal にあるので引き渡すまで預かる
+        Quest::QuestList legacyStoryQuests_;
+        std::shared_ptr<IObservableStatusEvent> event_;
+        std::shared_ptr<IControlGuideFocusRequest> guideFocus_;
+        std::shared_ptr<Wallet> wallet_;
+        
+#pragma region Serialization Function
+    public:
+        template<class Archive>
+        void save(Archive& archive, const std::uint32_t version) const
+        {
+            std::size_t count = quests_.size();
+            archive(CEREAL_NVP(count));
+
+            for (const auto& quest : quests_)
+            {
+                archive(quest);  
+            }
+        }
+
+        template<class Archive>
+        void load(Archive& archive, const std::uint32_t version)
+        {
+            std::size_t count = 0;
+            archive(CEREAL_NVP(count));
+
+            quests_.clear();
+            quests_.reserve(count);
+
+            for (std::size_t i = 0; i < count; ++i)
+            {
+                std::shared_ptr<Npc::Friendly::Behaviour::Action::ITakeableSwordManQuest> quest;
+                archive(quest);
+                quests_.emplace_back(std::move(quest));
+            }
+            if (version == 1) archive(cereal::make_nvp("storyQuests_", legacyStoryQuests_));
+        }
+#pragma endregion
+    };
+}
+
+CEREAL_CLASS_VERSION(GameCore::PlayerAvatar::SwordMan::QuestGroup, 2)

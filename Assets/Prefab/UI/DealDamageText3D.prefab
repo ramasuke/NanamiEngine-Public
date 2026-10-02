@@ -1,0 +1,147 @@
+{
+    "isActive_": false,
+    "name_": "DealDamageText3D",
+    "guid_": {
+        "cereal_class_version": 0,
+        "value_": "CC254666-7E84-4A19-B1B9-D1150AB8C6BF"
+    },
+    "components_": {
+        "cereal_class_version": 0,
+        "componentCount": 2,
+        "component_0": {
+            "polymorphic_id": 2147483649,
+            "polymorphic_name": "NanamiEngine::Module::NanamiUi::TextRenderer",
+            "ptr_wrapper": {
+                "id": 2147483649,
+                "data": {
+                    "cereal_class_version": 4,
+                    "value0": {
+                        "cereal_class_version": 0,
+                        "guid_": {
+                            "value_": "F992C016-213E-4498-96E5-47EF4F08A25E"
+                        },
+                        "isEnable_": true
+                    },
+                    "value1": {
+                        "cereal_class_version": 0
+                    },
+                    "fontFile_": {
+                        "cereal_class_version": 0,
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483650,
+                                "data": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "value_": "956ED4F0-FCBF-4709-B98E-64F17B0DD2AF"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "renderOrder_": 0,
+                    "text_": "3333",
+                    "textColor_": {
+                        "cereal_class_version": 0,
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    },
+                    "isWorldPos_": true,
+                    "textAlign_": 0
+                }
+            }
+        },
+        "component_1": {
+            "polymorphic_id": 2147483650,
+            "polymorphic_name": "GamePlay::Ui::DealDamageTextBillBoard",
+            "ptr_wrapper": {
+                "id": 2147483651,
+                "data": {
+                    "cereal_class_version": 4,
+                    "value0": {
+                        "guid_": {
+                            "value_": "AEBD5F0A-53E7-4783-8D7D-A91548D712F7"
+                        },
+                        "isEnable_": true
+                    },
+                    "riseTime_": 0.6000000238418579,
+                    "fallTime_": 0.15399999916553498,
+                    "riseAmount_": 20.0,
+                    "fallAmount_": 10.0,
+                    "minScaleDamage_": 10,
+                    "maxScaleDamage_": 100,
+                    "minScale_": 2.5,
+                    "maxScale_": 4.800000190734863,
+                    "heavyDamage_": 30,
+                    "heavyColor_": {
+                        "r_": 255,
+                        "g_": 140,
+                        "b_": 0
+                    },
+                    "popScaleRate_": 1.600000023841858,
+                    "popTime_secs_": 0.15000000596046449,
+                    "lowColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    },
+                    "maxColor_": {
+                        "r_": 255,
+                        "g_": 40,
+                        "b_": 20
+                    }
+                }
+            }
+        }
+    },
+    "transform_": {
+        "cereal_class_version": 0,
+        "localPos_": {
+            "value0": 0.0,
+            "value1": 0.0,
+            "value2": 0.0
+        },
+        "localRot_": {
+            "value0": 0.0,
+            "value1": 0.0,
+            "value2": 0.0,
+            "value3": 0.0
+        },
+        "localScale_": {
+            "value0": 3.0,
+            "value1": 3.0,
+            "value2": 3.0
+        },
+        "worldMatrix_": {
+            "value0": {
+                "value0": 3.0,
+                "value1": 0.0,
+                "value2": 0.0,
+                "value3": 0.0
+            },
+            "value1": {
+                "value0": 0.0,
+                "value1": 3.0,
+                "value2": 0.0,
+                "value3": 0.0
+            },
+            "value2": {
+                "value0": 0.0,
+                "value1": 0.0,
+                "value2": 3.0,
+                "value3": 0.0
+            },
+            "value3": {
+                "value0": 0.0,
+                "value1": 0.0,
+                "value2": 0.0,
+                "value3": 1.0
+            }
+        },
+        "childCount": 0
+    },
+    "mark_": 0,
+    "value0": 0
+}

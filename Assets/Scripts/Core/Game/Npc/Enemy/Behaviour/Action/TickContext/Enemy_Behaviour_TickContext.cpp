@@ -1,0 +1,101 @@
+﻿#include "Enemy_Behaviour_TickContext.h"
+
+#include "Engine/Module/Component/Animator/Animator.h"
+#include "Engine/Module/Physics/Component/RigidBody/Engine_Physics_RigidBody.h"
+#include "../../../../../Game.h"
+#include "../../../../../../../GamePlay/Ui/NpcChatting/Ui_NpcChatting.h"
+#include "../../../../../PlayerAvatar/IPlayerAvatar.h"
+#include "../../../../../PlayerAvatar/PlayerAvatar.h"
+#include "../../../../../PlayerAvatar/Quest/Completed/PlayerAvatar_IComplteQuestGroup.h"
+#include "../../../../../PlayerAvatar/Status/IPlayerAvatarStatus.h"
+#include "../../../../../Scene/Main/Group/Main_GameSceneGroup.h"
+#include "../../../../../Scene/Sub/Content/ChattingUI/ChattingUIScene.h"
+#include "../../../../../Scene/Sub/Group/Sub_GameSceneGroup.h"
+#include "../../../../../Scene/Sub/Type/SubSceneType.h"
+#include "../../../Status/EnemyStatus.h"
+
+namespace GameCore::Npc::Enemy::Behaviour::Action
+{
+    TickContext::TickContext(
+        const std::weak_ptr<GameObject::IGameObject>& enemyGameObject,
+        SyncParam<class EnemyStatus>& enemyStatus,
+        const std::unique_ptr<BlackBoard::ParameterGroup>& parameters,
+        const std::shared_ptr<std::queue<std::unique_ptr<IDamage>>>& onDamagedStack,
+        IShowHealthGaugeProvider* const showHealthGaugeProvider,
+        const Core::Network::NetworkObjectId networkObjectId,
+        const bool isNetworkAuthority,
+        std::optional<Damage::FlinchPower>& pendingFlinchPower,
+        const std::uint64_t tickIndex)
+            : enemyGameObject_  (enemyGameObject)
+            , enemyAnimator_    (enemyGameObject.lock()->Components().Catch<Component::Animator>())
+            , enemyRigidBody_   (enemyGameObject.lock()->Components().Catch<Component::RigidBody>())
+            , enemyStatus_      (enemyStatus       )
+            , parameters_       (parameters        )
+            , onDamagedStack_   (onDamagedStack    )
+            , showHealthGaugeProvider_(showHealthGaugeProvider)
+            , networkObjectId_  (networkObjectId   )
+            , isNetworkAuthority_(isNetworkAuthority)
+            , pendingFlinchPower_(pendingFlinchPower)
+            , tickIndex_        (tickIndex         )
+    {
+        
+    }
+
+    TickContext::~TickContext() = default;
+
+    GameObject::Transform& TickContext::EnemyTransform() const
+    {
+        return enemyGameObject_ .lock()->Transform();
+    }
+
+    std::shared_ptr<IPlayerAvatar> TickContext::Player() const
+    {
+        return PlayerAvatar::Owner();
+    }
+
+    const std::vector<std::weak_ptr<IPlayerAvatar>>& TickContext::AllPlayer()
+    {
+        return IPlayerAvatar::PlayerAvatars();
+    }
+
+    bool TickContext::NearestPlayerPosition(const glm::vec3& from, glm::vec3& out) const
+    {
+        bool  found     = false;
+        float nearestSq = 0.0f;
+        for (const auto& weakPlayer : AllPlayer())
+        {
+            const auto player = weakPlayer.lock();
+            if (!player)
+                continue;
+
+            const glm::vec3 pos = player->PlayerTransform().GetWorldPos();
+            const float dx = pos.x - from.x;
+            const float dz = pos.z - from.z;
+            const float distSq = dx * dx + dz * dz;
+            if (found && distSq >= nearestSq)
+                continue;
+
+            found     = true;
+            nearestSq = distSq;
+            out       = pos;
+        }
+        return found;
+    }
+
+    const PlayerAvatar::IQuestGroup& TickContext::PlayerQuest() const
+    {
+        return Player()->PlayerStatus().Quest();
+    }
+
+    const PlayerAvatar::Quest::ICompleteQuestGroup& TickContext::PlayerCompleteQuest() const
+    {
+        return Player()->PlayerStatus().CompletedQuest();
+    }
+
+    const GamePlay::Ui::NpcChatting& TickContext::ChatUi() const
+    {
+        const auto& subScenes = Game::Instance().SubScenes();
+        const auto& chattingUIScene = subScenes.Catch<Scene::Sub::ChattingUIScene>(Scene::Sub::SceneType::ChattingUI);
+        return chattingUIScene->Context().Npc();
+    }
+}

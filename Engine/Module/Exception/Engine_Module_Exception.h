@@ -1,0 +1,86 @@
+﻿#pragma once
+#include "Engine/Core/Api/NanamiApi.h"
+#include <stdexcept>
+#include <string>
+#include <utility>
+
+// エンジン共通の例外階層。すべて NanamiException (std::runtime_error 派生) の子
+namespace NanamiEngine::Module::Exception
+{
+    /** エンジンが投げる全例外の基底 */
+    class NANAMI_API NanamiException : public std::runtime_error
+    {
+    public:
+        explicit NanamiException(const std::string& message)
+            : std::runtime_error(message)
+        {
+        }
+    };
+    
+    class NANAMI_API SerializationException : public NanamiException
+    {
+    public:
+        SerializationException(std::string filePath, const std::string& message)
+            : NanamiException(message + " [" + filePath + "]")
+            , filePath_(std::move(filePath))
+        {
+        }
+
+        [[nodiscard]] const std::string& FilePath() const noexcept { return filePath_; }
+
+    private:
+        std::string filePath_;
+    };
+
+    /** ファイルを開けなかった */
+    class NANAMI_API FileNotFoundException final : public SerializationException
+    {
+    public:
+        explicit FileNotFoundException(const std::string& filePath)
+            : SerializationException(filePath, "File not found")
+        {
+        }
+    };
+
+    /** ファイルは開けたが cereal が読み込みに失敗した */
+    class NANAMI_API DeserializeException final : public SerializationException
+    {
+    public:
+        DeserializeException(const std::string& filePath, std::string innerMessage)
+            : SerializationException(filePath, "Deserialize failed: " + innerMessage)
+            , innerMessage_(std::move(innerMessage))
+        {
+        }
+
+        [[nodiscard]] const std::string& InnerMessage() const noexcept { return innerMessage_; }
+
+    private:
+        std::string innerMessage_;
+    };
+
+    /** 書き込みに失敗した（出力ファイルを開けない・rename 失敗・cereal 失敗） */
+    class NANAMI_API SerializeException final : public SerializationException
+    {
+    public:
+        SerializeException(const std::string& filePath, std::string innerMessage)
+            : SerializationException(filePath, "Serialize failed: " + innerMessage)
+            , innerMessage_(std::move(innerMessage))
+        {
+        }
+
+        [[nodiscard]] const std::string& InnerMessage() const noexcept { return innerMessage_; }
+
+    private:
+        std::string innerMessage_;
+    };
+
+    /** ネットワークパケットのデシリアライズ失敗 */
+    class NANAMI_API PacketDeserializeException final : public NanamiException
+    {
+    public:
+        explicit PacketDeserializeException(const std::string& message)
+            : NanamiException("Packet deserialize failed: " + message)
+        {
+        }
+    };
+}

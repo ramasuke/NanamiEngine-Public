@@ -1,0 +1,87 @@
+﻿#include "FirstTouchDownMainIsLandScene.h"
+
+#include "Engine/Core/Coroutine/Coroutine.h"
+#include "Engine/Core/Coroutine/Awaitable/WaitForTween/Coroutine_WaitForTween.h"
+#include "Libs/LibCore/Tween/Ease/Ease.h"
+#include "Packages/Cinemachine/VirtualCamera/Behaviour/Follow/VirtualCameraFollowBehaviour.h"
+#include "../../../../../../GamePlay/Sound/SoundPlayer.h"
+#include "../../../../../../../Data/PlayerAvatar/Factory/PlayerAvatarFactory.h"
+#include "../../../../PlayerAvatar/PlayerAvatar.h"
+#include "../../../../PlayerAvatar/Status/NullPlayerAvatarStatus.h"
+#include "../../../../Story/Story_StoryProgress.h"
+#include "../../../Sub/Group/Sub_IGameSceneGroup.h"
+#include "../../../Sub/Type/SubSceneType.h"
+#include "AboardAirShipMovie/AboardAirShipMovie.h"
+
+namespace GameCore::Scene::Main
+{
+    FirstTouchDownMainIsLandScene::FirstTouchDownMainIsLandScene(
+        const std::weak_ptr<FirstTouchDownMainIsLandSceneContext>& context,
+        const GameSceneBaseContext baseContext)
+        : GameMainSceneBase(context, baseContext)
+    {
+        
+    }
+
+    FirstTouchDownMainIsLandScene::~FirstTouchDownMainIsLandScene() = default;
+
+    std::vector<Sub::SceneType> FirstTouchDownMainIsLandScene::SubScenes() const
+    {
+        return { Sub::SceneType::ChattingUI };
+    }
+
+    Coroutine::Task<EnterResult> FirstTouchDownMainIsLandScene::OnEnterAsync(NanamiEngine::R4::CancellationToken)
+    {
+        // Context の FIELD(飛行船・カメラ・タイトルロゴ)は読み込んだシーン内を指す
+        Context()->Init();
+
+        auto& context = *Context();
+        
+        GamePlay::Sound::SoundPlayer::PlayBgm(context.BGM());
+        
+        /** Player生成処理 */
+        playerAvatar_ = context.PlayerAvatarFactory().LoadInitedPlayerAvatar(
+            PlayerAvatar::PlayerAvatarType::SwordMan,
+            context.PlayerSpawnPoint(),
+            context.AirShip()->Entity().lock(),
+            true,
+            std::make_shared<PlayerAvatar::NullPlayerAvatarStatus>());
+        
+        // 船を降りるまでのMovie開始
+        aboardAirShipMovie_ = std::make_shared<FirstTouchDownMainIsLand::AboardAirShipMovie>(playerAvatar_, Context());
+        Coroutine::StartCoroutine(FirstTouchDownMainIsLand::AboardAirShipMovie::PlayAsync(aboardAirShipMovie_));
+        co_return EnterResult::Ok();
+    }
+
+    void FirstTouchDownMainIsLandScene::Enter()
+    {
+
+    }
+
+    void FirstTouchDownMainIsLandScene::DoExit()
+    {
+        // ムービーのコルーチンは止められないので、次の区切りで抜けさせる
+        if (aboardAirShipMovie_)
+            aboardAirShipMovie_->Cancel();
+        aboardAirShipMovie_.reset();
+
+        // 読み込みの途中で抜けたときはアバターが居ない。そのときは進行も保存しない
+        if (const auto avatar = playerAvatar_.lock())
+        {
+            PlayerAvatar::SelectedPlayerAvatarType::Save(*avatar);
+            avatar->PlayerStatus().RestoreFullHealth();
+            avatar->SaveStatus();
+            SaveGameProgression(GameProgresion::MainIsland);
+            Story::StoryProgress::Instance().Set(Story::StoryFlag::PrologueCleared);
+        }
+        playerAvatar_.reset();
+
+        // NOTE: ボスの BT (PlayBGM) が差し替えた BGM も流れているので、シーンの BGM だけでなく全部止める
+        GamePlay::Sound::SoundPlayer::StopAllBgm();
+    }
+    
+    void FirstTouchDownMainIsLandScene::OnDrawGui()
+    {
+        
+    }
+}

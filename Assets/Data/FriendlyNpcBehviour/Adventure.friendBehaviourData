@@ -1,0 +1,206 @@
+{
+    "entryNode_": {
+        "polymorphic_id": 1073741824,
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 0,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    },
+                    "guid_": {
+                        "cereal_class_version": 0,
+                        "value_": "E29E5ABE-282A-4652-8754-B2992F752EC9"
+                    },
+                    "position_": {
+                        "value0": 120.0,
+                        "value1": 40.0
+                    }
+                },
+                "nextNode_": {
+                    "polymorphic_id": 2147483649,
+                    "polymorphic_name": "Editor::Npc::Behaviour::SelectorNode",
+                    "ptr_wrapper": {
+                        "id": 2147483650,
+                        "data": {
+                            "cereal_class_version": 0,
+                            "value0": {
+                                "value0": {},
+                                "guid_": {
+                                    "value_": "8CB64DC1-3F26-4A86-8D2A-061EA6014F97"
+                                },
+                                "position_": {
+                                    "value0": 280.0,
+                                    "value1": 40.0
+                                }
+                            },
+                            "children_": [
+                                {
+                                    "polymorphic_id": 2147483650,
+                                    "polymorphic_name": "Editor::Npc::Behaviour::SequenceNode",
+                                    "ptr_wrapper": {
+                                        "id": 2147483651,
+                                        "data": {
+                                            "cereal_class_version": 0,
+                                            "value0": {
+                                                "value0": {},
+                                                "guid_": {
+                                                    "value_": "93EFE648-93DE-4150-8F24-DEBF606C3305"
+                                                },
+                                                "position_": {
+                                                    "value0": 440.0,
+                                                    "value1": 40.0
+                                                }
+                                            },
+                                            "children_": [
+                                                {
+                                                    "polymorphic_id": 2147483651,
+                                                    "polymorphic_name": "Editor::Npc::Friendly::Behaviour::ActionNode",
+                                                    "ptr_wrapper": {
+                                                        "id": 2147483652,
+                                                        "data": {
+                                                            "cereal_class_version": 1,
+                                                            "value0": {
+                                                                "value0": {},
+                                                                "guid_": {
+                                                                    "value_": "8C1D8F39-E453-4C43-A662-7C101F2BF03F"
+                                                                },
+                                                                "position_": {
+                                                                    "value0": 600.0,
+                                                                    "value1": 40.0
+                                                                }
+                                                            },
+                                                            "name_": "ChatAnimation",
+                                                            "action_": {
+                                                                "polymorphic_id": 2147483652,
+                                                                "polymorphic_name": "GameCore::Npc::Friendly::Behaviour::Action::PlayAnimation",
+                                                                "ptr_wrapper": {
+                                                                    "valid": 1,
+                                                                    "data": {
+                                                                        "cereal_class_version": 0,
+                                                                        "value0": {
+                                                                            "cereal_class_version": 0
+                                                                        },
+                                                                        "animatorSetParamNumber_": 1
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "polymorphic_id": 3,
+                                                    "ptr_wrapper": {
+                                                        "id": 2147483653,
+                                                        "data": {
+                                                            "value0": {
+                                                                "value0": {},
+                                                                "guid_": {
+                                                                    "value_": "A169AAB3-82E0-4E61-AB12-11D725029558"
+                                                                },
+                                                                "position_": {
+                                                                    "value0": 600.0,
+                                                                    "value1": 116.0
+                                                                }
+                                                            },
+                                                            "name_": "Chat",
+                                                            "action_": {
+                                                                "polymorphic_id": 2147483653,
+                                                                "polymorphic_name": "GameCore::Npc::Friendly::Behaviour::Action::Chat",
+                                                                "ptr_wrapper": {
+                                                                    "valid": 1,
+                                                                    "data": {
+                                                                        "cereal_class_version": 0,
+                                                                        "value0": {},
+                                                                        "value1": {
+                                                                            "cereal_class_version": 0,
+                                                                            "value0": {
+                                                                                "polymorphic_id": 1073741824,
+                                                                                "ptr_wrapper": {
+                                                                                    "id": 2147483654,
+                                                                                    "data": {
+                                                                                        "cereal_class_version": 0,
+                                                                                        "value0": {
+                                                                                            "value_": "022315D2-E155-4AB6-A686-301A0380E02F"
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "polymorphic_id": 2,
+                                    "ptr_wrapper": {
+                                        "id": 2147483655,
+                                        "data": {
+                                            "value0": {
+                                                "value0": {},
+                                                "guid_": {
+                                                    "value_": "D6E8AF5E-F85D-4DCE-B8C5-CAB9CEF09CB2"
+                                                },
+                                                "position_": {
+                                                    "value0": 440.0,
+                                                    "value1": 116.0
+                                                }
+                                            },
+                                            "children_": [
+                                                {
+                                                    "polymorphic_id": 3,
+                                                    "ptr_wrapper": {
+                                                        "id": 2147483656,
+                                                        "data": {
+                                                            "value0": {
+                                                                "value0": {},
+                                                                "guid_": {
+                                                                    "value_": "27DA41F4-E2A2-4103-892A-52BE2127407A"
+                                                                },
+                                                                "position_": {
+                                                                    "value0": 600.0,
+                                                                    "value1": 116.0
+                                                                }
+                                                            },
+                                                            "name_": "IdleAnimation",
+                                                            "action_": {
+                                                                "polymorphic_id": 4,
+                                                                "ptr_wrapper": {
+                                                                    "valid": 1,
+                                                                    "data": {
+                                                                        "value0": {},
+                                                                        "animatorSetParamNumber_": 0
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "parameters_": {
+        "ptr_wrapper": {
+            "valid": 1,
+            "data": {
+                "value0": 0
+            }
+        }
+    }
+}

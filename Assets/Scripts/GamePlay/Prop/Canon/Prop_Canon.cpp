@@ -1,0 +1,98 @@
+﻿#include "Prop_Canon.h"
+
+#include "Engine/Core/Application/Time/Time.h"
+#include "Engine/Module/Physics/Component/RigidBody/Engine_Physics_RigidBody.h"
+#include "Engine/Module/Scene/GameObject/Helper/GameObject.h"
+#include "../../Sound/SoundPlayer.h"
+#include "Engine/Module/Serialization/Engine_Module_SerializationRegistration.h"
+
+namespace GamePlay::Prop
+{
+    void Canon::Use()
+    {
+        isInUse_ = true;
+        isBoardRequested_ = false;
+        prevCameraPriority_ = shootCamera_->Priority().CurrentValue();
+        shootCamera_->SetPriority(100);
+        shootCamera_->SetImmediateApply(true);
+        if (cannonUi_)
+            cannonUi_->Show();
+    }
+
+    void Canon::Leave()
+    {
+        isInUse_ = false;
+        // NOTE: 100 のままだと同じ priority の演出カメラと競合する
+        shootCamera_->SetPriority(prevCameraPriority_);
+        if (cannonUi_)
+            cannonUi_->Hide();
+    }
+
+    void Canon::Shoot()
+    {
+        if (shootCooldownDuring_secs_ > 0.0f)
+            return;
+        
+        shootCooldownDuring_secs_ = shootCooldown_secs_;
+        
+        
+        const glm::vec3 cannonForward = Transform().GetWorldRot() * shootBulletDirection_;
+        
+        const auto bullet = Scene::GameObject::Instantiate(bulletPrefab_.get(), shootBulletPos_->Transform().GetWorldPos());
+        const auto bulletRigidBody = bullet.lock()->Components().Catch<Component::RigidBody>().lock();
+        bulletRigidBody->AddLinearVelocity(cannonForward * bulletForceSpeed_);
+        Sound::SoundPlayer::PlaySe(*shootSound_.get(), Transform().GetWorldPos());
+        if (cannonUi_)
+            cannonUi_->PlayShoot();
+    }
+    
+    void Canon::RightRotate()
+    {
+        Transform().Rotate(glm::vec3(0, addRotateTorque_ * Time::DeltaTime(), 0));
+    }
+
+    void Canon::LeftRotate()
+    {
+        Transform().Rotate(glm::vec3(0, -addRotateTorque_ * Time::DeltaTime(), 0));
+    }
+
+    void Canon::OnAwake()
+    {
+        position_ = Transform().GetWorldPos();
+    }
+
+    void Canon::OnUpdate()
+    {
+        shootCooldownDuring_secs_ -= Time::DeltaTime();
+        shootCooldownDuring_secs_ = std::max(shootCooldownDuring_secs_, 0.0f);
+        if (cannonUi_)
+            cannonUi_->SetCooldown(shootCooldownDuring_secs_, shootCooldown_secs_);
+        Transform().SetWorldPos(position_);
+        // NOTE: SetEnable は子と Component 全体に伝播するので切り替わった時だけ呼ぶ
+        if (const bool showHint = isPlayerInRange_ && CanInteract();
+            boardHint_ && showHint != isBoardHintShown_)
+        {
+            isBoardHintShown_ = showHint;
+            boardHint_->SetEnable(showHint);
+        }
+    }
+
+    void Canon::OnDrawGui()
+    {
+        ImGuiHelper::OnDrawInputField("bulletPrefab_", bulletPrefab_);
+        ImGuiHelper::OnDrawInputField("bulletForceSpeed_", bulletForceSpeed_);
+        ImGuiHelper::OnDrawInputField("shootSound_", shootSound_);
+        ImGuiHelper::OnDrawInputField("addRotateTorque_", addRotateTorque_);
+        ImGuiHelper::OnDrawInputField("shootCamera_", shootCamera_);
+        ImGuiHelper::OnDrawInputField("shootBulletPos_", shootBulletPos_);
+        ImGuiHelper::OnDrawInputField("shootBulletDirection_", shootBulletDirection_);
+        ImGuiHelper::OnDrawInputField("shootCooldown_secs_", shootCooldown_secs_);
+        ImGuiHelper::OnDrawInputField("shootCooldownDuring_secs_", shootCooldownDuring_secs_);
+        ImGuiHelper::OnDrawInputField("cannonUi_", cannonUi_);
+        ImGuiHelper::OnDrawInputField("boardHint_", boardHint_);
+    }
+}
+
+#pragma region SerializationMacro
+ENGINE_REGISTER_COMPONENT(GamePlay::Prop::Canon);
+#pragma endregion

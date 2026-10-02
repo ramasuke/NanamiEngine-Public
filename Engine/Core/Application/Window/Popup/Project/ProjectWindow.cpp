@@ -1,0 +1,572 @@
+﻿#include "ProjectWindow.h"
+
+#include <algorithm>
+#include <cctype>
+#include <filesystem>
+#include <ranges>
+#include <string_view>
+
+#include <Windows.h>
+#include <shellapi.h>
+#pragma comment(lib, "Shell32.lib")
+
+#include "../../../../../Module/Asset/AnimationTree/AnimationTreeFile.h"
+#include "../../../../FileSystem/Directory/Directory.h"
+#include "../../../../FileSystem/DraggingHand/EditorDraggingHand.h"
+#include "../../../ApplicationBase.h"
+#include "../../../Configuration/CodeEditor/ApplicationConfiguration_CodeEditor.h"
+#include "../../../../../Module/Exception/Engine_Module_Exception.h"
+#include "../../../../../Module/Gui/StaticReflection/Engine_Module_StaticReflection.h"
+#include "../../../../../Module/Log/NanamiEngine_Module_Log.h"
+#include "../Inspector/InspectorWindow.h"
+
+namespace
+{
+    /** @brief haystackにneedleが含まれるか大文字小文字を無視して判定する */
+    bool ContainsCaseInsensitive(const std::string_view haystack, const std::string_view needle)
+    {
+        if (needle.empty())
+            return true;
+
+        const auto equalsIgnoreCase = [](const char lhs, const char rhs)
+        {
+            return std::tolower(static_cast<unsigned char>(lhs)) ==
+                   std::tolower(static_cast<unsigned char>(rhs));
+        };
+
+        return !std::ranges::search(haystack, needle, equalsIgnoreCase).empty();
+    }
+
+    /** @brief ファイル名のstem部分として使用できない文字を含んでいないか判定する */
+    bool IsValidFileStem(const std::string_view stem)
+    {
+        if (stem.empty())
+            return false;
+
+        constexpr std::string_view forbidden = "\\/:*?\"<>|";
+        return stem.find_first_of(forbidden) == std::string_view::npos;
+    }
+
+    /** @brief 大文字小文字を無視して2つの文字列が等しいか判定する */
+    bool EqualsCaseInsensitive(const std::string_view lhs, const std::string_view rhs)
+    {
+        return lhs.size() == rhs.size() && ContainsCaseInsensitive(lhs, rhs);
+    }
+
+    /** @brief 同じディレクトリ内に同名(大文字小文字無視)のファイルが既に存在するか判定する */
+    bool IsStemTaken(
+        NanamiEngine::Core::FileSystem::Directory& directory,
+        const NanamiEngine::Core::FileSystem::File& file,
+        const std::string_view newStem,
+        const std::string_view extension)
+    {
+        const std::string newFileName = std::string(newStem) + std::string(extension);
+
+        for (auto& other : directory.Files())
+        {
+            if (&other != &file && EqualsCaseInsensitive(other.GetName(), newFileName))
+                return true;
+        }
+        return false;
+    }
+
+    /** @brief 指定したguidのアセットを持つファイルが属するディレクトリを再帰的に探す */
+    NanamiEngine::Core::FileSystem::Directory* FindDirectoryContainingAsset(
+        NanamiEngine::Core::FileSystem::Directory& directory,
+        const ::Guid& guid)
+    {
+        for (auto& file : directory.Files())
+        {
+            if (file.GetContent() && file.GetContent()->GetGuid() == guid)
+                return &directory;
+        }
+
+        for (auto& child : directory.GetDirectories())
+        {
+            if (auto* found = FindDirectoryContainingAsset(child, guid))
+                return found;
+        }
+
+        return nullptr;
+    }
+
+    /** @brief 指定したパスのディレクトリを再帰的に探す */
+    NanamiEngine::Core::FileSystem::Directory* FindDirectoryByPath(
+        NanamiEngine::Core::FileSystem::Directory& directory,
+        const std::string& path)
+    {
+        if (directory.GetPath() == path)
+            return &directory;
+
+        for (auto& child : directory.GetDirectories())
+        {
+            if (auto* found = FindDirectoryByPath(child, path))
+                return found;
+        }
+
+        return nullptr;
+    }
+
+    /** @brief ancestorがtargetの祖先（または同一）か、区切り文字の違いを無視して判定する */
+    bool IsAncestorOrSame(const std::filesystem::path& ancestor, const std::filesystem::path& target)
+    {
+        auto ancestorIt = ancestor.begin();
+        auto targetIt = target.begin();
+        for (; ancestorIt != ancestor.end(); ++ancestorIt, ++targetIt)
+        {
+            if (targetIt == target.end() || *ancestorIt != *targetIt)
+                return false;
+        }
+        return true;
+    }
+
+    /** @brief 指定したディレクトリをWindowsのExplorerで開く */
+    void OpenDirectoryInExplorer(const NanamiEngine::Core::FileSystem::Directory& directory)
+    {
+        try
+        {
+            const std::filesystem::path absolutePath = std::filesystem::absolute(directory.GetPath());
+            const HINSTANCE result = ShellExecuteW(
+                nullptr,
+                L"open",
+                absolutePath.c_str(),
+                nullptr,
+                nullptr,
+                SW_SHOWNORMAL);
+
+            if (reinterpret_cast<INT_PTR>(result) <= 32)
+            {
+                NanamiEngine::Module::LogError("ProjectWindow: Explorerでの表示に失敗しました: " + absolutePath.string());
+            }
+        }
+        catch (const std::exception& exception)
+        {
+            NanamiEngine::Module::LogError("ProjectWindow: Explorerでの表示に失敗しました: " + std::string(exception.what()));
+        }
+    }
+
+    /** @brief IDEで開く対象のソースファイルか拡張子で判定する */
+    bool IsCodeFile(const NanamiEngine::Core::FileSystem::File& file)
+    {
+        constexpr std::string_view codeExtensions[] = { ".cpp", ".h", ".hpp", ".c", ".cc", ".cxx", ".inl" };
+
+        const std::string extension = std::filesystem::path(file.GetName()).extension().string();
+        return std::ranges::any_of(codeExtensions, [&extension](const std::string_view codeExtension)
+        {
+            return EqualsCaseInsensitive(extension, codeExtension);
+        });
+    }
+
+    /** @brief 指定したファイルをConfigで選択中のコードエディタで開く */
+    void OpenFileInCodeEditor(const NanamiEngine::Core::FileSystem::File& file)
+    {
+        using NanamiEngine::Core::Application::Configuration::CodeEditorConfiguration;
+
+        try
+        {
+            const std::filesystem::path absolutePath   = std::filesystem::absolute(file.GetPath());
+            const std::filesystem::path executablePath = CodeEditorConfiguration::ExecutablePath();
+            const std::wstring          arguments      = CodeEditorConfiguration::BuildArguments(absolutePath);
+
+            const HINSTANCE result = ShellExecuteW(
+                nullptr,
+                L"open",
+                executablePath.c_str(),
+                arguments.c_str(),
+                nullptr,
+                SW_SHOWNORMAL);
+
+            if (reinterpret_cast<INT_PTR>(result) <= 32)
+            {
+                NanamiEngine::Module::LogError(
+                    "ProjectWindow: " + std::string(CodeEditorConfiguration::DisplayName()) +
+                    "で開けませんでした（Config > Code Editor の実行ファイルを確認してください）: " + absolutePath.string());
+            }
+        }
+        catch (const std::exception& exception)
+        {
+            NanamiEngine::Module::LogError("ProjectWindow: コードエディタで開けませんでした: " + std::string(exception.what()));
+        }
+    }
+
+    /** @brief 1ファイル分の行（選択・右クリック・ドラッグ・ダブルクリック・リネーム）を描画する */
+    void DrawFileEntry(
+        NanamiEngine::Core::FileSystem::Directory& owningDirectory,
+        NanamiEngine::Core::FileSystem::File& file,
+        NanamiEngine::Core::FileSystem::EditorDraggingHand& draggingHand,
+        NanamiEngine::Core::PopupWindow::FileRenameState& renameState,
+        const std::optional<::Guid>& highlightedAssetGuid,
+        const bool scrollToHighlightPending)
+    {
+        namespace FileSystem = NanamiEngine::Core::FileSystem;
+
+        const std::string& name = file.GetName();
+
+        ImGui::PushID(&file);
+
+        const bool isRenaming = renameState.targetPath == file.GetPath();
+
+        if (isRenaming)
+        {
+            if (renameState.justStarted)
+            {
+                ImGui::SetKeyboardFocusHere();
+                renameState.justStarted = false;
+            }
+
+            ImGui::SetNextItemWidth(-1);
+            const bool confirmed = ImGui::InputText(
+                "##Rename",
+                renameState.buffer,
+                sizeof(renameState.buffer),
+                ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
+
+            if (confirmed)
+            {
+                const std::string extension = std::filesystem::path(name).extension().string();
+                if (IsValidFileStem(renameState.buffer) &&
+                    !IsStemTaken(owningDirectory, file, renameState.buffer, extension))
+                {
+                    file.Rename(std::string(renameState.buffer) + extension);
+                }
+                renameState.targetPath.clear();
+            }
+            else if (ImGui::IsItemDeactivated())
+            {
+                // Escapeまたはフォーカスロストでキャンセル
+                renameState.targetPath.clear();
+            }
+
+            ImGui::PopID();
+            return;
+        }
+
+        const bool isHighlighted =
+            highlightedAssetGuid.has_value() &&
+            file.GetContent() &&
+            file.GetContent()->GetGuid() == *highlightedAssetGuid;
+
+        if (ImGui::Selectable(name.c_str(), isHighlighted))
+        {
+            file.OnClick();
+        }
+
+        if (isHighlighted && scrollToHighlightPending)
+        {
+            ImGui::SetScrollHereY(0.3f);
+        }
+
+        // 右クリックメニュー
+        if (ImGui::BeginPopupContextItem())
+        {
+            if (IsCodeFile(file))
+            {
+                const std::string openLabel =
+                    "Open in " + std::string(NanamiEngine::Core::Application::Configuration::CodeEditorConfiguration::DisplayName());
+                if (ImGui::MenuItem(openLabel.c_str()))
+                {
+                    OpenFileInCodeEditor(file);
+                }
+            }
+
+            if (ImGui::MenuItem("Copy"))
+            {
+                try
+                {
+                    owningDirectory.AddFile(file.Copy());
+                }
+                catch (const NanamiEngine::Module::Exception::NanamiException& exception)
+                {
+                    // Copy はコピー元を読み直すため（SceneFile / PrefabGameObjectFile::CopiedInit）、壊れたファイルはここで失敗する
+                    NanamiEngine::Module::LogError("ProjectWindow: コピーに失敗しました: " + std::string(exception.what()));
+                }
+            }
+
+            if (ImGui::MenuItem("Rename"))
+            {
+                renameState.targetPath = file.GetPath();
+                renameState.justStarted = true;
+                const std::string stem = std::filesystem::path(name).stem().string();
+                strncpy_s(renameState.buffer, sizeof(renameState.buffer), stem.c_str(), _TRUNCATE);
+            }
+
+            ImGui::EndPopup();
+        }
+
+        // ドラッグ開始処理
+        // 未登録の拡張子や読み込みに失敗したファイル（content_ == nullptr）はドラッグ対象にしない
+        if (file.GetContent() && ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+        {
+            draggingHand.SetDraggingItem(file.GetContent()->GetGuid());
+            ImGui::SetDragDropPayload(FileSystem::EDITOR_DRAGGING_ITEM_PAYLOAD_TYPE, &file, sizeof(file));
+            ImGui::Text("Dragging %s", name.c_str());
+            ImGui::EndDragDropSource();
+        }
+
+        if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+        {
+            if (IsCodeFile(file))
+                OpenFileInCodeEditor(file);
+            else
+                file.OnDoubleClick();
+        }
+
+        ImGui::PopID();
+    }
+}
+
+int Core::PopupWindow::ProjectWindow::counter_ = 0;
+
+Core::PopupWindow::ProjectWindow::ProjectWindow()
+    : currentDirectoryPath_(Application::ApplicationBase::AssetsDirectory().GetPath())
+{
+    id_ = counter_++;
+}
+
+Core::FileSystem::Directory& Core::PopupWindow::ProjectWindow::CurrentDirectory()
+{
+    auto& assetsDirectory = Application::ApplicationBase::AssetsDirectory();
+    if (auto* directory = FindDirectoryByPath(assetsDirectory, currentDirectoryPath_))
+        return *directory;
+
+    currentDirectoryPath_ = assetsDirectory.GetPath();
+    return assetsDirectory;
+}
+
+Core::PopupWindow::PopupWindowState Core::PopupWindow::ProjectWindow::OnDraw(const PopupWindowDrawGuiContext context)
+{
+    bool isOpen = true;
+    ImGui::Begin(("Project##" + std::to_string(id_)).c_str(), &isOpen);
+
+    ImGui::Checkbox("isLock", &isLockedContent_);
+    OnDrawToolbar();
+
+    // フォルダ名・ファイル名の検索ボックス
+    const bool hasSearchText = searchBuffer_[0] != '\0';
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - (hasSearchText ? 55.0f : 0.0f));
+    ImGui::InputTextWithHint("##ProjectSearch", "Search...", searchBuffer_, sizeof(searchBuffer_));
+    if (hasSearchText)
+    {
+        ImGui::SameLine();
+        if (ImGui::SmallButton("Clear##ProjectSearch"))
+        {
+            searchBuffer_[0] = '\0';
+        }
+    }
+    const std::string searchText = searchBuffer_;
+
+    auto& assetsDirectory = Application::ApplicationBase::AssetsDirectory();
+    const bool scrollToHighlightPending = !pendingRevealDirectoryPath_.empty();
+
+    ImGui::Columns(2, nullptr, true);
+    if (searchText.empty())
+    {
+        OnDrawDirectoryTree(assetsDirectory);
+        ImGui::NextColumn();
+        DrawDirectoryContents(CurrentDirectory(), context.FileDraggingHand(), highlightedAssetGuid_, scrollToHighlightPending);
+    }
+    else
+    {
+        // 左: 名前がマッチするフォルダ / 右: 名前がマッチするファイル（どちらも全階層から）
+        OnDrawSearchedDirectoryTree(assetsDirectory, searchText);
+        ImGui::NextColumn();
+        DrawSearchedFiles(assetsDirectory, context.FileDraggingHand(), searchText, highlightedAssetGuid_, scrollToHighlightPending);
+    }
+    ImGui::Columns(1);
+
+    // Revealによるツリー自動展開/スクロールは1フレームだけ適用し、以降は畳めるようにする
+    pendingRevealDirectoryPath_.clear();
+
+    ImGui::End();
+
+    return isOpen ? PopupWindowState::Open : PopupWindowState::Closed;
+}
+
+void Core::PopupWindow::ProjectWindow::OnDrawDirectoryTree(FileSystem::Directory& directory)
+{
+    ImGui::PushID(&directory);
+
+    if (!pendingRevealDirectoryPath_.empty() &&
+        IsAncestorOrSame(directory.GetPath(), pendingRevealDirectoryPath_))
+    {
+        ImGui::SetNextItemOpen(true);
+    }
+
+    ImGui::AlignTextToFramePadding();
+    const float cursorY = ImGui::GetCursorPosY();
+
+    // 矢印部分だけ TreeNode にする
+    const bool open = ImGui::TreeNodeEx(
+        "##arrow",
+        ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_OpenOnArrow
+    );
+
+    // ラベル部分を Selectable として描画（フル幅に拡張）
+    ImGui::SameLine();
+    ImGui::SetCursorPosY(cursorY);
+
+    const ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+    const float windowRight = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
+    const float buttonWidth = windowRight - cursorPos.x;
+    const ImVec2 buttonSize(buttonWidth, ImGui::GetFrameHeight());
+
+    const ImVec2 buttonMin = cursorPos;
+    const auto buttonMax = ImVec2(cursorPos.x + buttonSize.x, cursorPos.y + buttonSize.y);
+
+    // デフォルトの選択色を無効化
+    ImGui::PushStyleColor(ImGuiCol_Header       , ImVec4(0, 0, 0, 0));
+    ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0, 0, 0, 0));
+    ImGui::PushStyleColor(ImGuiCol_HeaderActive , ImVec4(0, 0, 0, 0));
+
+    if (ImGui::Selectable(directory.GetName().c_str(), currentDirectoryPath_ == directory.GetPath(), ImGuiSelectableFlags_AllowDoubleClick, buttonSize))
+    {
+        currentDirectoryPath_ = directory.GetPath();
+    }
+    const bool hovered = ImGui::IsItemHovered();
+
+    ImGui::PopStyleColor(3);
+
+    // ホバー時の背景描画
+    if (hovered)
+    {
+        const ImU32 color = ImGui::GetColorU32(ImGuiCol_HeaderHovered);
+        ImGui::GetWindowDrawList()->AddRectFilled(buttonMin, buttonMax, color);
+    }
+
+    // 子ノード描画
+    if (open)
+    {
+        ImGui::TreePush("##arrow");
+        for (auto& child : directory.GetDirectories())
+        {
+            OnDrawDirectoryTree(child);
+        }
+        ImGui::TreePop();
+    }
+
+    ImGui::PopID();
+}
+
+
+void Core::PopupWindow::ProjectWindow::DrawDirectoryContents(
+    FileSystem::Directory& directory,
+    FileSystem::EditorDraggingHand& draggingHand,
+    const std::optional<::Guid>& highlightedAssetGuid,
+    const bool scrollToHighlightPending)
+{
+    for (auto& file : directory.Files())
+    {
+        DrawFileEntry(directory, file, draggingHand, renameState_, highlightedAssetGuid, scrollToHighlightPending);
+    }
+}
+
+void Core::PopupWindow::ProjectWindow::OnDrawSearchedDirectoryTree(
+    FileSystem::Directory& directory,
+    const std::string& filter)
+{
+    if (ContainsCaseInsensitive(directory.GetName(), filter))
+    {
+        ImGui::PushID(&directory);
+        if (ImGui::Selectable(directory.GetName().c_str(), currentDirectoryPath_ == directory.GetPath()))
+        {
+            currentDirectoryPath_ = directory.GetPath();
+        }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetTooltip("%s", directory.GetPath().c_str());
+        }
+        ImGui::PopID();
+    }
+
+    for (auto& child : directory.GetDirectories())
+    {
+        OnDrawSearchedDirectoryTree(child, filter);
+    }
+}
+
+void Core::PopupWindow::ProjectWindow::DrawSearchedFiles(
+    FileSystem::Directory& directory,
+    FileSystem::EditorDraggingHand& draggingHand,
+    const std::string& filter,
+    const std::optional<::Guid>& highlightedAssetGuid,
+    const bool scrollToHighlightPending)
+{
+    for (auto& file : directory.Files())
+    {
+        if (ContainsCaseInsensitive(file.GetName(), filter))
+        {
+            DrawFileEntry(directory, file, draggingHand, renameState_, highlightedAssetGuid, scrollToHighlightPending);
+        }
+    }
+
+    for (auto& child : directory.GetDirectories())
+    {
+        DrawSearchedFiles(child, draggingHand, filter, highlightedAssetGuid, scrollToHighlightPending);
+    }
+}
+
+void Core::PopupWindow::ProjectWindow::OnDrawToolbar()
+{
+    ImGui::BeginChild("Toolbar", ImVec2(0, 30), false, ImGuiWindowFlags_NoScrollbar);
+    if (ImGui::Button("+")) {
+        ImGui::OpenPopup("CreatePopup");
+    }
+
+    static char fileName[128] = "";
+
+    if (ImGui::BeginPopup("CreatePopup"))
+    {
+        ImGui::InputText("Filename", fileName, IM_ARRAYSIZE(fileName));
+        const bool hasFileName = fileName[0] != '\0';
+        if (!hasFileName)
+        {
+            ImGui::TextDisabled("Enter a file name first");
+        }
+        ImGui::Separator();
+
+        std::vector<NanamiEngine::Module::StaticReflection::CategoryMenuItem> menuItems;
+        for (const auto& creatable : Asset::AssetFactory::Instance().CreatableAssets())
+        {
+            menuItems.push_back({ creatable.category, creatable.name, hasFileName, [this, extension = creatable.extension]
+            {
+                const std::string filename = std::string(fileName) + extension;
+
+                auto& currentDirectory = CurrentDirectory();
+                currentDirectory.AddFile(
+                    FileSystem::File::CreateOrLoadFile(
+                        currentDirectory.GetPath() + "/" + filename,
+                        filename
+                    )
+                );
+
+                fileName[0] = '\0';
+            } });
+        }
+        NanamiEngine::Module::StaticReflection::DrawCategoryMenu(menuItems);
+        ImGui::EndPopup();
+    }
+
+    ImGui::SameLine();
+    if (ImGui::Button("Explorer"))
+    {
+        OpenDirectoryInExplorer(CurrentDirectory());
+    }
+
+    ImGui::EndChild();
+}
+
+void Core::PopupWindow::ProjectWindow::RevealAsset(const ::Guid& assetGuid)
+{
+    FileSystem::Directory* owningDirectory =
+        FindDirectoryContainingAsset(Application::ApplicationBase::AssetsDirectory(), assetGuid);
+
+    if (!owningDirectory)
+        return;
+
+    searchBuffer_[0] = '\0'; // 検索中だとDrawSearchedFilesが名前フィルタで対象を隠してしまうため解除
+    currentDirectoryPath_ = owningDirectory->GetPath();
+    highlightedAssetGuid_ = assetGuid;
+    pendingRevealDirectoryPath_ = owningDirectory->GetPath();
+
+    ImGui::SetWindowFocus(("Project##" + std::to_string(id_)).c_str());
+}
