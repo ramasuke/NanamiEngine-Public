@@ -5,8 +5,8 @@
 *.ilk
 
 # Build directories
-Debug/
-Release/
+/Debug/
+/Release/
 x64/
 x86/
 # Toolbar "Build" output (Config > Build > Output Directory)
