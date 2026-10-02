@@ -1,0 +1,154 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "NanamiEngine::Module::Asset::NpcChat",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 0,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    },
+                    "contentPath_": "Assets\\Data\\NpcChatText/Instructor_GrassLandReport.npcChat",
+                    "guid_": {
+                        "cereal_class_version": 0,
+                        "value_": "B84F9E3E-C936-495B-8ECC-F9A340B10EFC"
+                    }
+                },
+                "count": 6,
+                "item_0": {
+                    "cereal_class_version": 0,
+                    "font_": {
+                        "cereal_class_version": 0,
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483650,
+                                "data": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "緑の心臓、確かに受け取った。\n島の揺れが、嘘みたいに収まった。",
+                    "textColor_": {
+                        "cereal_class_version": 0,
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_1": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483651,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "見たか。心臓の力で、落ちた噴水の島まで\n浮かび上がってきた。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_2": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483652,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "階段もひとりでに架かった。\nあれで向こうへ渡れる。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_3": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483653,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "草原の狩人たちには、\nあの島に住んでもらうつもりだ。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_4": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483654,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "一族の家を建ててやってくれ。\n掲示板の「復興」から頼める。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_5": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483655,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "残る心臓は、あとひとつ。\n行方は今、探らせている。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,148 @@
+﻿#pragma once
+#include <cstdint>
+#include <memory>
+#include <optional>
+#include <queue>
+#include <string>
+
+#include "Engine/Core/Network/ObjectId/Engine_Network_NetworkObjectId.h"
+#include "Engine/Core/Network/Object/Creator/NetworkParamCreator.h"
+#include "Engine/Module/GameObject/ComponentGroup/ComponentGroup.h"
+#include "Engine/Module/GameObject/Interface/IGameObject.h"
+#include "Engine/Module/GameObject/Transform/Transform.h"
+#include "Engine/Module/Namespace/EngineNamespace.h"
+#include "../../../../../Damage/Flinch/Game_Damage_FlinchPower.h"
+
+namespace GameCore::PlayerAvatar::Quest
+{
+    class ICompleteQuestGroup;
+}
+
+namespace GameCore::PlayerAvatar
+{
+    class IQuestGroup;
+}
+
+namespace NanamiEngine::Module::GameObject
+{
+    class Transform;
+}
+
+namespace GameCore
+{
+    class IPlayerAvatar;
+}
+
+namespace NanamiEngine::Module::Component
+{
+    class RigidBody;
+}
+
+namespace NanamiEngine::Module::BlackBoard
+{
+    class ParameterGroup;
+}
+
+namespace GameCore::Npc::Enemy
+{
+    class EnemyStatus;
+    class IShowHealthGaugeProvider;
+}
+
+namespace GameCore
+{
+    struct IDamage;
+}
+
+namespace NanamiEngine::Module::Component
+{
+    class Animator;
+}
+
+namespace NanamiEngine::Module::GameObject
+{
+    class IGameObject;
+}
+
+namespace GamePlay::Ui
+{
+    class NpcChatting;
+}
+
+namespace GameCore::Npc::Enemy::Behaviour::Action
+{
+    struct TickContext final
+    {
+        explicit TickContext(
+            const std::weak_ptr<GameObject::IGameObject>& enemyGameObject,
+            SyncParam<EnemyStatus>& enemyStatus,
+            const std::unique_ptr<BlackBoard::ParameterGroup>& parameters,
+            const std::shared_ptr<std::queue<std::unique_ptr<IDamage>>>& onDamagedStack,
+            IShowHealthGaugeProvider* showHealthGaugeProvider,
+            Core::Network::NetworkObjectId networkObjectId,
+            bool isNetworkAuthority,
+            std::optional<Damage::FlinchPower>& pendingFlinchPower,
+            std::uint64_t tickIndex);
+        ~TickContext();
+        
+
+        [[nodiscard]] GameObject::IGameObject& EnemyGameObject() const { return *enemyGameObject_.lock(); }
+        [[nodiscard]] std::shared_ptr<GameObject::IGameObject> EnemyGameObjectPtr() const { return enemyGameObject_.lock(); }
+        [[nodiscard]] GameObject::Transform  & EnemyTransform () const;
+        [[nodiscard]] Component::Animator    & EnemyAnimator  () const { return *enemyAnimator_  .lock(); }
+        [[nodiscard]] Component::RigidBody   & EnemyRigidBody () const { return *enemyRigidBody_ .lock(); }
+        [[nodiscard]] SyncParam<EnemyStatus> & EnemyStatus    () const { return enemyStatus_; }
+        [[nodiscard]] const std::unique_ptr<BlackBoard::ParameterGroup>& Parameter() const { return parameters_; }
+        [[nodiscard]] const std::shared_ptr<std::queue<std::unique_ptr<IDamage>>>& OnDamaged() const { return onDamagedStack_; } 
+        [[nodiscard]] bool IsOnDamage() const { return !onDamagedStack_->empty(); }
+
+        [[nodiscard]] std::optional<Damage::FlinchPower>& PendingFlinchPower() const { return pendingFlinchPower_; }
+        // ツリーの Tick 毎に 1 増える。
+        // 前回の Tick で呼ばれなかったアクションの判定に使う
+        [[nodiscard]] std::uint64_t TickIndex() const { return tickIndex_; }
+        // ボスHPゲージを持たない敵は nullptr
+        [[nodiscard]] IShowHealthGaugeProvider* ShowHealthGaugeProvider() const { return showHealthGaugeProvider_; }
+        [[nodiscard]] std::shared_ptr<IPlayerAvatar> Player() const;
+        [[nodiscard]] static const std::vector<std::weak_ptr<IPlayerAvatar>>& AllPlayer();
+        // 水平距離で一番近いプレイヤーの位置。プレイヤーがいなければ false
+        [[nodiscard]] bool NearestPlayerPosition(const glm::vec3& from, glm::vec3& out) const;
+        [[nodiscard]] const PlayerAvatar::IQuestGroup& PlayerQuest() const;
+        [[nodiscard]] const PlayerAvatar::Quest::ICompleteQuestGroup& PlayerCompleteQuest() const;
+        [[nodiscard]] const GamePlay::Ui::NpcChatting& ChatUi() const;
+
+        // この敵の NetworkObjectId。ネットワーク生成されていない個体は Invalid()
+        [[nodiscard]] Core::Network::NetworkObjectId NetworkObjectId() const { return networkObjectId_; }
+        // 権威側だけが Tick している (一回限りの副作用は RPC で他ピアへ複製する)
+        [[nodiscard]] bool IsNetworkAuthority() const { return isNetworkAuthority_; }
+
+
+        template<typename T>
+        [[nodiscard]] T& CatchPrefabObject(const std::string& catchObjectName) const
+        {
+            for (const auto& child : EnemyTransform().GetAllChildren())
+            {
+                if (child->Name() != catchObjectName)
+                    continue;
+
+                const auto object = child->Components().Catch<T>().lock();
+                assert(object, "Object has not T");
+                
+                return *object;
+            }
+            throw std::exception(("Object has not (object name:" + catchObjectName + ")").c_str());
+        }
+
+    private:
+        const std::weak_ptr<GameObject::IGameObject> enemyGameObject_;
+        const std::weak_ptr<Component::Animator    > enemyAnimator_;
+        const std::weak_ptr<Component::RigidBody   > enemyRigidBody_;
+        SyncParam<Enemy::EnemyStatus>&   enemyStatus_;
+        const std::unique_ptr<BlackBoard::ParameterGroup>& parameters_;
+        const std::shared_ptr<std::queue<std::unique_ptr<IDamage>>> onDamagedStack_;
+        IShowHealthGaugeProvider* const showHealthGaugeProvider_;
+        const Core::Network::NetworkObjectId networkObjectId_;
+        const bool isNetworkAuthority_;
+        std::optional<Damage::FlinchPower>& pendingFlinchPower_;
+        const std::uint64_t tickIndex_;
+    };
+}

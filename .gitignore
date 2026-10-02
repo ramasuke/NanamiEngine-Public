@@ -1,0 +1,42 @@
+# Build files
+*.exe
+*.obj
+*.pdb
+*.ilk
+
+# Build directories
+Debug/
+Release/
+x64/
+x86/
+# Toolbar "Build" output (Config > Build > Output Directory)
+/Build/
+# Engine static lib (NanamiEngine.vcxproj) and its intermediates
+/lib/
+/obj/
+# Engine distributions
+/dist/
+
+# Visual Studio
+.vs/
+*.vcxproj.users
+
+# Runtime-generated logs
+EngineLog.txt
+
+# AutoMCP screenshots (engine working directory = repo root)
+/AutoMcp/
+
+# Model sources (only the converted .mv1 is tracked)
+*.fbx
+
+# Asset distribution (Asset Dist, Packages/AssetUpdater/Dist) - release artifacts, not sources
+/manifest.json
+/manifest-*.json
+/installed.json
+/.manifest_hash_cache.json
+
+# HotReload ボタンの MSBuild ログ
+/Logs/HotReload/
+# HotReload の保険モード設定 (開発者ごと)
+/LocalPrefs/HotReload/

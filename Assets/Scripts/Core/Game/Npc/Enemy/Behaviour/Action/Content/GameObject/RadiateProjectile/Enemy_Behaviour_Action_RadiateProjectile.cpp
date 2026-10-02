@@ -1,0 +1,50 @@
+﻿#include "Enemy_Behaviour_Action_RadiateProjectile.h"
+
+#include "Engine/Module/GameObject/ComponentGroup/ComponentGroup.h"
+#include "Engine/Module/GameObject/Interface/IGameObject.h"
+#include "../../../../../../../../../GamePlay/Npc/Enemy/Projectile/GamePlay_Enemy_IAttackProjectile.h"
+#include "../../../../../../../../../GamePlay/Spawn/GamePlay_PrefabSpawner.h"
+#include "../../../../../../../../Network/Rpc/Custom_RpcType.h"
+#include "Engine/Module/Serialization/Engine_Module_SerializationRegistration.h"
+
+namespace GameCore::Npc::Enemy::Behaviour
+{
+    TickStatus Action::RadiateProjectile::DoTick(const TickContext& context)
+    {
+        if (!projectilePrefab_)
+            return TickStatus::Failure;
+
+        const glm::quat finalRot  = context.EnemyTransform().GetWorldRot();
+        const glm::vec3 spawnPos  = spawnPosition_ .get(context);
+        const glm::vec3 targetPos = targetPosition_.get(context);
+
+        const auto projectile = GamePlay::Spawn::SpawnMovingPrefab(
+            *projectilePrefab_.get(), spawnPos, finalRot, targetPos, moveSpeed_, isFinishedProjectileDestroy_);
+
+        GamePlay::Npc::Enemy::IAttackProjectile::TrySetDamage(projectile, physicsDamage_);
+
+        // NOTE: targetPos は権威側の値で送る (TargetObject は各ピアのローカルプレイヤーを指すため)
+        if (context.IsNetworkAuthority())
+        {
+            GameCore::Network::SpawnMovingPrefabRpc::Send(
+                context.NetworkObjectId(), Core::Network::DeliveryMode::Reliable,
+                projectilePrefab_->GetGuid(), spawnPos, finalRot, targetPos, moveSpeed_, isFinishedProjectileDestroy_, physicsDamage_);
+        }
+
+        return TickStatus::Success;
+    }
+
+    void Action::RadiateProjectile::DoDrawGui()
+    {
+        ImGuiHelper::OnDrawInputField("physicsDamage_" , physicsDamage_);
+        ImGuiHelper::OnDrawInputField("spawnPosition_" , spawnPosition_);
+        ImGuiHelper::OnDrawInputField("targetPosition_", targetPosition_);
+        ImGuiHelper::OnDrawInputField("moveSpeed_", moveSpeed_);
+        ImGuiHelper::OnDrawInputField("projectilePrefab_", projectilePrefab_);
+        ImGuiHelper::OnDrawInputField("moveFinishedProjectileDestroy_", isFinishedProjectileDestroy_);
+    }
+}
+
+#pragma region SerializationMacro
+NANAMI_REGISTER_TYPE(GameCore::Npc::Enemy::Behaviour::Action::RadiateProjectile, GameCore::Npc::Enemy::Behaviour::ActionBase);
+#pragma endregion

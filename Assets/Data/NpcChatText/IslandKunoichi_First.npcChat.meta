@@ -1,0 +1,112 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "NanamiEngine::Module::Asset::NpcChat",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 0,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    },
+                    "contentPath_": "Assets\\Data\\NpcChatText/IslandKunoichi_First.npcChat",
+                    "guid_": {
+                        "cereal_class_version": 0,
+                        "value_": "801441EA-21B5-4D31-9441-9A0ABA6794F0"
+                    }
+                },
+                "count": 4,
+                "item_0": {
+                    "cereal_class_version": 0,
+                    "font_": {
+                        "cereal_class_version": 0,
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483650,
+                                "data": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "……生きてたんだ。\nあの竜を撃ち落とすなんて、やるじゃん。",
+                    "textColor_": {
+                        "cereal_class_version": 0,
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_1": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483651,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "あの竜は、前にも見たことがある。\n……その話は、また今度ね。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_2": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483652,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "飛んでいく心臓、私も見てた。\nひとつは草原の方へ落ちていったよ。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_3": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483653,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "心臓が落ちた所には、獣が集まる。\n……私の故郷でも、そうだった。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                }
+            }
+        }
+    }
+}

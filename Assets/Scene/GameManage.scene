@@ -1,0 +1,2827 @@
+{
+    "name": "Scene",
+    "gameObjectCount": 2,
+    "gameObject_0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "NanamiEngine::Scene::SceneGameObject",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 1,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    }
+                },
+                "isActive_": false,
+                "name_": "Game",
+                "guid_": {
+                    "cereal_class_version": 0,
+                    "value_": "7D0926E9-67F5-4991-8BA0-DAF01BA5021C"
+                },
+                "components_": {
+                    "cereal_class_version": 0,
+                    "componentCount": 1,
+                    "component_0": {
+                        "polymorphic_id": 2147483650,
+                        "polymorphic_name": "GameCore::Game",
+                        "ptr_wrapper": {
+                            "id": 2147483650,
+                            "data": {
+                                "cereal_class_version": 4,
+                                "value0": {
+                                    "cereal_class_version": 0,
+                                    "guid_": {
+                                        "value_": "DCBC636C-87A3-4277-B9A9-5290FA6C4A08"
+                                    },
+                                    "isEnable_": true
+                                },
+                                "value1": {
+                                    "cereal_class_version": 0
+                                },
+                                "sceneContexts_": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "polymorphic_id": 1073741824,
+                                        "ptr_wrapper": {
+                                            "id": 2147483651,
+                                            "data": {
+                                                "cereal_class_version": 0,
+                                                "value0": {
+                                                    "value_": "938584F7-A185-47E2-9B6D-AEEDE0B07FF6"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "subSceneContexts_": {
+                                    "value0": {
+                                        "polymorphic_id": 1073741824,
+                                        "ptr_wrapper": {
+                                            "id": 2147483652,
+                                            "data": {
+                                                "value0": {
+                                                    "value_": "0BF2B6F9-CD15-4606-BBB9-DBC7978310E2"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "stageLoadingSceneFile_": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "polymorphic_id": 1073741824,
+                                        "ptr_wrapper": {
+                                            "id": 2147483653,
+                                            "data": {
+                                                "cereal_class_version": 0,
+                                                "value0": {
+                                                    "value_": "16B66F38-A111-4186-AA17-D527C6324CC0"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "gameOverSceneFile_": {
+                                    "value0": {
+                                        "polymorphic_id": 1073741824,
+                                        "ptr_wrapper": {
+                                            "id": 2147483654,
+                                            "data": {
+                                                "value0": {
+                                                    "value_": "A31AB165-C790-422D-B248-B0DC8DAC7E07"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "transform_": {
+                    "cereal_class_version": 0,
+                    "localPos_": {
+                        "value0": 0.0,
+                        "value1": 0.0,
+                        "value2": 0.0
+                    },
+                    "localRot_": {
+                        "value0": 0.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 0.0
+                    },
+                    "localScale_": {
+                        "value0": 1.0,
+                        "value1": 1.0,
+                        "value2": 1.0
+                    },
+                    "worldMatrix_": {
+                        "value0": {
+                            "value0": 1.0,
+                            "value1": 0.0,
+                            "value2": 0.0,
+                            "value3": 0.0
+                        },
+                        "value1": {
+                            "value0": 0.0,
+                            "value1": 1.0,
+                            "value2": 0.0,
+                            "value3": 0.0
+                        },
+                        "value2": {
+                            "value0": 0.0,
+                            "value1": 0.0,
+                            "value2": 1.0,
+                            "value3": 0.0
+                        },
+                        "value3": {
+                            "value0": 0.0,
+                            "value1": 0.0,
+                            "value2": 0.0,
+                            "value3": 1.0
+                        }
+                    },
+                    "childCount": 2,
+                    "child": {
+                        "polymorphic_id": 1,
+                        "ptr_wrapper": {
+                            "id": 2147483655,
+                            "data": {
+                                "value0": {
+                                    "value0": {}
+                                },
+                                "isActive_": false,
+                                "name_": "SceneContexts",
+                                "guid_": {
+                                    "value_": "938584F7-A185-47E2-9B6D-AEEDE0B07FF6"
+                                },
+                                "components_": {
+                                    "componentCount": 7,
+                                    "component_0": {
+                                        "polymorphic_id": 2147483651,
+                                        "polymorphic_name": "GameCore::Scene::TitleSceneContext",
+                                        "ptr_wrapper": {
+                                            "id": 2147483656,
+                                            "data": {
+                                                "cereal_class_version": 0,
+                                                "value0": {
+                                                    "cereal_class_version": 5,
+                                                    "value0": {
+                                                        "guid_": {
+                                                            "value_": "C32237D5-EF71-4BB6-8A4B-69B1C5A6BD3B"
+                                                        },
+                                                        "isEnable_": true
+                                                    },
+                                                    "loadSceneFile_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483657,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "FAD4FC45-4446-47A2-A60E-49B583F525B7"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerSpawnPoint_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483658,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "AAADCD6E-30AA-47B0-942B-E24C4F462CA6"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerAvatarFactory_": {
+                                                        "cereal_class_version": 0,
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483659,
+                                                                "data": {
+                                                                    "cereal_class_version": 0,
+                                                                    "value0": {
+                                                                        "value_": "D8BAAAA4-EFC2-4A42-8E48-E5330A2193C3"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationGrid_": {
+                                                        "cereal_class_version": 0,
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483660,
+                                                                "data": {
+                                                                    "cereal_class_version": 0,
+                                                                    "value0": {
+                                                                        "value_": "00000000-0000-0000-0000-000000000000"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationTargets_": []
+                                                },
+                                                "titleSceneFile_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483661,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "FAD4FC45-4446-47A2-A60E-49B583F525B7"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "component_1": {
+                                        "polymorphic_id": 2147483652,
+                                        "polymorphic_name": "GameCore::Scene::FirstTouchDownMainIsLandSceneContext",
+                                        "ptr_wrapper": {
+                                            "id": 2147483662,
+                                            "data": {
+                                                "cereal_class_version": 25,
+                                                "value0": {
+                                                    "value0": {
+                                                        "guid_": {
+                                                            "value_": "430242E4-4935-476D-9FB1-04BB56482CD9"
+                                                        },
+                                                        "isEnable_": true
+                                                    },
+                                                    "loadSceneFile_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483663,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "B73D3DEF-7EDD-416A-8709-659FCFB0A270"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerSpawnPoint_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483664,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "AAADCD6E-30AA-47B0-942B-E24C4F462CA6"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerAvatarFactory_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483665,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "8A77D9A4-21BE-4509-99E7-4CA85FF571E7"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationGrid_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483666,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "32C78AA8-961C-406E-9861-7C55564C5B54"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationTargets_": [
+                                                        {
+                                                            "cereal_class_version": 0,
+                                                            "id_": "Instructor",
+                                                            "object_": {
+                                                                "value0": {
+                                                                    "polymorphic_id": 1073741824,
+                                                                    "ptr_wrapper": {
+                                                                        "id": 2147483667,
+                                                                        "data": {
+                                                                            "value0": {
+                                                                                "value_": "275F2AB2-1671-4B48-89D8-B8C2A8C7297D"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "markerHeight_": 30.0
+                                                        },
+                                                        {
+                                                            "id_": "Cannon",
+                                                            "object_": {
+                                                                "value0": {
+                                                                    "polymorphic_id": 1073741824,
+                                                                    "ptr_wrapper": {
+                                                                        "id": 2147483668,
+                                                                        "data": {
+                                                                            "value0": {
+                                                                                "value_": "D9D2F020-2197-4929-B08A-23247E0B86A8"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "markerHeight_": 25.0
+                                                        }
+                                                    ]
+                                                },
+                                                "airShip_": {
+                                                    "cereal_class_version": 0,
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483669,
+                                                            "data": {
+                                                                "cereal_class_version": 0,
+                                                                "value0": {
+                                                                    "value_": "AD2C2282-E645-4CDF-B3A7-6752C9D06D21"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "airShipFirstMoveFromTargetPos_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483670,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "480BDC01-17A8-4DB3-90E3-1B08841DD9DB"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "airShipFirstMoveDuring_msecs_": 20000,
+                                                "airShipSecondMoveFromTargetPos_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483671,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "7345022A-CEF4-4AA2-A79C-5947B55DADA0"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "airShipSecondMoveDuring_msecs_": 9000,
+                                                "summonPlayerAvatarPrefab_": {
+                                                    "cereal_class_version": 0,
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483672,
+                                                            "data": {
+                                                                "cereal_class_version": 0,
+                                                                "value0": {
+                                                                    "value_": "A8F2533D-B84C-4C7C-84F1-59A6CE16DB75"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "secondVirtualCamera_": {
+                                                    "cereal_class_version": 0,
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483673,
+                                                            "data": {
+                                                                "cereal_class_version": 0,
+                                                                "value0": {
+                                                                    "value_": "8CE69182-8EA5-49DD-8C91-A5C7CA602254"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "cameraBrain_": {
+                                                    "cereal_class_version": 0,
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483674,
+                                                            "data": {
+                                                                "cereal_class_version": 0,
+                                                                "value0": {
+                                                                    "value_": "A708D67A-481F-47CC-8111-7211FD28E30B"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "playerFirstMoveTargetPos_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483675,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "628586F0-0C5E-4A1F-BD94-C3EC7E1B8954"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "playerFirstMoveDuring_msecs_": 1500,
+                                                "playerArmStretchDuring_msecs_": 7000,
+                                                "titleLogo_": {
+                                                    "cereal_class_version": 0,
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483676,
+                                                            "data": {
+                                                                "cereal_class_version": 0,
+                                                                "value0": {
+                                                                    "value_": "98C1F2D3-6155-455E-AF68-575C9C51F7F1"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "bgm_": {
+                                                    "cereal_class_version": 0,
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483677,
+                                                            "data": {
+                                                                "cereal_class_version": 0,
+                                                                "value0": {
+                                                                    "value_": "D33A220E-F408-45A1-A09D-E04B1897C3F3"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "boundryAirshipCollider_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483678,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "97FCA82C-221A-4E1F-8BCC-1F48708A784C"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "firstEventDragonPrefab_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483679,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "2D1C4E01-7FA2-4C80-B959-CC80F0F82950"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "firstEventDragonSpawnPos_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483680,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "2EEBDB8F-7FC5-4CBD-9269-1C9B60199903"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "playerControllabeCanon_": {
+                                                    "cereal_class_version": 0,
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483681,
+                                                            "data": {
+                                                                "cereal_class_version": 0,
+                                                                "value0": {
+                                                                    "value_": "7FC6EC27-004E-46C7-B119-EBAA48CD61B6"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "swordManCameraGroupPrefab_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483682,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "712E6CEC-8BF6-47F9-9393-38ED407825E8"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "openingShots_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483683,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "D6AF6ECE-EB47-422F-8F36-3BACA338866B"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "openingShotDurations_secs_": [
+                                                    4.0,
+                                                    3.0,
+                                                    3.5
+                                                ],
+                                                "airShipDeckProps_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483684,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "5449EB38-0264-4F65-9EF8-2D035B478735"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "heroHoldRate_": 0.30000001192092898,
+                                                "heroTurnStartRate_": 0.699999988079071,
+                                                "heroLookHeight_": 12.0
+                                            }
+                                        }
+                                    },
+                                    "component_2": {
+                                        "polymorphic_id": 2147483653,
+                                        "polymorphic_name": "GameCore::Scene::MainIslandSceneContext",
+                                        "ptr_wrapper": {
+                                            "id": 2147483685,
+                                            "data": {
+                                                "cereal_class_version": 6,
+                                                "value0": {
+                                                    "value0": {
+                                                        "guid_": {
+                                                            "value_": "B39C2756-6D06-49D7-8E92-FEDEB2BE6A49"
+                                                        },
+                                                        "isEnable_": true
+                                                    },
+                                                    "loadSceneFile_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483686,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "19A7A572-62C3-486A-AA28-605D83B74ACF"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerSpawnPoint_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483687,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "EBC25AAE-381D-4DEF-AD21-6B8E95CAD1E7"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerAvatarFactory_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483688,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "8A77D9A4-21BE-4509-99E7-4CA85FF571E7"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationGrid_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483689,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "D21C1310-E059-4C54-9159-67A3677D117D"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationTargets_": [
+                                                        {
+                                                            "id_": "Instructor",
+                                                            "object_": {
+                                                                "value0": {
+                                                                    "polymorphic_id": 1073741824,
+                                                                    "ptr_wrapper": {
+                                                                        "id": 2147483690,
+                                                                        "data": {
+                                                                            "value0": {
+                                                                                "value_": "69BF974C-B730-4E39-9BC6-F8FA9D36B901"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "markerHeight_": 30.0
+                                                        },
+                                                        {
+                                                            "id_": "Portal",
+                                                            "object_": {
+                                                                "value0": {
+                                                                    "polymorphic_id": 1073741824,
+                                                                    "ptr_wrapper": {
+                                                                        "id": 2147483691,
+                                                                        "data": {
+                                                                            "value0": {
+                                                                                "value_": "FEB4046B-BF74-49AC-AA6C-5AAA356D40A7"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "markerHeight_": 30.0
+                                                        },
+                                                        {
+                                                            "id_": "Board",
+                                                            "object_": {
+                                                                "value0": {
+                                                                    "polymorphic_id": 1073741824,
+                                                                    "ptr_wrapper": {
+                                                                        "id": 2147483692,
+                                                                        "data": {
+                                                                            "value0": {
+                                                                                "value_": "15FC5A6E-2E4B-4B63-9BD3-0587DB6D0CDB"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "markerHeight_": 36.0
+                                                        }
+                                                    ]
+                                                },
+                                                "bgm_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483693,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "C01DFBAC-3D47-4E5D-82C1-EE398832A97A"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "greenStone_": {
+                                                    "cereal_class_version": 0,
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483694,
+                                                            "data": {
+                                                                "cereal_class_version": 0,
+                                                                "value0": {
+                                                                    "value_": "93D90D48-2672-4F08-A41C-F83E17073209"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "fountainIsland_": {
+                                                    "cereal_class_version": 0,
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483695,
+                                                            "data": {
+                                                                "cereal_class_version": 0,
+                                                                "value0": {
+                                                                    "value_": "DEFF48DC-FB63-4772-A018-4C20BCA518F6"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "lightStone_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483696,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "F3778B60-88E1-4E85-BD8C-A9D458736C00"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "nestDepartureCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483697,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "E28BBBA9-0119-4F78-BEFE-66CE0007CDA1"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "nestDepartureSound_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483698,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "34A87A6E-0B3F-4C19-A47C-47BABACEA6E9"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "nestDeparture_secs_": 6.0
+                                            }
+                                        }
+                                    },
+                                    "component_3": {
+                                        "polymorphic_id": 2147483654,
+                                        "polymorphic_name": "GameCore::Scene::GrassLandSceneContext",
+                                        "ptr_wrapper": {
+                                            "id": 2147483699,
+                                            "data": {
+                                                "cereal_class_version": 18,
+                                                "value0": {
+                                                    "value0": {
+                                                        "guid_": {
+                                                            "value_": "6FC0C26B-6743-4FF5-AE07-AE0D738672CC"
+                                                        },
+                                                        "isEnable_": true
+                                                    },
+                                                    "loadSceneFile_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483700,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "13CBE49A-2B18-4AFA-A5BA-68327F014BEF"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerSpawnPoint_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483701,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "BB75885D-C474-43A1-8CF8-DF8533CBD77A"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerAvatarFactory_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483702,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "8A77D9A4-21BE-4509-99E7-4CA85FF571E7"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationGrid_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483703,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "7F8280E5-F8B6-4B9D-9750-3290E536CB9C"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationTargets_": [
+                                                        {
+                                                            "id_": "GrassLandTyrant",
+                                                            "object_": {
+                                                                "value0": {
+                                                                    "polymorphic_id": 1073741824,
+                                                                    "ptr_wrapper": {
+                                                                        "id": 2147483704,
+                                                                        "data": {
+                                                                            "value0": {
+                                                                                "value_": "1AE61141-053C-4723-BC5F-4B02CFAB6FF1"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "markerHeight_": 60.0
+                                                        },
+                                                        {
+                                                            "id_": "GrassLandHyenaWoods",
+                                                            "object_": {
+                                                                "value0": {
+                                                                    "polymorphic_id": 1073741824,
+                                                                    "ptr_wrapper": {
+                                                                        "id": 2147483705,
+                                                                        "data": {
+                                                                            "value0": {
+                                                                                "value_": "72713C78-53F7-4512-935D-02624334571E"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "markerHeight_": 25.0
+                                                        }
+                                                    ]
+                                                },
+                                                "bgm_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483706,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "3BB73C00-3CDA-4714-A248-D3875704873C"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "networkRunner_": {
+                                                    "cereal_class_version": 0,
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483707,
+                                                            "data": {
+                                                                "cereal_class_version": 0,
+                                                                "value0": {
+                                                                    "value_": "11FD25D0-0F3B-412E-A20B-1369E462DC94"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "enemySpawnPointsRoot_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483708,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "32754805-9621-49AF-96DC-3A2798CB3D35"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483709,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "01135EAD-7AA9-4D84-B178-6B6608042BFA"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "cameraBrain_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483710,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "CAD27A03-B49A-4EEB-9273-01AC94227E5E"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalPortalPrefab_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483711,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "48544FE8-B64E-43D7-80BA-2A64D267EBD5"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalPortalOpenDelay_msecs_": 300,
+                                                "arrivalPortalOpen_msecs_": 800,
+                                                "arrivalWalk_msecs_": 2200,
+                                                "arrivalPortalCloseDelay_msecs_": 700,
+                                                "arrivalPortalClose_msecs_": 600,
+                                                "arrivalHold_msecs_": 500,
+                                                "arrivalPortalHeight_": 10.0,
+                                                "arrivalWalkStartBehind_": 6.0,
+                                                "arrivalWalkDistance_": 50.0,
+                                                "arrivalCameraStart_": {
+                                                    "value0": 22.0,
+                                                    "value1": 3.5,
+                                                    "value2": 24.0
+                                                },
+                                                "arrivalCameraEnd_": {
+                                                    "value0": 18.0,
+                                                    "value1": 2.5,
+                                                    "value2": 36.0
+                                                },
+                                                "arrivalLookAtHeight_": 12.0,
+                                                "clearEnemyKind_": 3,
+                                                "clearStoryFlag_": 2,
+                                                "floatingStone_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483712,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "8C16F13D-563C-40DA-993C-F007C1612053"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalOverview_msecs_": 6000,
+                                                "arrivalOverviewDescend_msecs_": 3500,
+                                                "arrivalIslandTitle_": "草 原 の 島",
+                                                "arrivalIslandSubtitle_": "狩人の一族が住む、野生の大きな島",
+                                                "arrivalTourShots_": [
+                                                    {
+                                                        "cereal_class_version": 1,
+                                                        "title": "村 の 跡",
+                                                        "subtitle": "大顎に潰された盆地の村",
+                                                        "startCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483816,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "D81E07B2-BAF0-4736-BA7E-3771A0BEFC7F"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "endCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483817,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "7B70B754-6C89-44B6-B6C9-8CA38FB1F38E"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "duration_msecs": 4200
+                                                    },
+                                                    {
+                                                        "title": "野 営 地",
+                                                        "subtitle": "村を追われた狩人の一族が、山の棚に身を寄せている",
+                                                        "startCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483818,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "29FD0A16-1F12-493D-8FF6-479E19E5A83A"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "endCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483819,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "ED9D88AD-2C6B-4BD8-B43F-B5697DB2EB8E"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "duration_msecs": 4200
+                                                    },
+                                                    {
+                                                        "title": "西 の 林",
+                                                        "subtitle": "ハイエナの群れがうろつく",
+                                                        "startCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483820,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "B555E8ED-810C-4A14-89A2-D5012B845BDA"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "endCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483821,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "EE5B7F2E-376E-4C14-8F16-13CBBA87610F"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "duration_msecs": 4200
+                                                    }
+                                                ],
+                                                "arrivalCaptionPrefab_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483722,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "E821999D-EA99-4631-AF71-6D69559B27DD"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalOverviewStartCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483822,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "4279B779-E9C6-4A3E-9FFA-174CD364299D"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalOverviewEndCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483823,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "AB987062-3B6F-4337-A7F5-21CBE68C3783"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "sceneType_": 0,
+                                                "enemyOverrideKind_": -1,
+                                                "enemyOverridePrefab_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483835,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "00000000-0000-0000-0000-000000000000"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "component_4": {
+                                        "polymorphic_id": 2147483655,
+                                        "polymorphic_name": "GameCore::Scene::DrySandSceneContext",
+                                        "ptr_wrapper": {
+                                            "id": 2147483726,
+                                            "data": {
+                                                "cereal_class_version": 5,
+                                                "value0": {
+                                                    "value0": {
+                                                        "guid_": {
+                                                            "value_": "E25D555C-47B8-4A5C-AC5A-EA775D446E91"
+                                                        },
+                                                        "isEnable_": true
+                                                    },
+                                                    "loadSceneFile_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483727,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "8BA1DCD4-129A-45B4-B5C2-B7683451DCD5"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerSpawnPoint_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483728,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "1A4EE793-3B9E-48B6-8C30-CC985C0EE90D"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerAvatarFactory_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483729,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "8A77D9A4-21BE-4509-99E7-4CA85FF571E7"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationGrid_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483730,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "4BEC7056-F622-4735-91E5-8D4FFEA411A2"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationTargets_": [
+                                                        {
+                                                            "id_": "DesertSkeletonDragon",
+                                                            "object_": {
+                                                                "value0": {
+                                                                    "polymorphic_id": 1073741824,
+                                                                    "ptr_wrapper": {
+                                                                        "id": 2147483731,
+                                                                        "data": {
+                                                                            "value0": {
+                                                                                "value_": "7288ED07-F841-4219-B51B-A45F8F2EA3AC"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "markerHeight_": 60.0
+                                                        },
+                                                        {
+                                                            "id_": "DesertOasis",
+                                                            "object_": {
+                                                                "value0": {
+                                                                    "polymorphic_id": 1073741824,
+                                                                    "ptr_wrapper": {
+                                                                        "id": 2147483732,
+                                                                        "data": {
+                                                                            "value0": {
+                                                                                "value_": "932D5B4A-509D-49FE-8B8F-D7AE7E3A0E0E"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "markerHeight_": 25.0
+                                                        }
+                                                    ]
+                                                },
+                                                "bgm_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483733,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "4C86E7AB-9092-4167-A035-E7AEB3AB3360"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "networkRunner_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483734,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "E0B3EF28-5362-47E0-82F7-30DF8CE9D993"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "enemySpawnPointsRoot_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483735,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "DD4472BD-3F8D-4F07-9CF3-89268C3A5BD5"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483736,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "2D85EC65-ACD2-45F0-BC98-A26CBA048659"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "cameraBrain_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483737,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "600714A7-B151-4284-BBCF-59A46930DEB0"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalPortalPrefab_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483738,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "48544FE8-B64E-43D7-80BA-2A64D267EBD5"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalPortalOpenDelay_msecs_": 300,
+                                                "arrivalPortalOpen_msecs_": 800,
+                                                "arrivalWalk_msecs_": 2200,
+                                                "arrivalPortalCloseDelay_msecs_": 700,
+                                                "arrivalPortalClose_msecs_": 600,
+                                                "arrivalHold_msecs_": 500,
+                                                "arrivalPortalHeight_": 10.0,
+                                                "arrivalWalkStartBehind_": 6.0,
+                                                "arrivalWalkDistance_": 50.0,
+                                                "arrivalCameraStart_": {
+                                                    "value0": 22.0,
+                                                    "value1": 3.5,
+                                                    "value2": 24.0
+                                                },
+                                                "arrivalCameraEnd_": {
+                                                    "value0": 18.0,
+                                                    "value1": 2.5,
+                                                    "value2": 36.0
+                                                },
+                                                "arrivalLookAtHeight_": 12.0,
+                                                "clearEnemyKind_": 6,
+                                                "clearStoryFlag_": 5,
+                                                "floatingStone_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483739,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "10CE1087-E67F-4011-902C-F9E7D77F447D"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalOverview_msecs_": 6000,
+                                                "arrivalOverviewDescend_msecs_": 3500,
+                                                "arrivalIslandTitle_": "砂 の 島",
+                                                "arrivalIslandSubtitle_": "泉が日に日に細っていく、砂に覆われた島",
+                                                "arrivalTourShots_": [
+                                                    {
+                                                        "title": "城 塞",
+                                                        "subtitle": "金色に光る石が落ちた、砂に沈んだ城塞",
+                                                        "startCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483824,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "4FB93D4A-2C1B-4191-A465-376835348E2A"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "endCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483825,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "626DB469-3714-4A4C-8396-FA4D6E4694FA"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "duration_msecs": 4200
+                                                    },
+                                                    {
+                                                        "title": "竜 の 骨",
+                                                        "subtitle": "東の尾根に、両翼だけを残した竜の骨",
+                                                        "startCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483826,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "74CA876D-F71A-4701-9015-7DE8188E470A"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "endCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483827,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "3D5DB232-8E25-41A8-AE31-127F996F06F7"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "duration_msecs": 4200
+                                                    },
+                                                    {
+                                                        "title": "オ ア シ ス",
+                                                        "subtitle": "隊商が足止めされている、干上がりかけた泉",
+                                                        "startCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483828,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "F14F66E3-B065-427F-BBC5-0225145B1CDB"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "endCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483829,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "6878954B-EBA9-4CD7-8143-9947ABA49681"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "duration_msecs": 4200
+                                                    }
+                                                ],
+                                                "arrivalCaptionPrefab_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483749,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "E821999D-EA99-4631-AF71-6D69559B27DD"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalOverviewStartCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483830,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "5DDE8744-9143-43E5-B1C8-CA4EB86F7104"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalOverviewEndCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483831,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "40141270-36D6-491D-905E-5B1AD3F7E8A6"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "component_5": {
+                                        "polymorphic_id": 2147483656,
+                                        "polymorphic_name": "GameCore::Scene::DragonNestSceneContext",
+                                        "ptr_wrapper": {
+                                            "id": 2147483753,
+                                            "data": {
+                                                "cereal_class_version": 3,
+                                                "value0": {
+                                                    "value0": {
+                                                        "guid_": {
+                                                            "value_": "4191E28B-0A92-4384-8B67-96E6B6D04887"
+                                                        },
+                                                        "isEnable_": true
+                                                    },
+                                                    "loadSceneFile_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483754,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "562F548F-5AFD-44E9-9C50-0F7C80DBCACD"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerSpawnPoint_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483755,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "B5E6F51F-7289-4D30-96FA-18B873F7D7A5"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerAvatarFactory_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483756,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "8A77D9A4-21BE-4509-99E7-4CA85FF571E7"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationGrid_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483757,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "A6A6100D-8EDC-426F-AC8E-CF3DA1DE4BA5"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationTargets_": [
+                                                        {
+                                                            "id_": "AncientDragon",
+                                                            "object_": {
+                                                                "value0": {
+                                                                    "polymorphic_id": 1073741824,
+                                                                    "ptr_wrapper": {
+                                                                        "id": 2147483758,
+                                                                        "data": {
+                                                                            "value0": {
+                                                                                "value_": "F389D764-1664-4F54-8D27-BFE7598868A6"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "markerHeight_": 60.0
+                                                        }
+                                                    ]
+                                                },
+                                                "bgm_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483759,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "4C86E7AB-9092-4167-A035-E7AEB3AB3360"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "networkRunner_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483760,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "646BB44C-CD8C-4870-9361-1C53D74D4548"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "enemySpawnPointsRoot_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483761,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "93C65861-73C1-4B4B-91E7-A292879E531C"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483762,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "92BB89C6-7DB2-4078-988D-E47717F6B4DC"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "cameraBrain_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483763,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "47973894-297D-4A81-9F6B-6DD1E2C63D4D"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalPortalPrefab_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483764,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "48544FE8-B64E-43D7-80BA-2A64D267EBD5"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalPortalOpenDelay_msecs_": 300,
+                                                "arrivalPortalOpen_msecs_": 800,
+                                                "arrivalWalk_msecs_": 2200,
+                                                "arrivalPortalCloseDelay_msecs_": 700,
+                                                "arrivalPortalClose_msecs_": 600,
+                                                "arrivalHold_msecs_": 500,
+                                                "arrivalPortalHeight_": 10.0,
+                                                "arrivalWalkStartBehind_": 6.0,
+                                                "arrivalWalkDistance_": 50.0,
+                                                "arrivalCameraStart_": {
+                                                    "value0": 22.0,
+                                                    "value1": 3.5,
+                                                    "value2": 24.0
+                                                },
+                                                "arrivalCameraEnd_": {
+                                                    "value0": 18.0,
+                                                    "value1": 2.5,
+                                                    "value2": 36.0
+                                                },
+                                                "arrivalLookAtHeight_": 12.0,
+                                                "clearEnemyKind_": 7,
+                                                "clearStoryFlag_": 9,
+                                                "arrivalOverview_msecs_": 0,
+                                                "arrivalOverviewDescend_msecs_": 3500,
+                                                "heartsRoot_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483765,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "29C9782D-47F1-42F9-B41C-449F64DD882A"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "floatingRoot_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483766,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "E585D8B6-3C50-4249-85DC-58F3D0D72035"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "endingCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483767,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "288E4934-952E-4662-8BE0-E20A7406E01F"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "greenHeartTrail_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483768,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "7E9E47D1-B9C4-4826-A8F1-23EACC9C57B9"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "lightHeartTrail_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483769,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "BFD30503-946E-44FB-9AB6-37D98E6E5828"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "fireHeartTrail_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483770,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "A3074058-7C33-4B44-B6DA-20C76BA0222F"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "heartBurst_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483771,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "128D83AC-51CC-4398-964E-15885320BFD1"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "endingDelay_secs_": 1.0,
+                                                "heartRise_secs_": 1.7999999523162842,
+                                                "heartFly_secs_": 3.200000047683716,
+                                                "heartStagger_secs_": 2.4000000953674318,
+                                                "endingHold_secs_": 3.0,
+                                                "heartRiseHeight_": 60.0,
+                                                "heartFlyDistance_": 3000.0,
+                                                "arrivalIslandTitle_": "",
+                                                "arrivalIslandSubtitle_": "",
+                                                "arrivalTourShots_": [],
+                                                "arrivalCaptionPrefab_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483772,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "E821999D-EA99-4631-AF71-6D69559B27DD"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalOverviewStartCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483832,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "00000000-0000-0000-0000-000000000000"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalOverviewEndCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483833,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "00000000-0000-0000-0000-000000000000"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "heartMoundCenterPos_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483834,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "37E4942E-807F-4F5D-87CD-5D081E44B1B4"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "component_6": {
+                                        "polymorphic_id": 6,
+                                        "ptr_wrapper": {
+                                            "id": 2147483836,
+                                            "data": {
+                                                "value0": {
+                                                    "value0": {
+                                                        "guid_": {
+                                                            "value_": "FE3AD9F5-E9D2-4DE5-89D7-E5F46A9DD0AD"
+                                                        },
+                                                        "isEnable_": true
+                                                    },
+                                                    "loadSceneFile_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483837,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "13CBE49A-2B18-4AFA-A5BA-68327F014BEF"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerSpawnPoint_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483838,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "BB75885D-C474-43A1-8CF8-DF8533CBD77A"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "playerAvatarFactory_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483839,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "8A77D9A4-21BE-4509-99E7-4CA85FF571E7"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationGrid_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483840,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "7F8280E5-F8B6-4B9D-9750-3290E536CB9C"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "navigationTargets_": []
+                                                },
+                                                "bgm_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483843,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "3BB73C00-3CDA-4714-A248-D3875704873C"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "networkRunner_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483844,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "11FD25D0-0F3B-412E-A20B-1369E462DC94"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "enemySpawnPointsRoot_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483845,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "32754805-9621-49AF-96DC-3A2798CB3D35"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483846,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "01135EAD-7AA9-4D84-B178-6B6608042BFA"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "cameraBrain_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483847,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "CAD27A03-B49A-4EEB-9273-01AC94227E5E"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalPortalPrefab_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483848,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "48544FE8-B64E-43D7-80BA-2A64D267EBD5"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalPortalOpenDelay_msecs_": 300,
+                                                "arrivalPortalOpen_msecs_": 800,
+                                                "arrivalWalk_msecs_": 2200,
+                                                "arrivalPortalCloseDelay_msecs_": 700,
+                                                "arrivalPortalClose_msecs_": 600,
+                                                "arrivalHold_msecs_": 500,
+                                                "arrivalPortalHeight_": 10.0,
+                                                "arrivalWalkStartBehind_": 6.0,
+                                                "arrivalWalkDistance_": 50.0,
+                                                "arrivalCameraStart_": {
+                                                    "value0": 22.0,
+                                                    "value1": 3.5,
+                                                    "value2": 24.0
+                                                },
+                                                "arrivalCameraEnd_": {
+                                                    "value0": 18.0,
+                                                    "value1": 2.5,
+                                                    "value2": 36.0
+                                                },
+                                                "arrivalLookAtHeight_": 12.0,
+                                                "clearEnemyKind_": -1,
+                                                "clearStoryFlag_": -1,
+                                                "floatingStone_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483849,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "8C16F13D-563C-40DA-993C-F007C1612053"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalOverview_msecs_": 0,
+                                                "arrivalOverviewDescend_msecs_": 3500,
+                                                "arrivalIslandTitle_": "草 原 の 島",
+                                                "arrivalIslandSubtitle_": "狩人の一族が住む、野生の大きな島",
+                                                "arrivalTourShots_": [
+                                                    {
+                                                        "title": "村 の 跡",
+                                                        "subtitle": "大顎に潰された盆地の村",
+                                                        "startCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483850,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "D81E07B2-BAF0-4736-BA7E-3771A0BEFC7F"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "endCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483851,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "7B70B754-6C89-44B6-B6C9-8CA38FB1F38E"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "duration_msecs": 4200
+                                                    },
+                                                    {
+                                                        "title": "野 営 地",
+                                                        "subtitle": "村を追われた狩人の一族が、山の棚に身を寄せている",
+                                                        "startCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483852,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "29FD0A16-1F12-493D-8FF6-479E19E5A83A"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "endCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483853,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "ED9D88AD-2C6B-4BD8-B43F-B5697DB2EB8E"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "duration_msecs": 4200
+                                                    },
+                                                    {
+                                                        "title": "西 の 林",
+                                                        "subtitle": "ハイエナの群れがうろつく",
+                                                        "startCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483854,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "B555E8ED-810C-4A14-89A2-D5012B845BDA"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "endCamera": {
+                                                            "value0": {
+                                                                "polymorphic_id": 1073741824,
+                                                                "ptr_wrapper": {
+                                                                    "id": 2147483855,
+                                                                    "data": {
+                                                                        "value0": {
+                                                                            "value_": "EE5B7F2E-376E-4C14-8F16-13CBBA87610F"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "duration_msecs": 4200
+                                                    }
+                                                ],
+                                                "arrivalCaptionPrefab_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483856,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "E821999D-EA99-4631-AF71-6D69559B27DD"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalOverviewStartCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483857,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "4279B779-E9C6-4A3E-9FFA-174CD364299D"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "arrivalOverviewEndCamera_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483858,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "AB987062-3B6F-4337-A7F5-21CBE68C3783"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "sceneType_": 6,
+                                                "enemyOverrideKind_": 3,
+                                                "enemyOverridePrefab_": {
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483859,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "value_": "AF3A47E7-B242-4600-815B-ABDA6A2113F4"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "transform_": {
+                                    "localPos_": {
+                                        "value0": 0.0,
+                                        "value1": 0.0,
+                                        "value2": 0.0
+                                    },
+                                    "localRot_": {
+                                        "value0": 0.0,
+                                        "value1": 0.0,
+                                        "value2": 0.0,
+                                        "value3": 1.0
+                                    },
+                                    "localScale_": {
+                                        "value0": 1.0,
+                                        "value1": 1.0,
+                                        "value2": 1.0
+                                    },
+                                    "worldMatrix_": {
+                                        "value0": {
+                                            "value0": 1.0,
+                                            "value1": 0.0,
+                                            "value2": 0.0,
+                                            "value3": 0.0
+                                        },
+                                        "value1": {
+                                            "value0": 0.0,
+                                            "value1": 1.0,
+                                            "value2": 0.0,
+                                            "value3": 0.0
+                                        },
+                                        "value2": {
+                                            "value0": 0.0,
+                                            "value1": 0.0,
+                                            "value2": 1.0,
+                                            "value3": 0.0
+                                        },
+                                        "value3": {
+                                            "value0": 0.0,
+                                            "value1": 0.0,
+                                            "value2": 0.0,
+                                            "value3": 1.0
+                                        }
+                                    },
+                                    "childCount": 0
+                                },
+                                "mark_": 0
+                            }
+                        }
+                    },
+                    "child": {
+                        "polymorphic_id": 1,
+                        "ptr_wrapper": {
+                            "id": 2147483777,
+                            "data": {
+                                "value0": {
+                                    "value0": {}
+                                },
+                                "isActive_": false,
+                                "name_": "SubSceneContexts",
+                                "guid_": {
+                                    "value_": "0BF2B6F9-CD15-4606-BBB9-DBC7978310E2"
+                                },
+                                "components_": {
+                                    "componentCount": 3,
+                                    "component_0": {
+                                        "polymorphic_id": 2147483657,
+                                        "polymorphic_name": "GameCore::Scene::Sub::ChattingUISceneContext",
+                                        "ptr_wrapper": {
+                                            "id": 2147483778,
+                                            "data": {
+                                                "cereal_class_version": 1,
+                                                "value0": {
+                                                    "cereal_class_version": 1,
+                                                    "value0": {
+                                                        "guid_": {
+                                                            "value_": "172AA756-3D02-4001-AACA-0AE290302484"
+                                                        },
+                                                        "isEnable_": true
+                                                    },
+                                                    "sceneFile_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483779,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "896A4B04-93BC-4BF6-8C54-517174FA9BAD"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "npcChatting_": {
+                                                    "cereal_class_version": 0,
+                                                    "value0": {
+                                                        "polymorphic_id": 1073741824,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483780,
+                                                            "data": {
+                                                                "cereal_class_version": 0,
+                                                                "value0": {
+                                                                    "value_": "2F75D9E4-7625-4448-89F8-321AD08E91C1"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "component_1": {
+                                        "polymorphic_id": 2147483658,
+                                        "polymorphic_name": "GameCore::Scene::Sub::OtherPlayerStatusUiSceneContext",
+                                        "ptr_wrapper": {
+                                            "id": 2147483781,
+                                            "data": {
+                                                "cereal_class_version": 1,
+                                                "value0": {
+                                                    "value0": {
+                                                        "guid_": {
+                                                            "value_": "C6DAE7E1-FF89-450C-9453-2184F259BD62"
+                                                        },
+                                                        "isEnable_": true
+                                                    },
+                                                    "sceneFile_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483782,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "F28D0C84-28F8-4A3E-9226-7DCA835A636B"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "component_2": {
+                                        "polymorphic_id": 2147483659,
+                                        "polymorphic_name": "GameCore::Scene::Sub::StageReturnUiSceneContext",
+                                        "ptr_wrapper": {
+                                            "id": 2147483783,
+                                            "data": {
+                                                "cereal_class_version": 1,
+                                                "value0": {
+                                                    "value0": {
+                                                        "guid_": {
+                                                            "value_": "57D9179F-15F7-4CD4-91E2-6DDFD8B8AFCF"
+                                                        },
+                                                        "isEnable_": true
+                                                    },
+                                                    "sceneFile_": {
+                                                        "value0": {
+                                                            "polymorphic_id": 1073741824,
+                                                            "ptr_wrapper": {
+                                                                "id": 2147483784,
+                                                                "data": {
+                                                                    "value0": {
+                                                                        "value_": "D079D693-C07B-469D-A793-1F938E0883D5"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "transform_": {
+                                    "localPos_": {
+                                        "value0": 0.0,
+                                        "value1": 0.0,
+                                        "value2": 0.0
+                                    },
+                                    "localRot_": {
+                                        "value0": 0.0,
+                                        "value1": 0.0,
+                                        "value2": 0.0,
+                                        "value3": 1.0
+                                    },
+                                    "localScale_": {
+                                        "value0": 1.0,
+                                        "value1": 1.0,
+                                        "value2": 1.0
+                                    },
+                                    "worldMatrix_": {
+                                        "value0": {
+                                            "value0": 1.0,
+                                            "value1": 0.0,
+                                            "value2": 0.0,
+                                            "value3": 0.0
+                                        },
+                                        "value1": {
+                                            "value0": 0.0,
+                                            "value1": 1.0,
+                                            "value2": 0.0,
+                                            "value3": 0.0
+                                        },
+                                        "value2": {
+                                            "value0": 0.0,
+                                            "value1": 0.0,
+                                            "value2": 1.0,
+                                            "value3": 0.0
+                                        },
+                                        "value3": {
+                                            "value0": 0.0,
+                                            "value1": 0.0,
+                                            "value2": 0.0,
+                                            "value3": 1.0
+                                        }
+                                    },
+                                    "childCount": 0
+                                },
+                                "mark_": 0
+                            }
+                        }
+                    }
+                },
+                "mark_": 0
+            }
+        }
+    },
+    "gameObject_1": {
+        "polymorphic_id": 1,
+        "ptr_wrapper": {
+            "id": 2147483785,
+            "data": {
+                "value0": {
+                    "value0": {}
+                },
+                "isActive_": true,
+                "name_": "GameCursor",
+                "guid_": {
+                    "value_": "ACFBE785-577C-4BF9-9640-67AC95A816EE"
+                },
+                "components_": {
+                    "componentCount": 1,
+                    "component_0": {
+                        "polymorphic_id": 2147483660,
+                        "polymorphic_name": "GamePlay::Ui::GameCursor",
+                        "ptr_wrapper": {
+                            "id": 2147483786,
+                            "data": {
+                                "cereal_class_version": 1,
+                                "value0": {
+                                    "guid_": {
+                                        "value_": "C11C5901-83E3-4B0B-BF81-68DDE9F6CD57"
+                                    },
+                                    "isEnable_": true
+                                },
+                                "visualRoot_": {
+                                    "value0": {
+                                        "polymorphic_id": 1073741824,
+                                        "ptr_wrapper": {
+                                            "id": 2147483787,
+                                            "data": {
+                                                "value0": {
+                                                    "value_": "57D8A086-1F50-4834-9CE3-4CB32312FB5D"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "idle_": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "polymorphic_id": 1073741824,
+                                        "ptr_wrapper": {
+                                            "id": 2147483788,
+                                            "data": {
+                                                "cereal_class_version": 0,
+                                                "value0": {
+                                                    "value_": "369ED6EE-12A3-4A99-8730-8952C3C171D4"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "press_": {
+                                    "value0": {
+                                        "polymorphic_id": 1073741824,
+                                        "ptr_wrapper": {
+                                            "id": 2147483789,
+                                            "data": {
+                                                "value0": {
+                                                    "value_": "44A5207E-A64B-4C00-BD31-6CA020203370"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "pressDuration_secs_": 0.0,
+                                "baseScale_": 0.550000011920929,
+                                "holdScale_": 0.800000011920929,
+                                "releaseScale_": 1.2000000476837159,
+                                "scaleSpeed_": 18.0
+                            }
+                        }
+                    }
+                },
+                "transform_": {
+                    "localPos_": {
+                        "value0": 0.0,
+                        "value1": 0.0,
+                        "value2": 0.0
+                    },
+                    "localRot_": {
+                        "value0": 0.0,
+                        "value1": 0.0,
+                        "value2": 0.0,
+                        "value3": 1.0
+                    },
+                    "localScale_": {
+                        "value0": 1.0,
+                        "value1": 1.0,
+                        "value2": 1.0
+                    },
+                    "worldMatrix_": {
+                        "value0": {
+                            "value0": 1.0,
+                            "value1": 0.0,
+                            "value2": 0.0,
+                            "value3": 0.0
+                        },
+                        "value1": {
+                            "value0": 0.0,
+                            "value1": 1.0,
+                            "value2": 0.0,
+                            "value3": 0.0
+                        },
+                        "value2": {
+                            "value0": 0.0,
+                            "value1": 0.0,
+                            "value2": 1.0,
+                            "value3": 0.0
+                        },
+                        "value3": {
+                            "value0": 0.0,
+                            "value1": 0.0,
+                            "value2": 0.0,
+                            "value3": 1.0
+                        }
+                    },
+                    "childCount": 1,
+                    "child": {
+                        "polymorphic_id": 1,
+                        "ptr_wrapper": {
+                            "id": 2147483790,
+                            "data": {
+                                "value0": {
+                                    "value0": {}
+                                },
+                                "isActive_": true,
+                                "name_": "Visual",
+                                "guid_": {
+                                    "value_": "57D8A086-1F50-4834-9CE3-4CB32312FB5D"
+                                },
+                                "components_": {
+                                    "componentCount": 0
+                                },
+                                "transform_": {
+                                    "localPos_": {
+                                        "value0": 0.0,
+                                        "value1": 0.0,
+                                        "value2": 0.0
+                                    },
+                                    "localRot_": {
+                                        "value0": 0.0,
+                                        "value1": 0.0,
+                                        "value2": 0.0,
+                                        "value3": 1.0
+                                    },
+                                    "localScale_": {
+                                        "value0": 1.0,
+                                        "value1": 1.0,
+                                        "value2": 1.0
+                                    },
+                                    "worldMatrix_": {
+                                        "value0": {
+                                            "value0": 1.0,
+                                            "value1": 0.0,
+                                            "value2": 0.0,
+                                            "value3": 0.0
+                                        },
+                                        "value1": {
+                                            "value0": 0.0,
+                                            "value1": 1.0,
+                                            "value2": 0.0,
+                                            "value3": 0.0
+                                        },
+                                        "value2": {
+                                            "value0": 0.0,
+                                            "value1": 0.0,
+                                            "value2": 1.0,
+                                            "value3": 0.0
+                                        },
+                                        "value3": {
+                                            "value0": 0.0,
+                                            "value1": 0.0,
+                                            "value2": 0.0,
+                                            "value3": 1.0
+                                        }
+                                    },
+                                    "childCount": 2,
+                                    "child": {
+                                        "polymorphic_id": 1,
+                                        "ptr_wrapper": {
+                                            "id": 2147483791,
+                                            "data": {
+                                                "value0": {
+                                                    "value0": {}
+                                                },
+                                                "isActive_": true,
+                                                "name_": "Idle",
+                                                "guid_": {
+                                                    "value_": "46FEDA6B-DC52-45B3-9632-38AC22B8599F"
+                                                },
+                                                "components_": {
+                                                    "componentCount": 1,
+                                                    "component_0": {
+                                                        "polymorphic_id": 2147483661,
+                                                        "polymorphic_name": "NanamiEngine::Module::NanamiUi::ImageAnimationRenderer",
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483792,
+                                                            "data": {
+                                                                "cereal_class_version": 1,
+                                                                "value0": {
+                                                                    "guid_": {
+                                                                        "value_": "369ED6EE-12A3-4A99-8730-8952C3C171D4"
+                                                                    },
+                                                                    "isEnable_": true
+                                                                },
+                                                                "animationFile_": {
+                                                                    "cereal_class_version": 0,
+                                                                    "value0": {
+                                                                        "polymorphic_id": 1073741824,
+                                                                        "ptr_wrapper": {
+                                                                            "id": 2147483793,
+                                                                            "data": {
+                                                                                "cereal_class_version": 0,
+                                                                                "value0": {
+                                                                                    "value_": "48A54C04-E7C3-4BAF-A7BE-8A270228F407"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "renderPriority_": 20000,
+                                                                "animationDuration_secs_": 0.07999999821186066,
+                                                                "isLoop_": true,
+                                                                "cooldownSecs_": 0.0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "transform_": {
+                                                    "localPos_": {
+                                                        "value0": 27.0,
+                                                        "value1": 27.0,
+                                                        "value2": 0.0
+                                                    },
+                                                    "localRot_": {
+                                                        "value0": 0.0,
+                                                        "value1": 0.0,
+                                                        "value2": 0.0,
+                                                        "value3": 1.0
+                                                    },
+                                                    "localScale_": {
+                                                        "value0": 1.0,
+                                                        "value1": 1.0,
+                                                        "value2": 1.0
+                                                    },
+                                                    "worldMatrix_": {
+                                                        "value0": {
+                                                            "value0": 1.0,
+                                                            "value1": 0.0,
+                                                            "value2": 0.0,
+                                                            "value3": 0.0
+                                                        },
+                                                        "value1": {
+                                                            "value0": 0.0,
+                                                            "value1": 1.0,
+                                                            "value2": 0.0,
+                                                            "value3": 0.0
+                                                        },
+                                                        "value2": {
+                                                            "value0": 0.0,
+                                                            "value1": 0.0,
+                                                            "value2": 1.0,
+                                                            "value3": 0.0
+                                                        },
+                                                        "value3": {
+                                                            "value0": 27.0,
+                                                            "value1": 27.0,
+                                                            "value2": 0.0,
+                                                            "value3": 1.0
+                                                        }
+                                                    },
+                                                    "childCount": 0
+                                                },
+                                                "mark_": 0
+                                            }
+                                        }
+                                    },
+                                    "child": {
+                                        "polymorphic_id": 1,
+                                        "ptr_wrapper": {
+                                            "id": 2147483794,
+                                            "data": {
+                                                "value0": {
+                                                    "value0": {}
+                                                },
+                                                "isActive_": true,
+                                                "name_": "Press",
+                                                "guid_": {
+                                                    "value_": "DECBD87F-8987-4F69-8427-E6F45B7EE240"
+                                                },
+                                                "components_": {
+                                                    "componentCount": 1,
+                                                    "component_0": {
+                                                        "polymorphic_id": 13,
+                                                        "ptr_wrapper": {
+                                                            "id": 2147483795,
+                                                            "data": {
+                                                                "value0": {
+                                                                    "guid_": {
+                                                                        "value_": "44A5207E-A64B-4C00-BD31-6CA020203370"
+                                                                    },
+                                                                    "isEnable_": true
+                                                                },
+                                                                "animationFile_": {
+                                                                    "value0": {
+                                                                        "polymorphic_id": 1073741824,
+                                                                        "ptr_wrapper": {
+                                                                            "id": 2147483796,
+                                                                            "data": {
+                                                                                "value0": {
+                                                                                    "value_": "4BFF3977-5B73-4F26-9DEC-036622FE5555"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "renderPriority_": 20000,
+                                                                "animationDuration_secs_": 0.05999999865889549,
+                                                                "isLoop_": false,
+                                                                "cooldownSecs_": 0.0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "transform_": {
+                                                    "localPos_": {
+                                                        "value0": 27.0,
+                                                        "value1": 27.0,
+                                                        "value2": 0.0
+                                                    },
+                                                    "localRot_": {
+                                                        "value0": 0.0,
+                                                        "value1": 0.0,
+                                                        "value2": 0.0,
+                                                        "value3": 1.0
+                                                    },
+                                                    "localScale_": {
+                                                        "value0": 1.0,
+                                                        "value1": 1.0,
+                                                        "value2": 1.0
+                                                    },
+                                                    "worldMatrix_": {
+                                                        "value0": {
+                                                            "value0": 1.0,
+                                                            "value1": 0.0,
+                                                            "value2": 0.0,
+                                                            "value3": 0.0
+                                                        },
+                                                        "value1": {
+                                                            "value0": 0.0,
+                                                            "value1": 1.0,
+                                                            "value2": 0.0,
+                                                            "value3": 0.0
+                                                        },
+                                                        "value2": {
+                                                            "value0": 0.0,
+                                                            "value1": 0.0,
+                                                            "value2": 1.0,
+                                                            "value3": 0.0
+                                                        },
+                                                        "value3": {
+                                                            "value0": 27.0,
+                                                            "value1": 27.0,
+                                                            "value2": 0.0,
+                                                            "value3": 1.0
+                                                        }
+                                                    },
+                                                    "childCount": 0
+                                                },
+                                                "mark_": 0
+                                            }
+                                        }
+                                    }
+                                },
+                                "mark_": 0
+                            }
+                        }
+                    }
+                },
+                "mark_": 0
+            }
+        }
+    }
+}

@@ -1,0 +1,100 @@
+{
+    "isActive_": false,
+    "name_": "SwordManNormalAttackParticle",
+    "guid_": {
+        "cereal_class_version": 0,
+        "value_": "ED6C2999-BF71-40FF-BCA9-1366B94A68DC"
+    },
+    "components_": {
+        "cereal_class_version": 0,
+        "componentCount": 1,
+        "component_0": {
+            "polymorphic_id": 2147483649,
+            "polymorphic_name": "NanamiEngine::Module::Component::ParticleSystem",
+            "ptr_wrapper": {
+                "id": 2147483649,
+                "data": {
+                    "cereal_class_version": 1,
+                    "value0": {
+                        "cereal_class_version": 0,
+                        "guid_": {
+                            "value_": "1D558390-A2AB-4F78-B886-5C4AFCCA4491"
+                        },
+                        "isEnable_": true
+                    },
+                    "value1": {
+                        "cereal_class_version": 0
+                    },
+                    "value2": {
+                        "cereal_class_version": 0
+                    },
+                    "particleFile_": {
+                        "cereal_class_version": 0,
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483650,
+                                "data": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "value_": "B09815C6-CA3D-4C9A-AC34-2C9D48886214"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "playingDuration_secs_": 1.0,
+                    "playMode_": 1
+                }
+            }
+        }
+    },
+    "transform_": {
+        "cereal_class_version": 0,
+        "localPos_": {
+            "value0": 0.0,
+            "value1": 0.0,
+            "value2": 0.0
+        },
+        "localRot_": {
+            "value0": 0.0,
+            "value1": 0.0,
+            "value2": 0.0,
+            "value3": 0.0
+        },
+        "localScale_": {
+            "value0": 4.5,
+            "value1": 4.5,
+            "value2": 4.5
+        },
+        "worldMatrix_": {
+            "value0": {
+                "value0": 4.5,
+                "value1": 0.0,
+                "value2": 0.0,
+                "value3": 0.0
+            },
+            "value1": {
+                "value0": 0.0,
+                "value1": 4.5,
+                "value2": 0.0,
+                "value3": 0.0
+            },
+            "value2": {
+                "value0": 0.0,
+                "value1": 0.0,
+                "value2": 4.5,
+                "value3": 0.0
+            },
+            "value3": {
+                "value0": 0.0,
+                "value1": 0.0,
+                "value2": 0.0,
+                "value3": 1.0
+            }
+        },
+        "childCount": 0
+    },
+    "mark_": 0,
+    "value0": 0
+}

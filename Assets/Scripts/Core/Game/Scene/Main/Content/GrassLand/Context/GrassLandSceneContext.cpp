@@ -1,0 +1,122 @@
+﻿#include "GrassLandSceneContext.h"
+
+#include "Engine/Module/GameObject/Transform/Transform.h"
+#include "Engine/Module/Serialization/Engine_Module_SerializationRegistration.h"
+
+void GameCore::Scene::GrassLandSceneContext::Init()
+{
+    SceneContextBase::Init();
+
+    bgm_.Init();
+    networkRunner_.Init();
+    enemySpawnPointsRoot_.Init();
+    arrivalCamera_.Init();
+    cameraBrain_.Init();
+    arrivalPortalPrefab_.Init();
+    arrivalCaptionPrefab_.Init();
+    arrivalOverviewStartCamera_.Init();
+    arrivalOverviewEndCamera_.Init();
+    for (auto& shot : arrivalTourShots_)
+        shot.Init();
+    floatingStone_.Init();
+}
+
+std::vector<std::shared_ptr<GameCore::Npc::Enemy::EnemySpawnPoint>>
+GameCore::Scene::GrassLandSceneContext::EnemySpawnPoints() const
+{
+    std::vector<std::shared_ptr<Npc::Enemy::EnemySpawnPoint>> spawnPoints;
+    for (const auto& child : enemySpawnPointsRoot_->Transform().GetAllChildren())
+    {
+        if (const auto spawnPoint = child->Components().Catch<Npc::Enemy::EnemySpawnPoint>().lock())
+            spawnPoints.push_back(spawnPoint);
+    }
+    return spawnPoints;
+}
+
+std::optional<GameCore::Story::StageClearCondition> GameCore::Scene::GrassLandSceneContext::StageClear() const
+{
+    if (clearEnemyKind_ < 0 || clearStoryFlag_ < 0)
+        return std::nullopt;
+    return Story::StageClearCondition{
+        static_cast<Npc::Enemy::EnemyKind>(clearEnemyKind_),
+        static_cast<Story::StoryFlag>(clearStoryFlag_) };
+}
+
+std::shared_ptr<NanamiEngine::Module::Asset::PrefabGameObjectFile>
+GameCore::Scene::GrassLandSceneContext::EnemyPrefabOverride(const Npc::Enemy::EnemyKind kind) const
+{
+    if (enemyOverrideKind_ != static_cast<int>(kind))
+        return nullptr;
+    return enemyOverridePrefab_.get();
+}
+
+void GameCore::Scene::GrassLandSceneContext::OnDrawGui()
+{
+    auto sceneType = SceneType();
+    ImGuiHelper::OnDrawEnumField("sceneType_", sceneType, Main::SCENE_TYPES, Main::ToString);
+    sceneType_ = static_cast<int>(sceneType);
+
+    ImGuiHelper::OnDrawInputField("bgm_", bgm_);
+    ImGuiHelper::OnDrawInputField("networkRunner_", networkRunner_);
+    ImGuiHelper::OnDrawInputField("enemySpawnPointsRoot_", enemySpawnPointsRoot_);
+    ImGuiHelper::OnDrawInputField("arrivalCamera_", arrivalCamera_);
+    ImGuiHelper::OnDrawInputField("cameraBrain_", cameraBrain_);
+    ImGuiHelper::OnDrawInputField("arrivalPortalPrefab_", arrivalPortalPrefab_);
+    ImGuiHelper::OnDrawInputField("arrivalPortalOpenDelay_msecs_", arrivalPortalOpenDelay_msecs_);
+    ImGuiHelper::OnDrawInputField("arrivalPortalOpen_msecs_", arrivalPortalOpen_msecs_);
+    ImGuiHelper::OnDrawInputField("arrivalWalk_msecs_", arrivalWalk_msecs_);
+    ImGuiHelper::OnDrawInputField("arrivalPortalCloseDelay_msecs_", arrivalPortalCloseDelay_msecs_);
+    ImGuiHelper::OnDrawInputField("arrivalPortalClose_msecs_", arrivalPortalClose_msecs_);
+    ImGuiHelper::OnDrawInputField("arrivalHold_msecs_", arrivalHold_msecs_);
+    ImGuiHelper::OnDrawInputField("arrivalPortalHeight_", arrivalPortalHeight_);
+    ImGuiHelper::OnDrawInputField("arrivalWalkStartBehind_", arrivalWalkStartBehind_);
+
+    bool hasStageClear = clearEnemyKind_ >= 0 && clearStoryFlag_ >= 0;
+    if (ImGui::Checkbox("stageClear", &hasStageClear))
+    {
+        clearEnemyKind_ = hasStageClear ? static_cast<int>(Npc::Enemy::EnemyKind::NormalBoss) : -1;
+        clearStoryFlag_ = hasStageClear ? 0 : -1;
+    }
+    if (hasStageClear)
+    {
+        auto kind = static_cast<Npc::Enemy::EnemyKind>(clearEnemyKind_);
+        ImGuiHelper::OnDrawEnumField("clearEnemyKind_", kind, Npc::Enemy::ENEMY_KINDS, Npc::Enemy::ToString);
+        clearEnemyKind_ = static_cast<int>(kind);
+
+        auto flag = static_cast<Story::StoryFlag>(clearStoryFlag_);
+        ImGuiHelper::OnDrawEnumField("clearStoryFlag_", flag, Story::STORY_FLAGS, Story::ToString);
+        clearStoryFlag_ = static_cast<int>(flag);
+    }
+    ImGuiHelper::OnDrawInputField("arrivalWalkDistance_", arrivalWalkDistance_);
+    ImGuiHelper::OnDrawInputField("arrivalCameraStart_", arrivalCameraStart_);
+    ImGuiHelper::OnDrawInputField("arrivalCameraEnd_", arrivalCameraEnd_);
+    ImGuiHelper::OnDrawInputField("arrivalLookAtHeight_", arrivalLookAtHeight_);
+    ImGuiHelper::OnDrawInputField("arrivalOverview_msecs_", arrivalOverview_msecs_);
+    ImGuiHelper::OnDrawInputField("arrivalOverviewDescend_msecs_", arrivalOverviewDescend_msecs_);
+    ImGuiHelper::OnDrawInputField("arrivalOverviewStartCamera_", arrivalOverviewStartCamera_);
+    ImGuiHelper::OnDrawInputField("arrivalOverviewEndCamera_", arrivalOverviewEndCamera_);
+    ImGuiHelper::OnDrawInputField("arrivalIslandTitle_", arrivalIslandTitle_);
+    ImGuiHelper::OnDrawInputField("arrivalIslandSubtitle_", arrivalIslandSubtitle_);
+    ImGuiHelper::OnDrawInputField("arrivalTourShots_", arrivalTourShots_, [this]
+    {
+        if (ImGui::Button("Add Shot"))
+            arrivalTourShots_.emplace_back();
+    });
+    ImGuiHelper::OnDrawInputField("arrivalCaptionPrefab_", arrivalCaptionPrefab_);
+    ImGuiHelper::OnDrawInputField("floatingStone_", floatingStone_);
+
+    bool hasOverride = enemyOverrideKind_ >= 0;
+    if (ImGui::Checkbox("enemyOverride", &hasOverride))
+        enemyOverrideKind_ = hasOverride ? static_cast<int>(Npc::Enemy::EnemyKind::Tyrannosaurus) : -1;
+    if (hasOverride)
+    {
+        auto kind = static_cast<Npc::Enemy::EnemyKind>(enemyOverrideKind_);
+        ImGuiHelper::OnDrawEnumField("enemyOverrideKind_", kind, Npc::Enemy::ENEMY_KINDS, Npc::Enemy::ToString);
+        enemyOverrideKind_ = static_cast<int>(kind);
+        ImGuiHelper::OnDrawInputField("enemyOverridePrefab_", enemyOverridePrefab_);
+    }
+}
+
+#pragma region SerializationMacro
+NANAMI_REGISTER_TYPE(GameCore::Scene::GrassLandSceneContext, GameCore::Scene::SceneContextBase);
+#pragma endregion

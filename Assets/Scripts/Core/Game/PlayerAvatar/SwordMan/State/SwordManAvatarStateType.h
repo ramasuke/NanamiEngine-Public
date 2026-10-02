@@ -1,0 +1,40 @@
+﻿#pragma once
+#include <cstdint>
+
+namespace GameCore::PlayerAvatar::SwordMan
+{
+    enum class SwordManAvatarStateType : uint8_t
+    {
+        Disable            = 0,
+        Idle               = 1,
+        Walk               = 2,
+        Run                = 3,
+        Jump               = 4,
+        Floating           = 5,
+        NormalAttack       = 6,
+        AttackedShocked    = 7,
+        DashAttack         = 8,
+        ClimbToTop         = 9,
+        ArmStretch         = 10,
+        Chatting           = 11,
+        ChargeAttackCharging = 12,
+        ChargeAttackRelease  = 13,
+        Hurt               = 14,
+        AvoidRolling       = 15,
+        Death              = 16,
+        UseCanon           = 17,
+        InjuredWalk        = 18,
+        InjuredRun         = 19,
+        Down               = 20,
+        WakeUp             = 21,
+        FallDown           = 22,
+        GetUp              = 23,
+        JumpAttackAir      = 24,
+        JumpAttackLand     = 25,
+        WarpIn             = 26,
+        UseItemDrink       = 27,
+        UseItemEat         = 28,
+        UseItemPlace       = 29,
+        CounterAttack      = 30,
+    };
+}

@@ -1,0 +1,152 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "NanamiEngine::Module::Asset::SwordManInitStatus",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 20,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    },
+                    "contentPath_": "Assets\\Data\\PlayerAvatar\\InitStatus\\SwordMan/SwordManInitStatus.swordManInitStatus",
+                    "guid_": {
+                        "cereal_class_version": 0,
+                        "value_": "BCE65077-46B1-4A73-BE69-E92CEB240D70"
+                    }
+                },
+                "maxHealth_": {
+                    "cereal_class_version": 0,
+                    "value_": 150
+                },
+                "minHealth_": {
+                    "value_": 0
+                },
+                "health_": {
+                    "value_": 150
+                },
+                "maxStamina_": {
+                    "cereal_class_version": 0,
+                    "value_": 100.0
+                },
+                "staminaDrainPerSecond_": 20.0,
+                "staminaRegenPerSecond_": 10.0,
+                "minStaminaRatioToResumeRun_": 0.30000001192092898,
+                "comboNormalAttackStateDuration_secs_": 1.5151515007019044,
+                "attackedShockedStateDuration_secs_": 0.27272728085517886,
+                "dashAttack_": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 1,
+                        "value_": 15,
+                        "flinchPower_": 20
+                    },
+                    "value1": {
+                        "cereal_class_version": 0,
+                        "value0": 10
+                    },
+                    "value2": 0.5303030014038086,
+                    "value3": 0.6060606241226196
+                },
+                "dashAttackLungeSpeed_": 55.0,
+                "comboHitFeel_": [
+                    {
+                        "cereal_class_version": 3,
+                        "value0": 0.22499999403953553,
+                        "value1": 0.1090909093618393,
+                        "value2": 1.0,
+                        "value3": 0.25,
+                        "value4": 0.11999999731779099,
+                        "value5": 30.0
+                    },
+                    {
+                        "value0": 0.375,
+                        "value1": 0.1090909093618393,
+                        "value2": 1.149999976158142,
+                        "value3": 0.3499999940395355,
+                        "value4": 0.14000000059604646,
+                        "value5": 28.0
+                    },
+                    {
+                        "value0": 0.6000000238418579,
+                        "value1": 0.1090909093618393,
+                        "value2": 1.350000023841858,
+                        "value3": 0.5,
+                        "value4": 0.18000000715255738,
+                        "value5": 40.0
+                    }
+                ],
+                "dashHitFeel_": {
+                    "value0": 0.675000011920929,
+                    "value1": 0.12727272510528565,
+                    "value2": 1.0,
+                    "value3": 0.6000000238418579,
+                    "value4": 0.20000000298023225,
+                    "value5": 0.0
+                },
+                "comboInputBufferWindow_secs_": 0.11818181723356247,
+                "chargeAttackHoldThreshold_secs_": 0.20000000298023225,
+                "chargeAttackMaxCharge_secs_": 1.0,
+                "chargeAttackMaxHold_secs_": 3.0,
+                "chargeAttack_": {
+                    "value0": {
+                        "value_": 50,
+                        "flinchPower_": 50
+                    },
+                    "value1": {
+                        "value0": 15
+                    },
+                    "value2": 0.6666666865348816,
+                    "value3": 1.3333333730697632
+                },
+                "chargeHitFeel_": {
+                    "value0": 1.7999999523162842,
+                    "value1": 0.18000000715255738,
+                    "value2": 7.0,
+                    "value3": 0.800000011920929,
+                    "value4": 0.25,
+                    "value5": 0.0
+                },
+                "chargeAttackLungeStart_secs_": 0.4166666567325592,
+                "chargeAttackLungeSpeed_": 30.0,
+                "chargeAttackStaminaCost_": 30.0,
+                "walkSpeed_": {
+                    "cereal_class_version": 0,
+                    "value_": 24.0
+                },
+                "runSpeed_": {
+                    "value_": 70.0
+                },
+                "moveRotateSpeed_": 12.0,
+                "lockOnAttackRotateSpeed_": 10.0,
+                "attackRotateSmoothTime_secs_": 0.07999999821186066,
+                "jumpPower_": 90.0,
+                "jumpStateDuration_secs_": 0.48181816935539248,
+                "jumpCooldown_secs_": 0.0,
+                "jumpStaminaCost_": 15.0,
+                "damageStateDuration_secs_": 0.6363636255264282,
+                "avoidRollingStateDuration_secs_": 0.4000000059604645,
+                "avoidRollingStaminaCost_": 20.0,
+                "deathStateDuration_secs_": 1.8181818723678589,
+                "injuredHealthRatio_": 0.30000001192092898,
+                "quests_": {
+                    "polymorphic_id": 1073741824,
+                    "ptr_wrapper": {
+                        "valid": 1,
+                        "data": {
+                            "cereal_class_version": 2,
+                            "count": 0
+                        }
+                    }
+                },
+                "initialMoney_": {
+                    "cereal_class_version": 0,
+                    "value_": 0
+                },
+                "justAvoidWindow_secs_": 0.15000000596046449
+            }
+        }
+    }
+}

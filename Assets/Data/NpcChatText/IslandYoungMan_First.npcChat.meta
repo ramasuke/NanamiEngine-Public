@@ -1,0 +1,112 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "NanamiEngine::Module::Asset::NpcChat",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 0,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    },
+                    "contentPath_": "Assets\\Data\\NpcChatText/IslandYoungMan_First.npcChat",
+                    "guid_": {
+                        "cereal_class_version": 0,
+                        "value_": "E5B346BB-7892-4C85-BC43-A3D32F10FD2B"
+                    }
+                },
+                "count": 4,
+                "item_0": {
+                    "cereal_class_version": 0,
+                    "font_": {
+                        "cereal_class_version": 0,
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483650,
+                                "data": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "やあ、無事だったんだね！\n僕も、なんとか生きてるよ。",
+                    "textColor_": {
+                        "cereal_class_version": 0,
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_1": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483651,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "乗ってきた船、見たかい？\nあの竜のせいで、墜ちちゃったんだ。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_2": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483652,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "でも僕は諦めないよ。\nいつか必ず、あの船を直してみせる。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_3": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483653,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "部品さえ手に入ればなあ……\nどこかで見かけたら教えてよ。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                }
+            }
+        }
+    }
+}

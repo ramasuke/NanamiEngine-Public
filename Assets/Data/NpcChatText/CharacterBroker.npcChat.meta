@@ -1,0 +1,49 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "NanamiEngine::Module::Asset::NpcChat",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 0,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    },
+                    "contentPath_": "Assets\\Data\\NpcChatText/CharacterBroker.npcChat",
+                    "guid_": {
+                        "cereal_class_version": 0,
+                        "value_": "8608FF10-C26C-4090-A633-6B1A9AC0A661"
+                    }
+                },
+                "count": 1,
+                "item_0": {
+                    "cereal_class_version": 0,
+                    "font_": {
+                        "cereal_class_version": 0,
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483650,
+                                "data": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "今は紹介できる奴がいなくてな。\n人が戻るまでは、掲示板で稼ぎな。",
+                    "textColor_": {
+                        "cereal_class_version": 0,
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                }
+            }
+        }
+    }
+}

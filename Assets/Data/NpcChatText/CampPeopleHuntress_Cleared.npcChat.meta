@@ -1,0 +1,91 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "NanamiEngine::Module::Asset::NpcChat",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 0,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    },
+                    "contentPath_": "Assets\\Data\\NpcChatText/CampPeopleHuntress_Cleared.npcChat",
+                    "guid_": {
+                        "cereal_class_version": 0,
+                        "value_": "E901BDA5-A66E-41CB-BE22-BB94284DA1AB"
+                    }
+                },
+                "count": 3,
+                "item_0": {
+                    "cereal_class_version": 0,
+                    "font_": {
+                        "cereal_class_version": 0,
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483650,
+                                "data": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "大顎を倒したのね。\n……ありがとう。",
+                    "textColor_": {
+                        "cereal_class_version": 0,
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_1": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483651,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "長から聞いたわ。\nあなたの島へ行くのは、私たち。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_2": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483652,
+                                "data": {
+                                    "value0": {
+                                        "value_": "02951627-F120-4EDC-B4F7-C27985C7F643"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "向こうの島に住まわせてもらうの。\n狩りの腕なら、役に立てるから。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                }
+            }
+        }
+    }
+}

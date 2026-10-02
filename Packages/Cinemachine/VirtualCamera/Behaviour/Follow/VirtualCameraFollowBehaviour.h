@@ -1,0 +1,54 @@
+﻿#pragma once
+#include "Engine/Core/Api/NanamiApi.h"
+#include "../IVirtualCameraBehaviour.h"
+#include "../../../../../Engine/Core/Object/Field/Field.h"
+#include "../../../../../Engine/Module/Component/ComponentBase.h"
+
+namespace NanamiEngine::CineMachine::Behaviour
+{
+    class NANAMI_API VirtualCameraFollowBehaviour final : public Component::ComponentBase,
+                                               public LifeCycleCallback::IDebugRenderable,
+                                               public IVirtualCameraBehaviour
+    {
+    public:
+        void SetTarget(const std::shared_ptr<GameObject::IGameObject>& followTarget);
+        [[nodiscard]] glm::vec3 MoveTargetPosition() const noexcept; 
+
+    private:
+        void OnCameraUpdate() override;
+        [[nodiscard]] VirtualCameraStage Stage() const override { return VirtualCameraStage::Body; }
+        void OnDebugRender () override;
+
+    public:
+        FIELD(Module::GameObject::IGameObject) followTarget_;
+        glm::vec3 followOffset_ = glm::vec3(0, 0, 0);
+#pragma region Serialization Function
+public:
+void OnDrawGui() {
+    LibCore::ImGuiHelper::OnDrawInputField("followTarget_", followTarget_);
+    LibCore::ImGuiHelper::OnDrawInputField("followOffset_", followOffset_);
+}
+
+template<class Archive>
+void save(Archive& archive, const std::uint32_t version) const {
+    archive(cereal::base_class<Module::Component::ComponentBase>(this));
+    archive(cereal::base_class<IDebugRenderable>(this));
+    archive(cereal::base_class<IVirtualCameraBehaviour>(this));
+    archive(CEREAL_NVP(followTarget_));
+    archive(CEREAL_NVP(followOffset_));
+}
+
+template<class Archive>
+void load(Archive& archive, const std::uint32_t version) {
+    archive(cereal::base_class<Module::Component::ComponentBase>(this));
+    if (version <= 2) Module::LifeCycleCallback::DiscardUpdatableBase(archive);
+    if (version >= 2) archive(cereal::base_class<IDebugRenderable>(this));
+    archive(cereal::base_class<IVirtualCameraBehaviour>(this));
+    if (version >= 0) archive(CEREAL_NVP(followTarget_));
+    if (version >= 1) archive(CEREAL_NVP(followOffset_));
+}
+#pragma endregion
+};
+}
+
+CEREAL_CLASS_VERSION(NanamiEngine::CineMachine::Behaviour::VirtualCameraFollowBehaviour, 3);

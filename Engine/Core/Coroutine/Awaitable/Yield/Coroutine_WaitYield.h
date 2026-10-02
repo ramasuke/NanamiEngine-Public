@@ -1,0 +1,38 @@
+﻿#pragma once
+#include "Engine/Core/Api/NanamiApi.h"
+#include <coroutine>
+
+#include "../Engine_Coroutine_ITickableWaitable.h"
+
+namespace Coroutine
+{
+    class NANAMI_API WaitYield final : public ITickableWaitable
+    {
+    public:
+        WaitYield() = default;
+
+        [[nodiscard]] bool await_ready() const noexcept override
+        {
+            return completed_;
+        }
+
+        void await_suspend(std::coroutine_handle<> parentHandle);
+        void await_resume() const noexcept {}
+
+        void Tick(float) override;
+
+        [[nodiscard]] std::coroutine_handle<> CoroutineHandle() const override
+        {
+            return parentHandle_;
+        }
+
+        [[nodiscard]] bool IsCompleted() const
+        {
+            return completed_;
+        }
+
+    private:
+        std::coroutine_handle<> parentHandle_{};
+        bool completed_ = false;
+    };
+}

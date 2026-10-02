@@ -1,0 +1,33 @@
+﻿#pragma once
+#include "Engine/Module/NanamiUI/Slider/NanamiUi_Slider.h"
+#include "../../../../Core/Game/Npc/Enemy/EnemyBase.h"
+
+namespace GamePlay::Npc::Enemy
+{
+    class Hyena final : public GameCore::Npc::EnemyBase
+    {
+    private:
+        void DoAwake() override;
+        [[nodiscard]] std::optional<GameCore::Npc::Enemy::EnemyKind> RecordKind() const override { return GameCore::Npc::Enemy::EnemyKind::Hyena; }
+        void DoUpdate() override;
+        
+
+#pragma region Serialization Function
+    public:
+        void OnDrawGui() override;
+        
+        template<class Archive>
+        void save(Archive& archive, const std::uint32_t version) const {
+            archive(cereal::base_class<EnemyBase>(this));
+        }
+
+        template<class Archive>
+        void load(Archive& archive, const std::uint32_t version) {
+            archive(cereal::base_class<EnemyBase>(this));
+        }
+#pragma endregion
+    };
+}
+#pragma region SerializationMacro
+CEREAL_CLASS_VERSION(GamePlay::Npc::Enemy::Hyena, 0);
+#pragma endregion

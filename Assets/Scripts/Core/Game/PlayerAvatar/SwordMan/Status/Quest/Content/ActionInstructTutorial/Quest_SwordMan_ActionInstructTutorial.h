@@ -1,0 +1,63 @@
+﻿#pragma once
+#include "Engine/Core/Object/Field/Field.h"
+#include "Engine/Module/Asset/PrefabGameObject/PrefabGameObjectFile.h"
+#include "../../SwordMan_ITakeableSwordManQuest.h"
+#include "../../SwordMan_QuestContext.h"
+#include "../../SwordMan_QuestFactory.h"
+#include "Engine/Core/Coroutine/Task/Task.h"
+#include "../../../../../Quest/PlayerAvatar_QuestType.h"
+#include "cereal/types/polymorphic.hpp"
+
+namespace GameCore::PlayerAvatar::Quest
+{
+    class ICompleteQuestGroup;
+}
+
+namespace GameCore::PlayerAvatar::SwordMan::Quest
+{
+    class ActionInstructTutorialPresenter;
+}
+
+namespace GameCore::PlayerAvatar::SwordMan::Quest
+{
+    class ActionInstructTutorial final : public Npc::Friendly::Behaviour::Action::ITakeableSwordManQuest
+    {
+    public:
+        ActionInstructTutorial();
+        ~ActionInstructTutorial() override;
+
+    private:
+        void StartQuest(const Npc::Friendly::Behaviour::Action::SwordManQuestContext& context) override;
+        // WARNING: 列挙子を直接返すと一時オブジェクトへの参照になり、Release で別の値に化ける
+        static constexpr PlayerAvatar::QuestType QUEST_TYPE = PlayerAvatar::QuestType::SwordManActionInstructTutorial;
+        [[nodiscard]] const PlayerAvatar::QuestType& QuestType() const override { return QUEST_TYPE; }
+
+        Coroutine::Task<void> StartQuestAsync(PlayerAvatar::Quest::ICompleteQuestGroup& completedQuestGroup);
+
+        [[serialize(0)]] FIELD(Asset::PrefabGameObjectFile) questUiPrefab_;
+        std::unique_ptr<ActionInstructTutorialPresenter> presenter_;
+        
+#pragma region Serialization Function
+    public:
+        void OnDrawGui() override;
+
+        template<class Archive>
+        void save(Archive& archive, const std::uint32_t version) const {
+            archive(cereal::base_class<ITakeableSwordManQuest>(this));
+            archive(CEREAL_NVP(questUiPrefab_));
+        }
+
+        template<class Archive>
+        void load(Archive& archive, const std::uint32_t version) {
+            archive(cereal::base_class<ITakeableSwordManQuest>(this));
+            archive(CEREAL_NVP(questUiPrefab_));
+        }
+#pragma endregion
+    };
+
+    REGISTER_SWORDMAN_QUEST(ActionInstructTutorial)
+}
+
+#pragma region SerializationMacro
+CEREAL_CLASS_VERSION(GameCore::PlayerAvatar::SwordMan::Quest::ActionInstructTutorial, 0);
+#pragma endregion

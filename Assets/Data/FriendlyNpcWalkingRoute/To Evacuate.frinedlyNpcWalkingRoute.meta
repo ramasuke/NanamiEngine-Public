@@ -1,0 +1,54 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "NanamiEngine::Module::Asset::NpcWalkingRoute",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 0,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    },
+                    "contentPath_": "Assets\\Data\\FriendlyNpcWalkingRoute/To Evacuate.frinedlyNpcWalkingRoute",
+                    "guid_": {
+                        "cereal_class_version": 0,
+                        "value_": "F98F8342-CC0B-412C-8A0E-3465FDC6C158"
+                    }
+                },
+                "count": 6,
+                "item_0": {
+                    "value0": 93.9000015258789,
+                    "value1": 23.600000381469728,
+                    "value2": 210.6999969482422
+                },
+                "item_1": {
+                    "value0": 70.30000305175781,
+                    "value1": 37.400001525878909,
+                    "value2": 174.39999389648438
+                },
+                "item_2": {
+                    "value0": 36.900001525878909,
+                    "value1": 38.79999923706055,
+                    "value2": 111.80000305175781
+                },
+                "item_3": {
+                    "value0": 4.300000190734863,
+                    "value1": 33.29999923706055,
+                    "value2": 75.19999694824219
+                },
+                "item_4": {
+                    "value0": -20.0,
+                    "value1": 32.0,
+                    "value2": 36.0
+                },
+                "item_5": {
+                    "value0": -68.0,
+                    "value1": 30.0,
+                    "value2": 42.0
+                }
+            }
+        }
+    }
+}

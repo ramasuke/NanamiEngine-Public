@@ -1,0 +1,180 @@
+﻿#include "PlayerAvatarFactory.h"
+
+#include "../../../Scripts/Core/Game/PlayerAvatar/PlayerAvatar.h"
+#include "Engine/Module/Scene/GameObject/Helper/GameObject.h"
+#include "Engine/Module/Asset/PrefabGameObject/PrefabGameObjectFile.h"
+#include "../../../Scripts/Core/Game/Game.h"
+#include "../../../Scripts/GamePlay/PlayerAvatar/PlayerAvatarBase.h"
+#include "../../../Scripts/GamePlay/PlayerAvatar/SwordMan/SwordManAvatar.h"
+#include "../../../Scripts/GamePlay/PlayerAvatar/MagicCaster/MagicCasterAvatar.h"
+#include "../../../Scripts/Core/Game/PlayerAvatar/Status/PlayerAvatarStatus.h"
+#include "../../../Scripts/Core/Game/PlayerAvatar/SwordMan/Status/Presenter/PlayerAvatar_SwordMan_StatusPresenter.h"
+#include "../../../Scripts/Core/Game/PlayerAvatar/MagicCaster/Status/Presenter/PlayerAvatar_MagicCaster_StatusPresenter.h"
+#include "../../../Scripts/GamePlay/Ui/PlayerStatus/Ui_PlayerStatus.h"
+#include "Engine/Module/Serialization/Engine_Module_SerializationRegistration.h"
+
+namespace NanamiEngine::Module::Asset
+{
+    PlayerAvatarFactory::PlayerAvatarFactory(const std::string& contentPath)
+        : ScriptableObject(contentPath)
+    {
+        
+    }
+
+    std::weak_ptr<GamePlay::PlayerAvatar::SwordMan::SwordManAvatar> PlayerAvatarFactory::SummonSwordManAvatar(
+        const glm::vec3& summonPosition,
+        const std::shared_ptr<GameObject::IGameObject>& parent)
+    {
+        const auto playerAvatarObject = Scene::GameObject::Instantiate(swordManPrefab_.get(), summonPosition).lock();
+        auto playerAvatar= playerAvatarObject->Components().Catch<GamePlay::PlayerAvatar::SwordMan::SwordManAvatar>().lock();
+        
+        playerAvatarObject->Transform().SetParent(parent);
+        return playerAvatar;
+    }
+
+    std::shared_ptr<GameCore::IPlayerAvatar> PlayerAvatarFactory::LoadInitedPlayerAvatar(
+        const GameCore::PlayerAvatar::PlayerAvatarType& type,
+        const glm::vec3& summonPosition,
+        const std::shared_ptr<GameObject::IGameObject>& parent,
+        const bool enableInputAction,
+        const std::shared_ptr<GameCore::PlayerAvatar::IPlayerAvatarStatus>& presetStatus)
+    {
+        return LoadInitedPlayerAvatarWithAttachments(type, summonPosition, parent, enableInputAction, presetStatus).avatar;
+    }
+
+    LoadedPlayerAvatar PlayerAvatarFactory::LoadInitedPlayerAvatarWithAttachments(
+        const GameCore::PlayerAvatar::PlayerAvatarType& type,
+        const glm::vec3& summonPosition,
+        const std::shared_ptr<GameObject::IGameObject>& parent,
+        const bool enableInputAction,
+        const std::shared_ptr<GameCore::PlayerAvatar::IPlayerAvatarStatus>& presetStatus)
+    {
+        std::shared_ptr<GameCore::IPlayerAvatar> playerAvatar;
+        PlayerAvatarAttachments attachments;
+
+        switch (type)
+        {
+        case GameCore::PlayerAvatar::PlayerAvatarType::SwordMan:
+            {
+                std::weak_ptr<GameCore::PlayerAvatar::SwordMan::SwordManAvatarCameraGroup> swordmanCameraGroup;
+                if (enableInputAction)
+                {
+                    const auto cameraGroupObject = Scene::GameObject::Instantiate(swordManCameraGroupPrefab_.get(), summonPosition);
+                    attachments.objects.push_back(cameraGroupObject);
+                    swordmanCameraGroup = cameraGroupObject
+                        .lock()
+                        ->Components()
+                        .Catch<GameCore::PlayerAvatar::SwordMan::SwordManAvatarCameraGroup>();
+                }
+
+                auto presetSwordManStatus = std::dynamic_pointer_cast<GameCore::PlayerAvatar::SwordMan::SwordManAvatarStatus>(presetStatus);
+                auto status = presetSwordManStatus
+                    ? presetSwordManStatus
+                    : GameCore::PlayerAvatar::LoadStatus<GameCore::PlayerAvatar::SwordMan::SwordManAvatarTraits>();
+                const auto swordManAvatar = LoadInitedPlayerAvatarImpl<
+                    GamePlay::PlayerAvatar::SwordMan::SwordManAvatar,
+                    GameCore::PlayerAvatar::SwordMan::SwordManAvatarTraits>(
+                    swordManPrefab_.get(),
+                    summonPosition,
+                    parent,
+                    status,
+                    swordmanCameraGroup.lock(),
+                    enableInputAction);
+                playerAvatar = swordManAvatar;
+
+                if (enableInputAction)
+                {
+                    auto swordManStatusUiPrefab = Scene::GameObject::Instantiate(*swordManStatusUiPrefab_.get());
+                    auto swordManStatusUi = swordManStatusUiPrefab.lock()->Components().Catch<GamePlay::Ui::PlayerStatus>();
+                    auto swordManPresenterObj = Scene::GameObject::Instantiate(*swordManStatusPresenterPrefab_.get());
+                    attachments.objects.push_back(swordManStatusUiPrefab);
+                    attachments.objects.push_back(swordManPresenterObj);
+                    /** StatusPresenter */
+                    auto swordmanStatusPresenter = swordManPresenterObj.lock()->Components().Catch<GamePlay::PlayerAvatar::SwordMan::StatusPresenter>();
+                    swordmanStatusPresenter.lock()->Initialize(*swordManStatusUi.lock(), *status, swordManAvatar);
+                }
+                break;
+            }
+
+        case GameCore::PlayerAvatar::PlayerAvatarType::MagicCaster:
+            {
+                std::weak_ptr<GameCore::PlayerAvatar::PlayerAvatarCameraGroupBase> magicCasterCameraGroup;
+                if (enableInputAction)
+                {
+                    const auto cameraGroupObject = Scene::GameObject::Instantiate(magicCasterCameraGroupPrefab_.get(), summonPosition);
+                    attachments.objects.push_back(cameraGroupObject);
+                    magicCasterCameraGroup = cameraGroupObject
+                        .lock()
+                        ->Components()
+                        .Catch<GameCore::PlayerAvatar::PlayerAvatarCameraGroupBase>();
+                }
+
+                auto presetMagicCasterStatus = std::dynamic_pointer_cast<GameCore::PlayerAvatar::MagicCaster::MagicCasterAvatarStatus>(presetStatus);
+                auto status = presetMagicCasterStatus
+                    ? presetMagicCasterStatus
+                    : GameCore::PlayerAvatar::LoadStatus<GameCore::PlayerAvatar::MagicCaster::MagicCasterAvatarTraits>();
+                const auto magicCasterAvatar = LoadInitedPlayerAvatarImpl<
+                    GamePlay::PlayerAvatar::MagicCaster::MagicCasterAvatar,
+                    GameCore::PlayerAvatar::MagicCaster::MagicCasterAvatarTraits>(
+                    magicCasterPrefab_.get(),
+                    summonPosition,
+                    parent,
+                    status,
+                    magicCasterCameraGroup.lock(),
+                    enableInputAction);
+                playerAvatar = magicCasterAvatar;
+
+                if (enableInputAction)
+                {
+                    auto magicCasterStatusUiPrefab = Scene::GameObject::Instantiate(*magicCasterStatusUiPrefab_.get());
+                    auto magicCasterStatusUi = magicCasterStatusUiPrefab.lock()->Components().Catch<GamePlay::Ui::PlayerStatus>();
+                    auto magicCasterPresenterObj = Scene::GameObject::Instantiate(*magicCasterStatusPresenterPrefab_.get());
+                    attachments.objects.push_back(magicCasterStatusUiPrefab);
+                    attachments.objects.push_back(magicCasterPresenterObj);
+                    /** StatusPresenter */
+                    auto magicCasterStatusPresenter = magicCasterPresenterObj.lock()->Components().Catch<GamePlay::PlayerAvatar::MagicCaster::StatusPresenter>();
+                    magicCasterStatusPresenter.lock()->Initialize(*magicCasterStatusUi.lock(), *status, magicCasterAvatar);
+                }
+                break;
+            }
+
+        case GameCore::PlayerAvatar::PlayerAvatarType::Gunner:
+            {
+                break;
+            }
+
+        default:
+            {
+                break;
+            }
+        }
+        return { playerAvatar, attachments };
+    }
+
+    void PlayerAvatarFactory::DestroyAttachments(const PlayerAvatarAttachments& attachments) const
+    {
+        for (const auto& weakObject : attachments.objects)
+        {
+            if (const auto object = weakObject.lock())
+                object->OnDestroy();
+        }
+    }
+
+    void PlayerAvatarFactory::OnDrawGui()
+    {
+        ScriptableObject::OnDrawGui();
+        ImGuiHelper::OnDrawInputField("swordManPrefab_", swordManPrefab_);
+        ImGuiHelper::OnDrawInputField("swordManCameraGroupPrefab_", swordManCameraGroupPrefab_);
+        ImGuiHelper::OnDrawInputField("swordManStatusUiPrefab_", swordManStatusUiPrefab_);
+        ImGuiHelper::OnDrawInputField("swordManStatusPresenterPrefab_", swordManStatusPresenterPrefab_);
+        ImGuiHelper::OnDrawInputField("magicCasterPrefab_", magicCasterPrefab_);
+        ImGuiHelper::OnDrawInputField("magicCasterCameraGroupPrefab_", magicCasterCameraGroupPrefab_);
+        ImGuiHelper::OnDrawInputField("magicCasterStatusUiPrefab_", magicCasterStatusUiPrefab_);
+        ImGuiHelper::OnDrawInputField("magicCasterStatusPresenterPrefab_", magicCasterStatusPresenterPrefab_);
+    }
+}
+
+#pragma region SerializationMacro
+REGISTER_SCRIPTABLE_OBJECT(PlayerAvatarFactory, PLAYER_AVATAR_FACTORY_EXTENSION_LABEL, "Player")
+NANAMI_REGISTER_TYPE(NanamiEngine::Module::Asset::PlayerAvatarFactory, NanamiEngine::Module::ScriptableObject);
+#pragma endregion

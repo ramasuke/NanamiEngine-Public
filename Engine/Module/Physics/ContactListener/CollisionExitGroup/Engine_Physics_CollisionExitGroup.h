@@ -1,0 +1,31 @@
+﻿#pragma once
+#include "Engine/Core/Api/NanamiApi.h"
+#include <mutex>
+#include <vector>
+#include "../ContactedData/Engine_Physics_ContactedData.h"
+
+namespace JPH
+{
+    class PhysicsSystem;
+}
+
+namespace NanamiEngine::Module::Physics
+{
+    class NANAMI_API CollisionExitGroup
+    {
+    public:
+        explicit CollisionExitGroup(const JPH::PhysicsSystem& physicsSystem);
+
+        void Reserve(size_t size);
+        void Add(const PendingExit& exit);
+        void Dispatch();
+
+        void RemoveByCollider(const JPH::BodyID& id);
+
+    private:
+        std::vector<PendingExit> pending_;
+        const JPH::PhysicsSystem& physicsSystem_;
+        // WARNING: Add() は Jolt のジョブスレッドから同時に呼ばれる (ほかはメインスレッドのみ)
+        std::mutex addMutex_;
+    };
+}

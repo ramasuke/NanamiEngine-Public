@@ -1,0 +1,132 @@
+{
+    "isActive_": true,
+    "name_": "ExplosionParticle",
+    "guid_": {
+        "cereal_class_version": 0,
+        "value_": "8D54860E-3208-4A62-9723-CFEA00B48880"
+    },
+    "components_": {
+        "cereal_class_version": 0,
+        "componentCount": 2,
+        "component_0": {
+            "polymorphic_id": 2147483649,
+            "polymorphic_name": "NanamiEngine::Module::Component::ParticleSystem",
+            "ptr_wrapper": {
+                "id": 2147483649,
+                "data": {
+                    "cereal_class_version": 1,
+                    "value0": {
+                        "cereal_class_version": 0,
+                        "guid_": {
+                            "value_": "FB99687E-1F81-4ED8-9000-7FB8F5CDD89F"
+                        },
+                        "isEnable_": true
+                    },
+                    "value1": {
+                        "cereal_class_version": 0
+                    },
+                    "value2": {
+                        "cereal_class_version": 0
+                    },
+                    "particleFile_": {
+                        "cereal_class_version": 0,
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483650,
+                                "data": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "value_": "5103F524-3F75-481F-BC0D-D9B34E583F15"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "playingDuration_secs_": 4.0,
+                    "playMode_": 1
+                }
+            }
+        },
+        "component_1": {
+            "polymorphic_id": 2147483650,
+            "polymorphic_name": "GamePlay::Sound::SpawnSound",
+            "ptr_wrapper": {
+                "id": 2147483651,
+                "data": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "guid_": {
+                            "value_": "3C0B6D2E-8E4A-4F71-9B5D-2A7E61C4F9A3"
+                        },
+                        "isEnable_": true
+                    },
+                    "sound_": {
+                        "cereal_class_version": 0,
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483652,
+                                "data": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "value_": "43E4B459-75A3-43D5-B5AF-C0E02B282857"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "delay_secs_": 0.0
+                }
+            }
+        }
+    },
+    "transform_": {
+        "cereal_class_version": 0,
+        "localPos_": {
+            "value0": 0.0,
+            "value1": 0.0,
+            "value2": 0.0
+        },
+        "localRot_": {
+            "value0": 0.0,
+            "value1": 0.0,
+            "value2": 0.0,
+            "value3": 0.0
+        },
+        "localScale_": {
+            "value0": 40.0,
+            "value1": 40.0,
+            "value2": 40.0
+        },
+        "worldMatrix_": {
+            "value0": {
+                "value0": 40.0,
+                "value1": 0.0,
+                "value2": 0.0,
+                "value3": 0.0
+            },
+            "value1": {
+                "value0": 0.0,
+                "value1": 40.0,
+                "value2": 0.0,
+                "value3": 0.0
+            },
+            "value2": {
+                "value0": 0.0,
+                "value1": 0.0,
+                "value2": 40.0,
+                "value3": 0.0
+            },
+            "value3": {
+                "value0": 0.0,
+                "value1": 0.0,
+                "value2": 0.0,
+                "value3": 1.0
+            }
+        },
+        "childCount": 0
+    },
+    "mark_": 0,
+    "value0": 0
+}

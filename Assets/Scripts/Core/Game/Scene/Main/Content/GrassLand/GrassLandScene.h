@@ -1,0 +1,41 @@
+﻿#pragma once
+#include <memory>
+
+#include "../../Base/Main_GameSceneBase.h"
+#include "Context/GrassLandSceneContext.h"
+#include "Packages/R4/R4.h"
+
+namespace GameCore::Scene::GrassLand
+{
+    template<class TContext>
+    class StageArrivalMovie;
+}
+
+namespace GameCore::Scene::Main
+{
+    class GrassLandScene final : public GameMainSceneBase<GrassLandSceneContext>
+    {
+    public:
+        explicit GrassLandScene(
+            const std::weak_ptr<GrassLandSceneContext>& context,
+            GameSceneBaseContext baseContext);
+        ~GrassLandScene() override;
+        
+    private:
+        void OnInit() override;
+        [[nodiscard]] std::vector<Sub::SceneType> SubScenes() const override;
+        Coroutine::Task<EnterResult> OnEnterAsync(NanamiEngine::R4::CancellationToken token) override;
+        void OnEntered() override;
+        void Enter    () override;
+        void DoExit() override;
+        void OnDrawGui() override;
+        /** @brief 大顎を倒したら、村の跡の浮遊石が空へ飛び去る */
+        void OnStageClear(Story::StoryFlag flag);
+        
+        std::weak_ptr<IPlayerAvatar> playerAvatar_;
+        std::shared_ptr<GrassLand::StageArrivalMovie<GrassLandSceneContext>> arrivalMovie_;
+        Story::StageClearWatcher stageClearWatcher_;
+        /** @brief このステージでボスを倒したか。抜けるときに体力を満タンにして保存する */
+        bool isStageCleared_ = false;
+    };
+}

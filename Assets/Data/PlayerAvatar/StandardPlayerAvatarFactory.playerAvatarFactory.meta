@@ -1,0 +1,129 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "NanamiEngine::Module::Asset::PlayerAvatarFactory",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 5,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    },
+                    "contentPath_": "Assets\\Data\\PlayerAvatar/StandardPlayerAvatarFactory.playerAvatarFactory",
+                    "guid_": {
+                        "cereal_class_version": 0,
+                        "value_": "8A77D9A4-21BE-4509-99E7-4CA85FF571E7"
+                    }
+                },
+                "swordManPrefab_": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483650,
+                            "data": {
+                                "cereal_class_version": 0,
+                                "value0": {
+                                    "value_": "A8F2533D-B84C-4C7C-84F1-59A6CE16DB75"
+                                }
+                            }
+                        }
+                    }
+                },
+                "swordManCameraGroupPrefab_": {
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483651,
+                            "data": {
+                                "value0": {
+                                    "value_": "712E6CEC-8BF6-47F9-9393-38ED407825E8"
+                                }
+                            }
+                        }
+                    }
+                },
+                "swordManStatusUiPrefab_": {
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483652,
+                            "data": {
+                                "value0": {
+                                    "value_": "C4AC049C-66CF-4941-AEAA-C80B7667BDDB"
+                                }
+                            }
+                        }
+                    }
+                },
+                "swordManStatusPresenterPrefab_": {
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483653,
+                            "data": {
+                                "value0": {
+                                    "value_": "1494C693-B8CC-4124-AF79-949740ABF725"
+                                }
+                            }
+                        }
+                    }
+                },
+                "magicCasterPrefab_": {
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483654,
+                            "data": {
+                                "value0": {
+                                    "value_": "7EEF8BEA-581C-49F1-9A7B-1C27C56E2C8E"
+                                }
+                            }
+                        }
+                    }
+                },
+                "magicCasterCameraGroupPrefab_": {
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483655,
+                            "data": {
+                                "value0": {
+                                    "value_": "4E787C7C-C1B5-4D28-9EB2-161F434423F1"
+                                }
+                            }
+                        }
+                    }
+                },
+                "magicCasterStatusUiPrefab_": {
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483656,
+                            "data": {
+                                "value0": {
+                                    "value_": "821214AD-DBF9-49E1-8120-E453C4B4A46D"
+                                }
+                            }
+                        }
+                    }
+                },
+                "magicCasterStatusPresenterPrefab_": {
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483657,
+                            "data": {
+                                "value0": {
+                                    "value_": "97A96540-7DBE-4F42-8BEC-0F6E70D99609"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

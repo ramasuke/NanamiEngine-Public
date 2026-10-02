@@ -1,0 +1,92 @@
+﻿#pragma once
+#include <memory>
+
+#include "Engine/Core/Object/Field/Field.h"
+#include "Engine/Module/Asset/Sound/SoundFile.h"
+#include "Engine/Module/Component/ComponentBase.h"
+#include "Engine/Module/LifeCycleCallback/Start/IStartable.h"
+#include "Engine/Module/LifeCycleCallback/Update/IUpdatable.h"
+#include "../../../../../Data/Shop/Data_ShopData.h"
+#include "../Model/ShopModel.h"
+#include "../UI_Shop.h"
+#include "../../../Sound/UiSoundBank.h"
+#include "Packages/UiFlow/UiFlow.h"
+
+namespace GameCore
+{
+    class IPlayerAvatar;
+}
+
+namespace GamePlay::Prop
+{
+    class MerchantStall;
+}
+
+namespace GamePlay::Ui
+{
+    class ShopPresenter final : public Component::ComponentBase,
+                                public LifeCycleCallback::IStartable,
+                                public LifeCycleCallback::IUpdatable
+    {
+    public:
+        /** @warning OnStart より前に呼んでください */
+        void Bind(const std::weak_ptr<Prop::MerchantStall>& stall);
+
+    private:
+        void OnStart  () override;
+        void OnUpdate () override;
+
+        void ChangeQuantity(int delta);
+        void Purchase();
+        void Refresh() const;
+        void PlaySound(const FIELD(Asset::SoundFile)& sound) const;
+        void Close();
+
+        [[serialize(0)]] FIELD(Asset::ShopData) shop_;
+        [[serialize(0)]] FIELD(Asset::SoundFile) purchaseSound_;
+        [[serialize(0)]] FIELD(Asset::SoundFile) refuseSound_;
+        [[serialize(0)]] FIELD(Asset::SoundFile) cursorSound_;
+        [[serialize(0)]] float quantityRepeatDelay_secs_    = 0.35f;
+        [[serialize(0)]] float quantityRepeatInterval_secs_ = 0.08f;
+        [[serialize(1)]] FIELD(Asset::UiSoundBankData) uiSounds_;
+
+        std::shared_ptr<UiFlow::UiScreen> screen_;
+        std::shared_ptr<ShopUi> view_;
+        std::unique_ptr<ShopModel> model_;
+        std::weak_ptr<GameCore::IPlayerAvatar> suspendedAvatar_;
+        std::weak_ptr<Prop::MerchantStall> stall_;
+
+#pragma region Serialization Function
+    public:
+        void OnDrawGui() override;
+
+        template<typename Archive>
+        void save(Archive& archive, const std::uint32_t version) const
+        {
+            archive(cereal::base_class<Component::ComponentBase>(this));
+            archive(CEREAL_NVP(shop_));
+            archive(CEREAL_NVP(purchaseSound_));
+            archive(CEREAL_NVP(refuseSound_));
+            archive(CEREAL_NVP(cursorSound_));
+            archive(CEREAL_NVP(quantityRepeatDelay_secs_));
+            archive(CEREAL_NVP(quantityRepeatInterval_secs_));
+            archive(CEREAL_NVP(uiSounds_));
+        }
+
+        template<typename Archive>
+        void load(Archive& archive, const std::uint32_t version)
+        {
+            archive(cereal::base_class<Component::ComponentBase>(this));
+            if (version >= 0) archive(CEREAL_NVP(shop_));
+            if (version >= 0) archive(CEREAL_NVP(purchaseSound_));
+            if (version >= 0) archive(CEREAL_NVP(refuseSound_));
+            if (version >= 0) archive(CEREAL_NVP(cursorSound_));
+            if (version >= 0) archive(CEREAL_NVP(quantityRepeatDelay_secs_));
+            if (version >= 0) archive(CEREAL_NVP(quantityRepeatInterval_secs_));
+            if (version >= 1) archive(CEREAL_NVP(uiSounds_));
+        }
+#pragma endregion
+    };
+}
+
+CEREAL_CLASS_VERSION(GamePlay::Ui::ShopPresenter, 1);

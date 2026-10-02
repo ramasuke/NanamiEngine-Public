@@ -1,0 +1,66 @@
+﻿#pragma once
+#include "Engine/Core/Coroutine/Task/Task.h"
+#include "Engine/Core/Object/Field/Field.h"
+#include "Engine/Module/Component/ComponentBase.h"
+#include "Engine/Module/NanamiUI/TextRenderer/TextRenderer.h"
+#include "../../Sound/UiSoundBank.h"
+
+namespace GamePlay::Data
+{
+    class Chat;
+}
+
+namespace NanamiEngine::Module::Asset
+{
+    class NpcChat;
+}
+
+namespace GamePlay::Ui
+{
+    class NpcChatting final : public Component::ComponentBase
+    {
+    public:
+        // NOTE: followsAdvanceSetting が false なら、設定の送り方によらず自動で送る (戦闘中の台詞・他のピアへの表示)
+        Coroutine::Task<void> OnDisplayChatAsync(
+            const std::string & npcName,
+            const Asset::NpcChat& npcChat,
+            bool followsAdvanceSetting = false) const;
+
+        [[nodiscard]] bool IsDisplaying() const { return isDisplaying_; }
+
+    private:
+        [[serialize(0)]] FIELD(NanamiUi::TextRenderer) textRenderer_;
+        [[serialize(0)]] FIELD(NanamiUi::TextRenderer) npcNameTextBox_;
+        [[serialize(2)]] FIELD(Asset::UiSoundBankData) uiSounds_;
+        [[serialize(3)]] FIELD(NanamiUi::TextRenderer) pageText_;
+
+        mutable bool isDisplaying_ = false;
+
+        void ShowPage(size_t index, size_t count) const;
+
+#pragma region Serialization Function
+    public:
+        void OnDrawGui() override;
+
+        template<class Archive>
+        void save(Archive& archive, const std::uint32_t version) const {
+            archive(cereal::base_class<ComponentBase>(this));
+            archive(CEREAL_NVP(textRenderer_));
+            archive(CEREAL_NVP(npcNameTextBox_));
+            archive(CEREAL_NVP(uiSounds_));
+            archive(CEREAL_NVP(pageText_));
+        }
+
+        template<class Archive>
+        void load(Archive& archive, const std::uint32_t version) {
+            archive(cereal::base_class<ComponentBase>(this));
+            if (version >= 0) archive(CEREAL_NVP(textRenderer_));
+            if (version >= 1) archive(CEREAL_NVP(npcNameTextBox_));
+            if (version >= 2) archive(CEREAL_NVP(uiSounds_));
+            if (version >= 3) archive(CEREAL_NVP(pageText_));
+        }
+#pragma endregion
+    };
+}
+
+CEREAL_CLASS_VERSION(GamePlay::Ui::NpcChatting, 3);

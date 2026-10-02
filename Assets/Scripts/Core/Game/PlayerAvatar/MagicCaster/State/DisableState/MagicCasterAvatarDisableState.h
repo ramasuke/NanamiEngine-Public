@@ -1,0 +1,19 @@
+﻿#pragma once
+#include "../MagicCasterAvatarStateBase.h"
+
+namespace GameCore::PlayerAvatar::MagicCaster::State
+{
+    class DisableState final : public MagicCasterAvatarStateBase
+    {
+    public:
+        explicit DisableState(const MagicCasterAvatarStateArgs& args) : MagicCasterAvatarStateBase(args) {}
+
+    private:
+        void DoEnter      () override;
+        void DoUpdate     () override;
+        void DoFixedUpdate() override;
+        void DoExit       () override;
+        [[nodiscard]] MagicCaster::AnimationType AnimationType() const override { return AnimationType::Idle; }
+        [[nodiscard]] PlayerAvatarControlAcceptance ControlAcceptance() const override { return PlayerAvatarControlAcceptance::None; }
+    };
+}

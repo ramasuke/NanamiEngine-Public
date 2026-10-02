@@ -1,0 +1,96 @@
+﻿#pragma once
+#include "Engine/Core/Api/NanamiApi.h"
+#include <vector>
+#include "../IVirtualCameraBehaviour.h"
+#include "../../../../../Libs/LibCore/cereal/glm/GlmHelper.h"
+#include "../../../../../Engine/Core/Object/Field/Field.h"
+#include "../../../../../Engine/Module/Component/ComponentBase.h"
+#include "Libs/LibCore/Tween/Player/TweenPlayer.h"
+
+namespace NanamiEngine::CineMachine::Behaviour
+{
+    class NANAMI_API ShakeCameraBehaviour final : public Component::ComponentBase,
+                                       public LifeCycleCallback::IAwakable,
+                                       public LifeCycleCallback::IUpdatable,
+                                       public IVirtualCameraBehaviour
+    {
+    public:
+        /** @brief 振幅は intensity^2 に比例する。1 を超えた分は trauma を 1 に保ったまま振幅だけ上乗せする */
+        void Shake(float intensity, float duration);
+        void Shake();
+
+        static void ShakeMainCamera(float intensity, float duration);
+        static void ShakeMainCamera();
+
+        /** @brief 呼び続けている間だけ揺らす。呼ばれなくなると sustainSmoothTime_secs_ で自然に収まる */
+        void SustainShake(float intensity);
+        static void SustainShakeMainCamera(float intensity);
+
+    private:
+        void OnAwake () override;
+        void OnDestroy() override;
+        void OnUpdate() override;
+        void MainCameraCallback() override;
+
+        // Shake() は生存中の全インスタンスへ送る (揺れはアクティブなカメラの実体にだけ乗る)
+        static std::vector<ShakeCameraBehaviour*> instances_;
+
+        LibCore::Tween::TweenPlayer<float> trauma_;
+        float sustain_        = 0.0f;
+        float sustainRequest_ = 0.0f;
+        float overdrive_      = 1.0f;
+
+        glm::vec3 posAmplitude_   = glm::vec3(0.4f, 0.4f, 0.25f);
+        glm::vec3 angleAmplitude_ = glm::vec3(2.0f, 2.0f, 3.0f); 
+        float     frequency_      = 22.0f;                       
+        float     defaultIntensity_ = 0.6f;
+        float     defaultDuration_  = 0.4f;
+        glm::vec3 seed_ = glm::vec3(13.37f, 71.13f, 42.42f);
+        [[serialize(2)]] float sustainFrequency_       = 9.0f;
+        [[serialize(2)]] float sustainSmoothTime_secs_ = 0.12f;
+        [[serialize(0)]] FIELD(GameObject::IGameObject) cameraBrain_;
+
+#pragma region Serialization Function
+    public:
+        void OnDrawGui() override;
+
+        template <class Archive>
+        void save(Archive& archive, const std::uint32_t version) const
+        {
+            archive(cereal::base_class<Component::ComponentBase>(this));
+            if (version <= 0) archive(cereal::base_class<LifeCycleCallback::IAwakable>(this));
+            if (version <= 0) archive(cereal::base_class<LifeCycleCallback::IUpdatable>(this));
+            archive(cereal::base_class<IVirtualCameraBehaviour>(this));
+            archive(CEREAL_NVP(posAmplitude_));
+            archive(CEREAL_NVP(angleAmplitude_));
+            archive(CEREAL_NVP(frequency_));
+            archive(CEREAL_NVP(defaultIntensity_));
+            archive(CEREAL_NVP(defaultDuration_));
+            archive(CEREAL_NVP(seed_));
+            archive(CEREAL_NVP(sustainFrequency_));
+            archive(CEREAL_NVP(sustainSmoothTime_secs_));
+            if (version <= 0) archive(CEREAL_NVP(cameraBrain_));
+        }
+
+        template <class Archive>
+        void load(Archive& archive, const std::uint32_t version)
+        {
+            archive(cereal::base_class<Component::ComponentBase>(this));
+            if (version <= 0) archive(cereal::base_class<LifeCycleCallback::IAwakable>(this));
+            if (version <= 0) archive(cereal::base_class<LifeCycleCallback::IUpdatable>(this));
+            archive(cereal::base_class<IVirtualCameraBehaviour>(this));
+            if (version >= 0) archive(CEREAL_NVP(posAmplitude_));
+            if (version >= 0) archive(CEREAL_NVP(angleAmplitude_));
+            if (version >= 0) archive(CEREAL_NVP(frequency_));
+            if (version >= 0) archive(CEREAL_NVP(defaultIntensity_));
+            if (version >= 0) archive(CEREAL_NVP(defaultDuration_));
+            if (version >= 0) archive(CEREAL_NVP(seed_));
+            if (version >= 2) archive(CEREAL_NVP(sustainFrequency_));
+            if (version >= 2) archive(CEREAL_NVP(sustainSmoothTime_secs_));
+            if (version <= 0) archive(CEREAL_NVP(cameraBrain_));
+        }
+#pragma endregion
+    };
+}
+
+CEREAL_CLASS_VERSION(CineMachine::Behaviour::ShakeCameraBehaviour, 2);

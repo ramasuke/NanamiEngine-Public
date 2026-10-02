@@ -1,0 +1,72 @@
+﻿#pragma once
+#include "Engine/Core/Api/NanamiApi.h"
+#include <vector>
+#include "../ComponentBase.h"
+#include "../../../../Packages/Cinemachine/Brain/CinemachineCameraBrain.h"
+#include "../../../Core/Object/Field/Field.h"
+#include "../../Asset/MV1/MV1File.h"
+
+namespace NanamiEngine::Module::Component
+{
+    class NANAMI_API SkyDome3D final : public ComponentBase,
+                            public LifeCycleCallback::IInitRenderable,
+                            public LifeCycleCallback::IRenderable,
+                            public LifeCycleCallback::IDebugRenderable,
+                            public LifeCycleCallback::IUpdatable
+    {
+    public:
+        /** @brief 読み込み時のマテリアル色に乗算する色。天候で空を曇らせるのに使う */
+        void SetTint(const glm::vec3& tint);
+
+    private:
+        void InitRenderer () override;
+        void CacheBaseMaterialColors();
+        void ApplyTint();
+        void OnUpdate     () override;
+        void OnRender     () override;
+        void OnDebugRender() override;
+        void OnDestroy() override;
+
+        FIELD(Asset::Mv1File) skyDomeModel_;
+        int skyDomeModelDxLibHandle_ = -1;
+        //NOTE: 未使用。描画カメラ位置に追従するようになった。保存済みシーンとの互換のため残している
+        FIELD(CineMachine::CinemachineCameraBrain) mainCamera_;
+
+        glm::vec3 tint_ = glm::vec3(1.0f);
+        std::vector<glm::vec3> baseDifColors_;
+        std::vector<glm::vec3> baseAmbColors_;
+        std::vector<glm::vec3> baseEmiColors_;
+        
+    
+#pragma region Serialization Function
+public:
+void OnDrawGui() override;
+
+        template<class Archive>
+void save(Archive& archive, const std::uint32_t version) const {
+    archive(cereal::base_class<ComponentBase>(this));
+    archive(cereal::base_class<LifeCycleCallback::IInitRenderable>(this));
+    archive(cereal::base_class<LifeCycleCallback::IRenderable>(this));
+    archive(cereal::base_class<LifeCycleCallback::IDebugRenderable>(this));
+    archive(cereal::base_class<LifeCycleCallback::IUpdatable>(this));
+    archive(CEREAL_NVP(skyDomeModel_));
+    if (version <= 2) archive(CEREAL_NVP(skyDomeModelDxLibHandle_));
+    archive(CEREAL_NVP(mainCamera_));
+}
+
+template<class Archive>
+void load(Archive& archive, const std::uint32_t version) {
+    archive(cereal::base_class<ComponentBase>(this));
+    archive(cereal::base_class<LifeCycleCallback::IInitRenderable>(this));
+    archive(cereal::base_class<LifeCycleCallback::IRenderable>(this));
+    if (version >= 1) archive(cereal::base_class<LifeCycleCallback::IDebugRenderable>(this));
+    if (version >= 1) archive(cereal::base_class<LifeCycleCallback::IUpdatable>(this));
+    if (version >= 0) archive(CEREAL_NVP(skyDomeModel_));
+    if (version <= 2) archive(CEREAL_NVP(skyDomeModelDxLibHandle_));
+    if (version >= 2) archive(CEREAL_NVP(mainCamera_));
+}
+#pragma endregion
+};
+}
+
+CEREAL_CLASS_VERSION(NanamiEngine::Module::Component::SkyDome3D, 3);

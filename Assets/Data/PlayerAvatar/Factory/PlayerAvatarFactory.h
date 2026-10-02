@@ -1,0 +1,160 @@
+﻿#pragma once
+#include <memory>
+#include <vector>
+
+#include "vec3.hpp"
+#include "Engine/Core/Object/Field/Field.h"
+#include "Engine/Module/Asset/PrefabGameObject/PrefabGameObjectFile.h"
+#include "Engine/Module/Scene/GameObject/Helper/GameObject.h"
+#include "Engine/Module/ScriptableObject/ScriptableObject.h"
+#include "../../../Scripts/Core/Game/PlayerAvatar/RequireType/RequireType.h"
+#include "../../../Scripts/Core/Game/PlayerAvatar/Status/PlayerAvatarStatus.h"
+#include "../../../Scripts/Core/Game/PlayerAvatar/Type/PlayerAvatarType.h"
+
+namespace GamePlay::PlayerAvatar::SwordMan
+{
+    class SwordManAvatar;
+}
+
+namespace GameCore
+{
+    class IPlayerAvatar;
+}
+
+namespace NanamiEngine::Module::Asset
+{
+    constexpr auto PLAYER_AVATAR_FACTORY_EXTENSION_LABEL = ".playerAvatarFactory";
+
+    struct PlayerAvatarAttachments final
+    {
+        std::vector<std::weak_ptr<GameObject::IGameObject>> objects;
+    };
+
+    struct LoadedPlayerAvatar final
+    {
+        std::shared_ptr<GameCore::IPlayerAvatar> avatar;
+        PlayerAvatarAttachments                  attachments;
+    };
+    
+    class PlayerAvatarFactory final : public ScriptableObject
+    {
+    public:
+        explicit PlayerAvatarFactory(const std::string& contentPath = "");
+        [[nodiscard]] std::weak_ptr<GamePlay::PlayerAvatar::SwordMan::SwordManAvatar> SummonSwordManAvatar(
+              const glm::vec3& summonPosition
+            , const std::shared_ptr<GameObject::IGameObject>& parent);
+
+        [[nodiscard]] std::shared_ptr<GameCore::IPlayerAvatar> LoadInitedPlayerAvatar(
+            const GameCore::PlayerAvatar::PlayerAvatarType& type,
+            const glm::vec3& summonPosition,
+            const std::shared_ptr<GameObject::IGameObject>& parent,
+            bool enableInputAction,
+            const std::shared_ptr<GameCore::PlayerAvatar::IPlayerAvatarStatus>& presetStatus);
+
+        [[nodiscard]] LoadedPlayerAvatar LoadInitedPlayerAvatarWithAttachments(
+            const GameCore::PlayerAvatar::PlayerAvatarType& type,
+            const glm::vec3& summonPosition,
+            const std::shared_ptr<GameObject::IGameObject>& parent,
+            bool enableInputAction,
+            const std::shared_ptr<GameCore::PlayerAvatar::IPlayerAvatarStatus>& presetStatus);
+
+        void DestroyAttachments(const PlayerAvatarAttachments& attachments) const;
+
+        template <typename AvatarT, typename TraitsT>
+        [[nodiscard]] std::shared_ptr<AvatarT> LoadInitedPlayerAvatarImpl(
+              const std::shared_ptr<PrefabGameObjectFile>& prefabFile
+            , const glm::vec3& summonPosition
+            , const std::shared_ptr<GameObject::IGameObject>& parent
+            , std::shared_ptr<GameCore::PlayerAvatar::RequireType::Status<TraitsT>> status
+            , std::shared_ptr<GameCore::PlayerAvatar::RequireType::CameraGroup<TraitsT>> cameraGroup
+            , bool enableInputAction);
+
+        
+    private:
+        /** SwordMan */
+        [[serialize(0)]] FIELD(PrefabGameObjectFile) swordManPrefab_;
+        [[serialize(1)]] FIELD(PrefabGameObjectFile) swordManCameraGroupPrefab_;
+        [[serialize(2)]] FIELD(PrefabGameObjectFile) swordManStatusUiPrefab_;
+        [[serialize(2)]] FIELD(PrefabGameObjectFile) swordManStatusPresenterPrefab_;
+
+        /** MagicCaster */
+        [[serialize(4)]] FIELD(PrefabGameObjectFile) magicCasterPrefab_;
+        [[serialize(4)]] FIELD(PrefabGameObjectFile) magicCasterCameraGroupPrefab_;
+        [[serialize(4)]] FIELD(PrefabGameObjectFile) magicCasterStatusUiPrefab_;
+        [[serialize(4)]] FIELD(PrefabGameObjectFile) magicCasterStatusPresenterPrefab_;
+
+#pragma region Serialization Function
+    public:
+        void OnDrawGui() override;
+        template<class Archive>
+        void save(Archive& archive, const std::uint32_t version) const
+        {
+            archive(cereal::base_class<ScriptableObject>(this));
+            archive(CEREAL_NVP(swordManPrefab_));
+            archive(CEREAL_NVP(swordManCameraGroupPrefab_));
+            archive(CEREAL_NVP(swordManStatusUiPrefab_));
+            archive(CEREAL_NVP(swordManStatusPresenterPrefab_));
+            archive(CEREAL_NVP(magicCasterPrefab_));
+            archive(CEREAL_NVP(magicCasterCameraGroupPrefab_));
+            archive(CEREAL_NVP(magicCasterStatusUiPrefab_));
+            archive(CEREAL_NVP(magicCasterStatusPresenterPrefab_));
+        }
+        template<class Archive>
+        void load(Archive& archive, const std::uint32_t version)
+        {
+            archive(cereal::base_class<ScriptableObject>(this));
+            archive(CEREAL_NVP(swordManPrefab_));
+            if (version >= 1) archive(CEREAL_NVP(swordManCameraGroupPrefab_));
+            if (version >= 2) archive(CEREAL_NVP(swordManStatusUiPrefab_));
+            if (version >= 2) archive(CEREAL_NVP(swordManStatusPresenterPrefab_));
+            // NOTE: version 3/4 の他プレイヤーUIプレハブのキーは名前検索で読み飛ばす
+            if (version >= 4) archive(CEREAL_NVP(magicCasterPrefab_));
+            if (version >= 4) archive(CEREAL_NVP(magicCasterCameraGroupPrefab_));
+            if (version >= 4) archive(CEREAL_NVP(magicCasterStatusUiPrefab_));
+            if (version >= 4) archive(CEREAL_NVP(magicCasterStatusPresenterPrefab_));
+        }
+#pragma endregion
+    };
+
+    template <typename AvatarT, typename TraitsT>
+    std::shared_ptr<AvatarT> PlayerAvatarFactory::LoadInitedPlayerAvatarImpl(
+        const std::shared_ptr<PrefabGameObjectFile>& prefabFile,
+        const glm::vec3& summonPosition,
+        const std::shared_ptr<GameObject::IGameObject>& parent,
+        std::shared_ptr<GameCore::PlayerAvatar::RequireType::Status<TraitsT>> status,
+        std::shared_ptr<GameCore::PlayerAvatar::RequireType::CameraGroup<TraitsT>> cameraGroup,
+        bool enableInputAction)
+    {
+        using namespace GameCore::PlayerAvatar;
+        using Status = RequireType::Status<TraitsT>;
+        using Input  = RequireType::InputAction<TraitsT>;
+        
+        //Create
+        auto playerAvatarObject = Scene::GameObject::Instantiate(prefabFile, summonPosition).lock();
+        auto playerAvatar = playerAvatarObject->Components().Catch<AvatarT>().lock();
+        
+        //Init
+        auto inputAction  = std::make_shared<Input>();
+        enableInputAction ? inputAction->Enable() : inputAction->Disable(); 
+        // auto status       = GameCore::PlayerAvatar::LoadStatus<Status, TraitsT>();
+        auto stateMachine = TraitsT::CreateStateMachine(status, inputAction, playerAvatar, cameraGroup, enableInputAction);
+        
+        playerAvatar->Init(
+            status,
+            std::move(stateMachine),
+            inputAction,
+            cameraGroup,
+            enableInputAction);
+        // 他のプレイヤーのアバターは相手のステータスを写しただけなので、こちらのクエストには触れさせない
+        if (enableInputAction)
+            playerAvatar->BindQuestJournal();
+
+        playerAvatarObject->Transform().SetWorldPos(summonPosition);
+        playerAvatarObject->Transform().SetParent(parent);
+        return playerAvatar;
+    }
+}
+
+#pragma region SerializationMacro
+CEREAL_CLASS_VERSION(NanamiEngine::Module::Asset::PlayerAvatarFactory, 5);
+#pragma endregion

@@ -1,0 +1,398 @@
+﻿#include "ApplicationConfiguration.h"
+#include "../Display/WindowDisplayModeController.h"
+
+#include <algorithm>
+
+#include "../../../Module/Log/NanamiEngine_Module_Log.h"
+#include "../../../Module/ProjectConfig/Engine_Module_ProjectConfig.h"
+#include "../../../Module/SafeExecute/Engine_Module_SafeExecute.h"
+#include "ImGuiHelper.h"
+#include "DxLib.h"
+
+namespace NanamiEngine::Core::Application::Configuration
+{
+    constexpr auto DEFAULT_WINDOW_WIDTH_SIZE  = 1920;
+    constexpr auto DEFAULT_WINDOW_HEIGHT_SIZE = 1080;
+    constexpr auto DEFAULT_WINDOW_COLOR_SCALE = 16;
+    constexpr auto DEFAULT_WINDOW_MODE        = Display::WindowDisplayMode::Borderless;
+    constexpr auto DEFAULT_Z_BUFFER_BIT_DEPTH = 24;
+    constexpr auto DEFAULT_ALWAYS_RUN         = true;
+    constexpr auto DEFAULT_SHADOW_MAP_WIDTH   = 1024;
+    constexpr auto DEFAULT_SHADOW_MAP_HEIGHT  = 1024;
+    constexpr auto DEFAULT_SHADOW_AREA_HALF   = 100.0f;
+    constexpr auto DEFAULT_LIGHT_DIR_X        = -0.5f;
+    constexpr auto DEFAULT_LIGHT_DIR_Y        = -1.0f;
+    constexpr auto DEFAULT_LIGHT_DIR_Z        = -0.5f;
+    constexpr auto DEFAULT_LIGHT_DIF_R        = 1.0f;
+    constexpr auto DEFAULT_LIGHT_DIF_G        = 1.0f;
+    constexpr auto DEFAULT_LIGHT_DIF_B        = 1.0f;
+    constexpr auto DEFAULT_EDITOR_CAMERA_NEAR = 5.0f;
+    constexpr auto DEFAULT_EDITOR_CAMERA_FAR  = 6000.0f;
+    constexpr auto DEFAULT_PARTICLE_MAX             = 8000;
+    constexpr auto DEFAULT_ASSETS_DIRECTORY_PATH   = "Assets";
+
+    int   AppConfiguration::windowWidth_      = DEFAULT_WINDOW_WIDTH_SIZE;
+    int   AppConfiguration::windowHeight_     = DEFAULT_WINDOW_HEIGHT_SIZE;
+    int   AppConfiguration::windowColorScale_ = DEFAULT_WINDOW_COLOR_SCALE;
+    Display::WindowDisplayMode AppConfiguration::defaultWindowMode_ = DEFAULT_WINDOW_MODE;
+    int   AppConfiguration::zBufferBitDepth_  = DEFAULT_Z_BUFFER_BIT_DEPTH;
+    bool  AppConfiguration::alwaysRun_        = DEFAULT_ALWAYS_RUN;
+    int   AppConfiguration::shadowMapWidth_   = DEFAULT_SHADOW_MAP_WIDTH;
+    int   AppConfiguration::shadowMapHeight_  = DEFAULT_SHADOW_MAP_HEIGHT;
+    float AppConfiguration::shadowAreaHalfSize_ = DEFAULT_SHADOW_AREA_HALF;
+    float AppConfiguration::lightDirX_        = DEFAULT_LIGHT_DIR_X;
+    float AppConfiguration::lightDirY_        = DEFAULT_LIGHT_DIR_Y;
+    float AppConfiguration::lightDirZ_        = DEFAULT_LIGHT_DIR_Z;
+    float AppConfiguration::lightDifR_        = DEFAULT_LIGHT_DIF_R;
+    float AppConfiguration::lightDifG_        = DEFAULT_LIGHT_DIF_G;
+    float AppConfiguration::lightDifB_        = DEFAULT_LIGHT_DIF_B;
+    float AppConfiguration::editorCameraNear_ = DEFAULT_EDITOR_CAMERA_NEAR;
+    float AppConfiguration::editorCameraFar_  = DEFAULT_EDITOR_CAMERA_FAR;
+    int         AppConfiguration::particleMax_           = DEFAULT_PARTICLE_MAX;
+    std::string AppConfiguration::assetsDirectoryPath_   = DEFAULT_ASSETS_DIRECTORY_PATH;
+
+    constexpr auto APP_CONFIG_PATH            = "Application/";
+    constexpr auto APP_CONFIG_WIDTH_KEY       = "WindowWidth";
+    constexpr auto APP_CONFIG_HEIGHT_KEY      = "WindowHeight";
+    constexpr auto APP_CONFIG_SCALE_KEY       = "WindowColorScale";
+    constexpr auto APP_CONFIG_WINDOW_MODE_KEY = "DefaultWindowMode";
+    constexpr auto APP_CONFIG_Z_BUFFER_KEY    = "ZBufferBitDepth";
+    constexpr auto APP_CONFIG_ALWAYS_RUN_KEY  = "AlwaysRun";
+    constexpr auto APP_CONFIG_SHADOW_W_KEY    = "ShadowMapWidth";
+    constexpr auto APP_CONFIG_SHADOW_H_KEY    = "ShadowMapHeight";
+    constexpr auto APP_CONFIG_SHADOW_AREA_KEY = "ShadowAreaHalfSize";
+    constexpr auto APP_CONFIG_LIGHT_DX_KEY    = "LightDirX";
+    constexpr auto APP_CONFIG_LIGHT_DY_KEY    = "LightDirY";
+    constexpr auto APP_CONFIG_LIGHT_DZ_KEY    = "LightDirZ";
+    constexpr auto APP_CONFIG_LIGHT_DR_KEY    = "LightDifR";
+    constexpr auto APP_CONFIG_LIGHT_DG_KEY    = "LightDifG";
+    constexpr auto APP_CONFIG_LIGHT_DB_KEY    = "LightDifB";
+    constexpr auto APP_CONFIG_EDITOR_NEAR_KEY = "EditorCameraNear";
+    constexpr auto APP_CONFIG_EDITOR_FAR_KEY  = "EditorCameraFar";
+    constexpr auto APP_CONFIG_PARTICLE_MAX_KEY       = "ParticleMax";
+    constexpr auto APP_CONFIG_ASSETS_DIR_PATH_KEY    = "AssetsDirectoryPath";
+    constexpr auto APP_CONFIG_CRASH_RECOVERY_KEY     = "CrashRecoveryEnabled";
+    constexpr auto APP_CONFIG_DEBUGGER_FAILFAST_KEY  = "DebuggerFailFastEnabled";
+    constexpr auto APP_CONFIG_BREAK_ON_LOG_ERROR_KEY = "BreakOnLogErrorEnabled";
+
+    void AppConfiguration::Load()
+    {
+        windowWidth_      = Module::ProjectConfig::LoadOrDefaultWithPath<int>  (APP_CONFIG_PATH, APP_CONFIG_WIDTH_KEY,      DEFAULT_WINDOW_WIDTH_SIZE);
+        windowHeight_     = Module::ProjectConfig::LoadOrDefaultWithPath<int>  (APP_CONFIG_PATH, APP_CONFIG_HEIGHT_KEY,     DEFAULT_WINDOW_HEIGHT_SIZE);
+        windowColorScale_ = Module::ProjectConfig::LoadOrDefaultWithPath<int>  (APP_CONFIG_PATH, APP_CONFIG_SCALE_KEY,      DEFAULT_WINDOW_COLOR_SCALE);
+        defaultWindowMode_ = Display::WindowDisplayModeFromString(
+            Module::ProjectConfig::LoadOrDefaultWithPath<std::string>(APP_CONFIG_PATH, APP_CONFIG_WINDOW_MODE_KEY, std::string(Display::ToString(DEFAULT_WINDOW_MODE))),
+            DEFAULT_WINDOW_MODE);
+        zBufferBitDepth_  = Module::ProjectConfig::LoadOrDefaultWithPath<int>  (APP_CONFIG_PATH, APP_CONFIG_Z_BUFFER_KEY,   DEFAULT_Z_BUFFER_BIT_DEPTH);
+        alwaysRun_        = Module::ProjectConfig::LoadOrDefaultWithPath<bool> (APP_CONFIG_PATH, APP_CONFIG_ALWAYS_RUN_KEY, DEFAULT_ALWAYS_RUN);
+        shadowMapWidth_   = Module::ProjectConfig::LoadOrDefaultWithPath<int>  (APP_CONFIG_PATH, APP_CONFIG_SHADOW_W_KEY,   DEFAULT_SHADOW_MAP_WIDTH);
+        shadowMapHeight_  = Module::ProjectConfig::LoadOrDefaultWithPath<int>  (APP_CONFIG_PATH, APP_CONFIG_SHADOW_H_KEY,   DEFAULT_SHADOW_MAP_HEIGHT);
+        shadowAreaHalfSize_ = Module::ProjectConfig::LoadOrDefaultWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_SHADOW_AREA_KEY, DEFAULT_SHADOW_AREA_HALF);
+        lightDirX_        = Module::ProjectConfig::LoadOrDefaultWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_LIGHT_DX_KEY,   DEFAULT_LIGHT_DIR_X);
+        lightDirY_        = Module::ProjectConfig::LoadOrDefaultWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_LIGHT_DY_KEY,   DEFAULT_LIGHT_DIR_Y);
+        lightDirZ_        = Module::ProjectConfig::LoadOrDefaultWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_LIGHT_DZ_KEY,   DEFAULT_LIGHT_DIR_Z);
+        lightDifR_        = Module::ProjectConfig::LoadOrDefaultWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_LIGHT_DR_KEY,   DEFAULT_LIGHT_DIF_R);
+        lightDifG_        = Module::ProjectConfig::LoadOrDefaultWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_LIGHT_DG_KEY,   DEFAULT_LIGHT_DIF_G);
+        lightDifB_        = Module::ProjectConfig::LoadOrDefaultWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_LIGHT_DB_KEY,   DEFAULT_LIGHT_DIF_B);
+        editorCameraNear_ = Module::ProjectConfig::LoadOrDefaultWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_EDITOR_NEAR_KEY, DEFAULT_EDITOR_CAMERA_NEAR);
+        editorCameraFar_  = Module::ProjectConfig::LoadOrDefaultWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_EDITOR_FAR_KEY,  DEFAULT_EDITOR_CAMERA_FAR);
+        particleMax_         = Module::ProjectConfig::LoadOrDefaultWithPath<int>        (APP_CONFIG_PATH, APP_CONFIG_PARTICLE_MAX_KEY,    DEFAULT_PARTICLE_MAX);
+        assetsDirectoryPath_ = Module::ProjectConfig::LoadOrDefaultWithPath<std::string>(APP_CONFIG_PATH, APP_CONFIG_ASSETS_DIR_PATH_KEY, std::string(DEFAULT_ASSETS_DIRECTORY_PATH));
+
+        Module::SafeExecutor::SetCrashRecoveryEnabled(
+            Module::ProjectConfig::LoadOrDefaultWithPath<bool>(APP_CONFIG_PATH, APP_CONFIG_CRASH_RECOVERY_KEY, false));
+        Module::SafeExecutor::SetDebuggerFailFastEnabled(
+            Module::ProjectConfig::LoadOrDefaultWithPath<bool>(APP_CONFIG_PATH, APP_CONFIG_DEBUGGER_FAILFAST_KEY, true));
+        Module::SetBreakOnLogErrorEnabled(
+            Module::ProjectConfig::LoadOrDefaultWithPath<bool>(APP_CONFIG_PATH, APP_CONFIG_BREAK_ON_LOG_ERROR_KEY, false));
+    }
+
+    void AppConfiguration::Save()
+    {
+        Module::ProjectConfig::SaveWithPath<int>  (APP_CONFIG_PATH, APP_CONFIG_WIDTH_KEY,      windowWidth_);
+        Module::ProjectConfig::SaveWithPath<int>  (APP_CONFIG_PATH, APP_CONFIG_HEIGHT_KEY,     windowHeight_);
+        Module::ProjectConfig::SaveWithPath<int>  (APP_CONFIG_PATH, APP_CONFIG_SCALE_KEY,      windowColorScale_);
+        Module::ProjectConfig::SaveWithPath<std::string>(APP_CONFIG_PATH, APP_CONFIG_WINDOW_MODE_KEY, std::string(Display::ToString(defaultWindowMode_)));
+        Module::ProjectConfig::SaveWithPath<int>  (APP_CONFIG_PATH, APP_CONFIG_Z_BUFFER_KEY,   zBufferBitDepth_);
+        Module::ProjectConfig::SaveWithPath<bool> (APP_CONFIG_PATH, APP_CONFIG_ALWAYS_RUN_KEY, alwaysRun_);
+        Module::ProjectConfig::SaveWithPath<int>  (APP_CONFIG_PATH, APP_CONFIG_SHADOW_W_KEY,   shadowMapWidth_);
+        Module::ProjectConfig::SaveWithPath<int>  (APP_CONFIG_PATH, APP_CONFIG_SHADOW_H_KEY,   shadowMapHeight_);
+        Module::ProjectConfig::SaveWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_SHADOW_AREA_KEY, shadowAreaHalfSize_);
+        Module::ProjectConfig::SaveWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_LIGHT_DX_KEY,   lightDirX_);
+        Module::ProjectConfig::SaveWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_LIGHT_DY_KEY,   lightDirY_);
+        Module::ProjectConfig::SaveWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_LIGHT_DZ_KEY,   lightDirZ_);
+        Module::ProjectConfig::SaveWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_LIGHT_DR_KEY,   lightDifR_);
+        Module::ProjectConfig::SaveWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_LIGHT_DG_KEY,   lightDifG_);
+        Module::ProjectConfig::SaveWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_LIGHT_DB_KEY,   lightDifB_);
+        Module::ProjectConfig::SaveWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_EDITOR_NEAR_KEY, editorCameraNear_);
+        Module::ProjectConfig::SaveWithPath<float>(APP_CONFIG_PATH, APP_CONFIG_EDITOR_FAR_KEY,  editorCameraFar_);
+        Module::ProjectConfig::SaveWithPath<int>        (APP_CONFIG_PATH, APP_CONFIG_PARTICLE_MAX_KEY,    particleMax_);
+        Module::ProjectConfig::SaveWithPath<std::string>(APP_CONFIG_PATH, APP_CONFIG_ASSETS_DIR_PATH_KEY, assetsDirectoryPath_);
+
+        Module::ProjectConfig::SaveWithPath<bool>(APP_CONFIG_PATH, APP_CONFIG_CRASH_RECOVERY_KEY, Module::SafeExecutor::IsCrashRecoveryEnabled());
+        Module::ProjectConfig::SaveWithPath<bool>(APP_CONFIG_PATH, APP_CONFIG_DEBUGGER_FAILFAST_KEY, Module::SafeExecutor::IsDebuggerFailFastEnabled());
+        Module::ProjectConfig::SaveWithPath<bool>(APP_CONFIG_PATH, APP_CONFIG_BREAK_ON_LOG_ERROR_KEY, Module::IsBreakOnLogErrorEnabled());
+    }
+
+    int   AppConfiguration::GetWindowWidth()        { return windowWidth_; }
+    int   AppConfiguration::GetWindowHeight()       { return windowHeight_; }
+    int   AppConfiguration::GetWindowColorScale()   { return windowColorScale_; }
+    void  AppConfiguration::SetWindowWidth(int w)   { windowWidth_      = w; }
+    void  AppConfiguration::SetWindowHeight(int h)  { windowHeight_     = h; }
+    void  AppConfiguration::SetWindowColorScale(int s) { windowColorScale_ = s; }
+
+    Display::WindowDisplayMode AppConfiguration::GetDefaultWindowMode()                                { return defaultWindowMode_; }
+    void                       AppConfiguration::SetDefaultWindowMode(const Display::WindowDisplayMode mode) { defaultWindowMode_ = mode; }
+
+    int   AppConfiguration::GetZBufferBitDepth()          { return zBufferBitDepth_; }
+    void  AppConfiguration::SetZBufferBitDepth(int depth) { zBufferBitDepth_ = depth; }
+
+    bool  AppConfiguration::GetAlwaysRun()                { return alwaysRun_; }
+    void  AppConfiguration::SetAlwaysRun(bool alwaysRun)  { alwaysRun_ = alwaysRun; }
+
+    int   AppConfiguration::GetShadowMapWidth()         { return shadowMapWidth_; }
+    int   AppConfiguration::GetShadowMapHeight()        { return shadowMapHeight_; }
+    void  AppConfiguration::SetShadowMapWidth(int w)    { shadowMapWidth_   = w; }
+    void  AppConfiguration::SetShadowMapHeight(int h)   { shadowMapHeight_  = h; }
+    float AppConfiguration::GetShadowAreaHalfSize()     { return shadowAreaHalfSize_; }
+    void  AppConfiguration::SetShadowAreaHalfSize(float halfSize) { shadowAreaHalfSize_ = halfSize; }
+
+    float AppConfiguration::GetLightDirX()              { return lightDirX_; }
+    float AppConfiguration::GetLightDirY()              { return lightDirY_; }
+    float AppConfiguration::GetLightDirZ()              { return lightDirZ_; }
+    void  AppConfiguration::SetLightDirX(float x)       { lightDirX_ = x; }
+    void  AppConfiguration::SetLightDirY(float y)       { lightDirY_ = y; }
+    void  AppConfiguration::SetLightDirZ(float z)       { lightDirZ_ = z; }
+
+    float AppConfiguration::GetLightDifR()              { return lightDifR_; }
+    float AppConfiguration::GetLightDifG()              { return lightDifG_; }
+    float AppConfiguration::GetLightDifB()              { return lightDifB_; }
+    void  AppConfiguration::SetLightDifR(float r)       { lightDifR_ = r; }
+    void  AppConfiguration::SetLightDifG(float g)       { lightDifG_ = g; }
+    void  AppConfiguration::SetLightDifB(float b)       { lightDifB_ = b; }
+
+    float AppConfiguration::GetEditorCameraNear()               { return editorCameraNear_; }
+    float AppConfiguration::GetEditorCameraFar()                { return editorCameraFar_; }
+    void  AppConfiguration::SetEditorCameraNear(float cameraNear) { editorCameraNear_ = cameraNear; }
+    void  AppConfiguration::SetEditorCameraFar(float cameraFar)   { editorCameraFar_  = cameraFar; }
+
+    int   AppConfiguration::GetParticleMax()        { return particleMax_; }
+    void  AppConfiguration::SetParticleMax(int max) { particleMax_ = max; }
+
+    const std::string& AppConfiguration::GetAssetsDirectoryPath()                  { return assetsDirectoryPath_; }
+    void               AppConfiguration::SetAssetsDirectoryPath(const std::string& path) { assetsDirectoryPath_ = path; }
+
+    void AppConfiguration::DrawConfigGUI()
+    {
+        ImGui::Text("Application");
+        ImGui::Separator();
+
+        int w = GetWindowWidth();
+        int h = GetWindowHeight();
+        int s = GetWindowColorScale();
+
+        ImGui::SetNextItemWidth(100);
+        const bool wChanged = ImGui::InputInt("Window Width",  &w);
+        ImGui::SetNextItemWidth(100);
+        const bool hChanged = ImGui::InputInt("Window Height", &h);
+        ImGui::SetNextItemWidth(100);
+        const bool sChanged = ImGui::InputInt("Color Scale",   &s);
+
+        if (wChanged || hChanged || sChanged)
+        {
+            SetWindowWidth(w);
+            SetWindowHeight(h);
+            SetWindowColorScale(s);
+            Save();
+        }
+
+        constexpr auto windowModeItems = "Windowed\0" "Borderless\0" "Fullscreen\0";
+        int windowMode = static_cast<int>(Display::WindowDisplayModeController::Current());
+        ImGui::SetNextItemWidth(120);
+        if (ImGui::Combo("Window Mode", &windowMode, windowModeItems))
+            Display::WindowDisplayModeController::Request(static_cast<Display::WindowDisplayMode>(windowMode));
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Alt+Enter toggles Windowed and the last fullscreen mode. Saved to LocalPrefs/Display/WindowMode.json");
+
+        int defaultWindowMode = static_cast<int>(GetDefaultWindowMode());
+        ImGui::SetNextItemWidth(120);
+        if (ImGui::Combo("Default Window Mode (Game)", &defaultWindowMode, windowModeItems))
+        {
+            SetDefaultWindowMode(static_cast<Display::WindowDisplayMode>(defaultWindowMode));
+            Save();
+        }
+
+        /** DxLib の SetZBufferBitDepth が受け付けるのは 16 / 24 / 32 のみ */
+        constexpr int zBufferBitDepths[] = { 16, 24, 32 };
+        int zBufferIndex = 1;
+        for (int i = 0; i < IM_ARRAYSIZE(zBufferBitDepths); ++i)
+        {
+            if (zBufferBitDepths[i] == GetZBufferBitDepth())
+                zBufferIndex = i;
+        }
+        ImGui::SetNextItemWidth(100);
+        if (ImGui::Combo("Z Buffer Bit Depth", &zBufferIndex, "16\0" "24\0" "32\0"))
+        {
+            SetZBufferBitDepth(zBufferBitDepths[zBufferIndex]);
+            Save();
+        }
+        ImGui::TextDisabled("* Restart required to apply");
+
+        bool alwaysRun = GetAlwaysRun();
+        if (ImGui::Checkbox("Always Run", &alwaysRun))
+        {
+            SetAlwaysRun(alwaysRun);
+            SetAlwaysRunFlag(alwaysRun ? TRUE : FALSE);
+            Save();
+        }
+
+        ImGui::Spacing();
+        ImGui::Text("Shadow Map");
+        ImGui::Separator();
+
+        int sw = GetShadowMapWidth();
+        int sh = GetShadowMapHeight();
+
+        ImGui::SetNextItemWidth(100);
+        const bool swChanged = ImGui::InputInt("Shadow Map Width",  &sw);
+        ImGui::SetNextItemWidth(100);
+        const bool shChanged = ImGui::InputInt("Shadow Map Height", &sh);
+
+        if (swChanged || shChanged)
+        {
+            SetShadowMapWidth(sw);
+            SetShadowMapHeight(sh);
+            Save();
+        }
+        ImGui::TextDisabled("* Restart required to apply");
+
+        float shadowAreaHalfSize = GetShadowAreaHalfSize();
+        ImGui::SetNextItemWidth(100);
+        if (ImGui::InputFloat("Shadow Area Half Size", &shadowAreaHalfSize))
+        {
+            SetShadowAreaHalfSize((std::max)(shadowAreaHalfSize, 1.0f));
+            Save();
+        }
+
+        ImGui::Spacing();
+        ImGui::Text("Light");
+        ImGui::Separator();
+
+        float dir[3] = { GetLightDirX(), GetLightDirY(), GetLightDirZ() };
+        float dif[3] = { GetLightDifR(), GetLightDifG(), GetLightDifB() };
+
+        ImGui::SetNextItemWidth(200);
+        const bool dirChanged = ImGui::InputFloat3("Light Direction", dir);
+        ImGui::SetNextItemWidth(200);
+        const bool difChanged = ImGui::ColorEdit3 ("Light Diffuse",   dif);
+
+        if (dirChanged)
+        {
+            SetLightDirX(dir[0]);
+            SetLightDirY(dir[1]);
+            SetLightDirZ(dir[2]);
+            Save();
+        }
+        if (difChanged)
+        {
+            SetLightDifR(dif[0]);
+            SetLightDifG(dif[1]);
+            SetLightDifB(dif[2]);
+            Save();
+        }
+        ImGui::TextDisabled("* Restart required to apply");
+
+        ImGui::Spacing();
+        ImGui::Text("Editor Camera");
+        ImGui::Separator();
+
+        float editorNearFar[2] = { GetEditorCameraNear(), GetEditorCameraFar() };
+        ImGui::SetNextItemWidth(200);
+        if (ImGui::InputFloat2("Near / Far", editorNearFar))
+        {
+            //NOTE: Near が 0 以下や Far 以上だと SetCameraNearFar が効かない
+            SetEditorCameraNear((std::max)(editorNearFar[0], 0.01f));
+            SetEditorCameraFar ((std::max)(editorNearFar[1], GetEditorCameraNear() + 1.0f));
+            Save();
+        }
+
+        ImGui::Spacing();
+        ImGui::Text("Effekseer");
+        ImGui::Separator();
+
+        int particleMax = GetParticleMax();
+        ImGui::SetNextItemWidth(100);
+        if (ImGui::InputInt("Particle Max", &particleMax))
+        {
+            if (particleMax < 1) particleMax = 1;
+            SetParticleMax(particleMax);
+            Save();
+        }
+        ImGui::TextDisabled("* Restart required to apply");
+
+        ImGui::Spacing();
+        ImGui::Text("Assets");
+        ImGui::Separator();
+
+        char assetsPathBuf[256] = {};
+        snprintf(assetsPathBuf, sizeof(assetsPathBuf), "%s", assetsDirectoryPath_.c_str());
+        ImGui::SetNextItemWidth(200);
+        if (ImGui::InputText("Assets Directory", assetsPathBuf, sizeof(assetsPathBuf)))
+        {
+            assetsDirectoryPath_ = assetsPathBuf;
+            Save();
+        }
+        ImGui::TextDisabled("* Use 'Reload Assets' to apply");
+
+        ImGui::Spacing();
+        ImGui::Text("Error Handling");
+        ImGui::Separator();
+
+        bool crashRecoveryEnabled = Module::SafeExecutor::IsCrashRecoveryEnabled();
+        if (ImGui::Checkbox("Crash Recovery (experimental)", &crashRecoveryEnabled))
+        {
+            Module::SafeExecutor::SetCrashRecoveryEnabled(crashRecoveryEnabled);
+            Save();
+        }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetTooltip("ONにすると、nullptr参照等のクラッシュ時にそのコンポーネントの処理だけ"
+                               "スキップしてログに出し、続行しようとします。\n"
+                               "OFF(デフォルト)では従来通り即座にクラッシュします(壊れた状態のまま"
+                               "動き続けるリスクを避けたい場合はOFFのままにしてください)。");
+        }
+
+        bool debuggerFailFastEnabled = Module::SafeExecutor::IsDebuggerFailFastEnabled();
+        if (ImGui::Checkbox("Fail-Fast When Debugger Attached", &debuggerFailFastEnabled))
+        {
+            Module::SafeExecutor::SetDebuggerFailFastEnabled(debuggerFailFastEnabled);
+            Save();
+        }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetTooltip("ON(デフォルト)の場合、Rider/Visual Studio等のデバッガがアタッチされている間は、"
+                               "Crash RecoveryがONでもこれを無視して常に通常通りクラッシュさせます"
+                               "(=デバッガがその場で止まります)。\n"
+                               "デバッグ中でもCrash Recoveryの継続動作自体を確認したい場合はOFFにしてください。\n"
+                               "(Crash RecoveryがOFFの場合、この設定は元々関係ありません)");
+        }
+
+        bool breakOnLogErrorEnabled = Module::IsBreakOnLogErrorEnabled();
+        if (ImGui::Checkbox("Break On LogError (Debugger Attached)", &breakOnLogErrorEnabled))
+        {
+            Module::SetBreakOnLogErrorEnabled(breakOnLogErrorEnabled);
+            Save();
+        }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetTooltip("ONの場合、Rider/Visual Studio等のデバッガがアタッチされていれば、"
+                               "LogError()を呼んだその場でデバッガを停止させます(__debugbreak)。"
+                               "その時点のコールスタックを確認できます。\n"
+                               "Log()/LogWarning()には影響しません。\n"
+                               "OFF(デフォルト)では従来通りログを出して続行します。\n"
+                               "(デバッガがアタッチされていない場合、この設定は常に無視されます)");
+        }
+
+        ImGui::Spacing();
+    }
+}

@@ -1,0 +1,267 @@
+﻿#include "CopiedPrefabGameObject.h"
+#include "../../../GameObject/Helper/TreeDropZone/TreeDropZone.h"
+#include "../../../../Core/Object/Field/GuidRemap/GuidRemap.h"
+#include "../../../../Core/Application/Window/Main/Game/GameWindow.h"
+#include "../../../../../Libs/ImGui/ImGuiHelper.h"
+#include "../../../../Core/Application/Editor/EditorApplication.h"
+#include "../../../../Core/Application/Window/Main/PrefabView/PrefabViewWindow.h"
+#include "../../../../Core/Application/Window/Popup/Group/PopupWindowGroup.h"
+#include "../../../../Core/Application/Window/Popup/Inspector/InspectorWindow.h"
+#include "../../../../Core/Physics/Physics.h"
+#include "../../../Physics/BodyAssembler/Engine_Physics_BodyAssembler.h"
+#include "cereal/archives/portable_binary.hpp"
+#include "../../../Serialization/Engine_Module_SerializationRegistration.h"
+
+void Scene::CopiedPrefabGameObject::InitGameObject(const std::weak_ptr<IGameObject>& parent, const std::shared_ptr<IGameObject>& ownPtr)
+{
+    ownPtr_ = ownPtr;
+    transform_  .InitTransform(parent, ownPtr);
+    components_ .InitComponentGroup(ownPtr);
+    Core::Application::ApplicationBase::ObjectRegistry().Add(ownPtr);
+}
+
+void Scene::CopiedPrefabGameObject::InitForCopied(const std::shared_ptr<IGameObject>& ownPtr,
+                                                                      const bool isActive,
+                                                                      std::string name,
+                                                                      const GameObject::GameObjectMark mark,
+                                                                      GameObject::ComponentGroup components,
+                                                                      GameObject::Transform transform)
+{
+    ownPtr_     = ownPtr;
+    isActive_   = isActive;
+    name_       = std::move(name);
+    mark_       = mark;
+    components_ = std::move(components);
+    components_ .ResetGuid();
+    transform_  = std::move(transform);
+    transform_  .InitForCopied();
+    guid_       = Guid();
+}
+
+void Scene::CopiedPrefabGameObject::InvokeInitAwakeCallbacks()
+{
+    //REFACTOR: コールバックの実行順序が分からなくなってしまうクソコード、しかしリファクタリングするためにはWindowのコールバックをComponentGroupが発火するようにしなければならないため、修正箇所が多すぎるので放置。
+    auto& windowLifeCycle = Core::Application::ApplicationBase::GameWindow()->LifeCycle();
+    for (auto& initRender : Components().Catches<LifeCycleCallback::IInitRenderable>())
+    {
+        windowLifeCycle.InitRenderableAddedContentPop();
+        initRender.lock()->InitRenderer();
+    }
+    for (auto& awakable : Components().Catches<LifeCycleCallback::IAwakable>())
+    {
+        windowLifeCycle.AwakableAddedContentPop();
+        awakable.lock()->OnAwake();
+    }
+    for (const auto& child : Transform().GetChildren())
+    {
+        child->InvokeInitAwakeCallbacks();
+    }
+}
+
+void Scene::CopiedPrefabGameObject::InvokeInitStartCallbacks()
+{
+    //REFACTOR: コールバックの実行順序が分からなくなってしまうクソコード、しかしリファクタリングするためにはWindowのコールバックをComponentGroupが発火するようにしなければならないため、修正箇所が多すぎるので放置。
+    auto& windowLifeCycle = Core::Application::ApplicationBase::GameWindow()->LifeCycle();
+    for (auto& startable : Components().Catches<LifeCycleCallback::IStartable>())
+    {
+        windowLifeCycle.StartableAddedContentPop();
+        startable.lock()->OnStart();
+    }
+    for (const auto& child : Transform().GetChildren())
+    {
+        child->InvokeInitStartCallbacks();
+    }
+}
+
+void Scene::CopiedPrefabGameObject::SetEnable(const bool enable)
+{
+    Transform().OnEnable(enable);
+    Components().SetEnable(enable);
+}
+
+std::shared_ptr<GameObject::IGameObject> Scene::CopiedPrefabGameObject::CopyForInstantiate()
+{
+    // 複製で読み込む Field だけが待ち行列に残るよう、先に解決しておく
+    Core::Application::ApplicationBase::ApplicationLifeCycle().OnUpdateFieldInittables();
+
+    //this をバイナリアーカイブに保存
+    std::stringstream stringStream;
+    {
+        cereal::PortableBinaryOutputArchive outputArchive(stringStream);
+        outputArchive(*this);
+    }
+
+    const auto copiedGameObject = std::make_shared<CopiedPrefabGameObject>();
+    {
+        cereal::PortableBinaryInputArchive inputArchive(stringStream);
+        inputArchive(*copiedGameObject);
+    }
+    
+    auto copied = std::make_shared<CopiedPrefabGameObject>();
+    copied->InitForCopied(
+        copied,
+        copiedGameObject->isActive_,
+        copiedGameObject->name_,
+        copiedGameObject->mark_,
+        copiedGameObject->Components(),
+        copiedGameObject->Transform()
+    );
+    const auto guidRemap = Core::Object::GuidRemap::FromCopiedHierarchy(*this, *copied);
+    copied->InitGameObject(std::weak_ptr<IGameObject>(), copied);
+    Core::Application::ApplicationBase::ApplicationLifeCycle().OnUpdateCopiedFieldInittables(guidRemap);
+    copied->InvokeInitAwakeCallbacks();
+    Core::Application::ApplicationBase::Physics().Bodies().Flush();
+    copied->InvokeInitStartCallbacks();
+    
+    return copied;
+}
+
+void Scene::CopiedPrefabGameObject::OnDestroy() const
+{
+    Core::Application::ApplicationBase::GameWindow()
+        ->RemoveGameObject(std::weak_ptr(ownPtr_));
+}
+
+void Scene::CopiedPrefabGameObject::ImplementDestroy()
+{
+    Components().OnDestroy();
+    for (const auto& child : Transform().GetChildren())
+    {
+        child->ImplementDestroy();
+    }
+    Transform().SetParent(std::weak_ptr<IGameObject>{});
+    // ownPtr_.reset() で自身が解放され得るので、その前に InitGameObject で行った登録を外す
+    Core::Application::ApplicationBase::ObjectRegistry().Unregister(guid_, *this);
+    ownPtr_.reset();
+}
+
+void Scene::CopiedPrefabGameObject::OnDrawGui()
+{
+    ImGui::Checkbox(("isActive##" + guid_.Value()).c_str(), &isActive_);
+    ImGui::SameLine();
+    char nameBuffer[256];
+    strncpy_s(nameBuffer, sizeof(nameBuffer), name_.c_str(), _TRUNCATE);
+    nameBuffer[sizeof(nameBuffer) - 1] = '\0';
+
+    if (ImGui::InputText(("name##" + guid_.Value()).c_str(), nameBuffer, sizeof(nameBuffer)))
+    {
+        name_ = nameBuffer;
+    }
+    GameObject::DrawChoiceMarkGui(("mark##" + guid_.Value()).c_str(), mark_);
+
+    transform_  .OnDrawGui();
+    components_ .OnDrawGui();
+    
+    if (ImGui::Button("Delete"))
+    {
+        if (Core::Application::ApplicationBase::GameWindow() == Core::Application::ApplicationBase::GetMainWindow())
+        {
+            Core::Application::ApplicationBase::GameWindow()
+                ->RemoveGameObject(std::weak_ptr(ownPtr_));
+        }
+        else if (Core::Application::ApplicationBase::MainWindows().Catch<Core::MainWindow::PrefabViewWindow>() == Core::Application::ApplicationBase::GetMainWindow())
+        {
+            ImplementDestroy();
+        }
+    }
+}
+
+void Scene::CopiedPrefabGameObject::OnDrawTreeGui(const bool drawChildren)
+{
+    ImGui::AlignTextToFramePadding();
+    const float cursorY = ImGui::GetCursorPosY();
+
+    ImGui::PushID(this);
+
+    ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_OpenOnArrow;
+    if (!drawChildren)
+        treeNodeFlags |= ImGuiTreeNodeFlags_Leaf;
+
+    const bool open = ImGui::TreeNodeEx("##tree", treeNodeFlags);
+
+    ImGui::SameLine();
+    ImGui::SetCursorPosY(cursorY);
+
+    const ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+    const float windowRight = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
+    const float buttonWidth = windowRight - cursorPos.x;
+    const ImVec2 buttonSize(buttonWidth, ImGui::GetFrameHeight());
+
+    const ImVec2 buttonMin = cursorPos;
+    const auto buttonMax = ImVec2(cursorPos.x + buttonSize.x, cursorPos.y + buttonSize.y);
+
+    ImGui::PushStyleColor(ImGuiCol_Header       , ImVec4(0, 0, 0, 0));
+    ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0, 0, 0, 0));
+    ImGui::PushStyleColor(ImGuiCol_HeaderActive , ImVec4(0, 0, 0, 0));
+
+    if (ImGui::Selectable(name_.c_str(), false, ImGuiSelectableFlags_AllowDoubleClick, buttonSize))
+    {
+        for (auto* inspector : Core::Application::ApplicationBase::PopupWindows().Catch<Core::PopupWindow::InspectorWindow>())
+        {
+            inspector->TryAddDisplayObject(ownPtr_);
+        }
+    }
+
+    // 右クリックされた時のポップアップ
+    if (ImGui::BeginPopupContextItem(("Popup_" + name_).c_str()))
+    {
+        if (ImGui::MenuItem("ResetGuid"))
+        {
+            guid_ = Guid();
+        }
+
+        ImGui::EndPopup();
+    }
+    
+    const bool hovered = ImGui::IsItemHovered();
+    // ホバー中にドラッグ開始できるようにする
+    if (hovered && ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+    {
+        ImGui::SetDragDropPayload(Core::FileSystem::EDITOR_DRAGGING_ITEM_PAYLOAD_TYPE, &ownPtr_, sizeof(ownPtr_));
+        Core::Application::EditorApplication::FileDraggingHand().SetDraggingItem(ownPtr_->GetGuid());
+        ImGui::Text("Drag: %s", name_.c_str());
+        ImGui::EndDragDropSource();
+    }
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (ImGui::AcceptDragDropPayload(Core::FileSystem::EDITOR_DRAGGING_ITEM_PAYLOAD_TYPE))
+        {
+            if (const auto draggingObjectGuid = Core::Application::EditorApplication::FileDraggingHand().TakeDraggingItemGuid())
+            {
+                if (const auto draggingGameObject = Core::Application::ApplicationBase::ObjectRegistry().Catch<IGameObject>(draggingObjectGuid.value()).lock())
+                {
+                    draggingGameObject->Transform().SetParent(ownPtr_);
+                }
+            }
+        }    
+        ImGui::EndDragDropTarget();
+    }
+    
+    ImGui::PopStyleColor(3);
+
+    if (hovered)
+    {
+        const ImU32 color = ImGui::GetColorU32(ImGuiCol_HeaderHovered);
+        ImGui::GetWindowDrawList()->AddRectFilled(buttonMin, buttonMax, color);
+    }
+
+    if (open && drawChildren)
+    {
+        ImGui::TreePush("##tree");
+        const auto children = transform_.GetChildren();
+        for (std::size_t i = 0; i < children.size(); ++i)
+        {
+            Module::GameObject::DrawSiblingInsertionDropZone(ownPtr_, i);
+            children[i]->OnDrawTreeGui();
+        }
+        Module::GameObject::DrawSiblingInsertionDropZone(ownPtr_, children.size());
+        ImGui::TreePop();
+    }
+
+    ImGui::PopID();
+}
+
+#pragma region SerializationMacro
+NANAMI_REGISTER_TYPE(NanamiEngine::Scene::CopiedPrefabGameObject, NanamiEngine::Module::GameObject::IGameObject);
+#pragma endregion

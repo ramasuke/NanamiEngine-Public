@@ -1,0 +1,141 @@
+﻿#include "Physics.h"
+
+#include <../JoltPhysics/Jolt/RegisterTypes.h>
+#include "../Application/Configuration/Physics/ApplicationConfiguration_Physics.h"
+
+#include "../../Module/GameObject/ComponentGroup/ComponentGroup.h"
+#include "../../Module/Physics/BodyAssembler/Engine_Physics_BodyAssembler.h"
+#include "../../Module/Physics/ContactListener/Engine_Physics_ContactListener.h"
+#include "../../Module/Physics/GroupFilter/Engine_Physics_RigidBodyGroupFilter.h"
+#include "../../Module/Physics/Layer/Engine_Physics_PhysicsLayer.h"
+#include "../../Module/Physics/UserData/Engine_Physics_UserData.h"
+#include "Jolt/Physics/Body/BodyCreationSettings.h"
+#include "Sample/SimpleBroadPhaseLayerInterface.h"
+#include "Sample/SimpleObjectLayerPairFilter.h"
+#include "Jolt/Core/Factory.h"
+
+namespace NanamiEngine::Core
+{
+    Physics::Physics()
+    {
+        JPH::RegisterDefaultAllocator();
+        JPH::Factory::sInstance = new JPH::Factory();
+        JPH::RegisterTypes();
+    }
+
+    Physics::~Physics()
+    {
+        Kill();
+
+        delete JPH::Factory::sInstance;
+        JPH::Factory::sInstance = nullptr;
+    }
+
+    void Physics::Initialize()
+    {
+        const auto tempAllocatorSize = Application::Configuration::PhysicsConfiguration::GetTempAllocatorSizeMB() * 1024 * 1024;
+        tempAllocator_ = std::make_unique<JPH::TempAllocatorImpl>(tempAllocatorSize);
+        jobSystem_ = std::make_unique<JPH::JobSystemThreadPool>(
+            JPH::cMaxPhysicsJobs,
+            JPH::cMaxPhysicsBarriers,
+            std::thread::hardware_concurrency() - 1
+        );
+
+        static const SimpleBroadPhaseLayerInterface BROAD_PHASE_LAYER_INTERFACE;
+
+        static const SimpleObjectLayerPairFilter OBJECT_LAYER_PAIR_FILTER;
+        static const JPH::ObjectVsBroadPhaseLayerFilter OBJECT_VS_BROAD_PHASE_LAYER_FILTER;
+
+        physicsSystem_.Init(
+            Application::Configuration::PhysicsConfiguration::GetMaxBodies(),
+            0,
+            Application::Configuration::PhysicsConfiguration::GetMaxBodyPairs(),
+            Application::Configuration::PhysicsConfiguration::GetMaxContactConstraints(),
+            BROAD_PHASE_LAYER_INTERFACE,
+            OBJECT_VS_BROAD_PHASE_LAYER_FILTER,
+            OBJECT_LAYER_PAIR_FILTER
+        );
+        physicsSystem_.SetGravity(JPH::Vec3(0, Application::Configuration::PhysicsConfiguration::GetGravityScale(), 0));
+        contactListener_ = std::make_unique<Module::Physics::EngineContactListener>(physicsSystem_);
+        physicsSystem_.SetContactListener(contactListener_.get());
+        rigidBodyGroupFilter_ = new Module::Physics::RigidBodyGroupFilter();
+        bodyAssembler_ = std::make_unique<Module::Physics::BodyAssembler>(*this);
+    }
+
+    const Module::Physics::RigidBodyGroupFilter* Physics::RigidBodyGroupFilter() const
+    {
+        return rigidBodyGroupFilter_.GetPtr();
+    }
+
+    void Physics::Update(const float deltaTime)
+    {
+        physicsSystem_.SetGravity(JPH::Vec3(0, Application::Configuration::PhysicsConfiguration::GetGravityScale(), 0));
+        contactListener_->RefreshTuning();
+        physicsSystem_.Update(deltaTime, Application::Configuration::PhysicsConfiguration::GetCollisionSteps(), tempAllocator_.get(), jobSystem_.get());
+        contactListener_->OnUpdate();
+    }
+
+    void Physics::Kill()
+    {
+        jobSystem_    .reset();
+        tempAllocator_.reset();
+        JPH::UnregisterTypes();
+    }
+
+    void Physics::UnSubscribeEngineCollider(const JPH::BodyID& colliderId) const
+    {
+        contactListener_->UnSubscribeEngineCollider(colliderId);
+    }
+
+    JPH::BodyID Physics::CreateBody(
+        const JPH::RefConst<JPH::Shape>& shape,
+        const JPH::Vec3& position,
+        const JPH::Quat& rotation,
+        const JPH::EMotionType motionType,
+        const float mass,
+        const bool isSensor,
+        const bool isGravity,
+        const Module::Physics::Layer layer,
+        const JPH::EAllowedDOFs allowedDOFs,
+        Module::Physics::UserData* userData,
+        const float friction,
+        const JPH::CollisionGroup& collisionGroup)
+    {
+        const bool hasNoDOFs = allowedDOFs == JPH::EAllowedDOFs::None;
+        const JPH::EMotionType effectiveMotionType =
+            motionType == JPH::EMotionType::Dynamic && hasNoDOFs
+                ? JPH::EMotionType::Static
+                : motionType;
+
+        JPH::BodyCreationSettings settings(
+            shape,
+            JPH::RVec3(position),
+            rotation,
+            effectiveMotionType,
+            0
+        );
+        
+        JPH::MassProperties massProperty;
+        massProperty.ScaleToMass(mass);
+        settings.mMassPropertiesOverride = massProperty;
+        settings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateInertia;
+
+        settings.mFriction = friction;
+        settings.mIsSensor = isSensor;
+        assert(userData);
+        settings.mUserData = reinterpret_cast<JPH::uint64>(userData);
+        settings.mObjectLayer = static_cast<JPH::ObjectLayer>(ToIndex(layer));
+        settings.mAllowedDOFs = hasNoDOFs ? JPH::EAllowedDOFs::All : allowedDOFs;
+        settings.mCollisionGroup = collisionGroup;
+        if (!isGravity)
+        {
+            settings.mGravityFactor = 0.0f;
+        }
+
+        if (effectiveMotionType == JPH::EMotionType::Static)
+        {
+            return physicsSystem_.GetBodyInterface().CreateAndAddBody(settings, JPH::EActivation::DontActivate);
+        }
+        return physicsSystem_.GetBodyInterface().CreateAndAddBody(settings, JPH::EActivation::Activate);
+    }
+}

@@ -1,0 +1,130 @@
+﻿#include "NullPlayerAvatarStatus.h"
+#include "../../Damage/Game_Damage_IDamage.h"
+
+namespace GameCore::PlayerAvatar
+{
+    NullPlayerAvatarStatus::NullPlayerAvatarStatus()
+        : quest_        (std::make_unique<NullQuestGroup>())
+        , completeQuest_(std::make_unique<NullCompleteQuestGroup>())
+        , event_        (std::make_unique<NullStatusEvent>())
+        , wallet_       (std::make_unique<PlayerAvatar::Wallet>())
+    {
+    }
+
+    NullPlayerAvatarStatus::~NullPlayerAvatarStatus() = default;
+
+    void NullPlayerAvatarStatus::Init()
+    {
+    }
+
+    void NullPlayerAvatarStatus::OnUpdate()
+    {
+    }
+
+    IStatusEvent& NullPlayerAvatarStatus::Event() const
+    {
+        return *event_;
+    }
+
+    IQuestGroup& NullPlayerAvatarStatus::Quest() const
+    {
+        return *quest_;
+    }
+
+    Quest::ICompleteQuestGroup& NullPlayerAvatarStatus::CompletedQuest() const
+    {
+        return *completeQuest_;
+    }
+
+    PlayerAvatar::Wallet& NullPlayerAvatarStatus::Wallet() const
+    {
+        return *wallet_;
+    }
+
+    const StatusParameter::Health& NullPlayerAvatarStatus::MaxHealth() const
+    {
+        return maxHealth_;
+    }
+
+    R4::Observable<StatusParameter::Health> NullPlayerAvatarStatus::OnChangeHealth() const
+    {
+        return R4::Observable<StatusParameter::Health>::Never();
+    }
+
+    StatusParameter::Health NullPlayerAvatarStatus::Health() const
+    {
+        return StatusParameter::Health(0);
+    }
+
+    const StatusParameter::Stamina& NullPlayerAvatarStatus::MaxStamina() const
+    {
+        return maxStamina_;
+    }
+
+    R4::ReadOnlyReactiveProperty<StatusParameter::Stamina> NullPlayerAvatarStatus::Stamina() const
+    {
+        return stamina_.AsReadOnly();
+    }
+
+    bool NullPlayerAvatarStatus::CanRun() const
+    {
+        return false;
+    }
+
+    StatusParameter::MoveSpeed NullPlayerAvatarStatus::GetWalkSpeed() const
+    {
+        return StatusParameter::MoveSpeed(0.0f);
+    }
+
+    StatusParameter::MoveSpeed NullPlayerAvatarStatus::GetRunSpeed() const
+    {
+        return StatusParameter::MoveSpeed(0.0f);
+    }
+
+    float NullPlayerAvatarStatus::GetMoveRotateSpeed() const
+    {
+        return 0.0f;
+    }
+
+    float NullPlayerAvatarStatus::GetJumpPower() const
+    {
+        return 0.0f;
+    }
+
+    float NullPlayerAvatarStatus::GetJumpStateDuration_secs() const
+    {
+        return 0.0f;
+    }
+
+    void NullPlayerAvatarStatus::OnDrawGui()
+    {
+    }
+
+    void NullPlayerAvatarStatus::AddOnDamageStack(std::unique_ptr<IDamage> damageContext)
+    {
+    }
+
+    bool NullPlayerAvatarStatus::NullQuestGroup::Subscribe(const std::shared_ptr<Quest::ITakeableQuest>& addQuest)
+    {
+        return false;
+    }
+
+    bool NullPlayerAvatarStatus::NullQuestGroup::IsTaking(const QuestType& quest) const
+    {
+        return false;
+    }
+
+    void NullPlayerAvatarStatus::NullCompleteQuestGroup::CompleteQuest(const QuestType& completeQuest)
+    {
+    }
+
+    bool NullPlayerAvatarStatus::NullCompleteQuestGroup::CheckCompleted(const QuestType& quest) const
+    {
+        return false;
+    }
+
+    R4::Observable<StatusParameter::Health> NullPlayerAvatarStatus::NullStatusEvent::OnDamage() const
+    {
+        return R4::Observable<StatusParameter::Health>::Never();
+    }
+}

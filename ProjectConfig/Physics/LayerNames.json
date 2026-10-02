@@ -1,0 +1,10 @@
+{
+    "LayerNames": [
+        "Default",
+        "Player",
+        "Enemy",
+        "Boundary",
+        "BodyPart",
+        "Projectile"
+    ]
+}

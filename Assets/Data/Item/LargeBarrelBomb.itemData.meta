@@ -1,0 +1,124 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "NanamiEngine::Module::Asset::ItemData",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 5,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    },
+                    "contentPath_": "Assets\\Data\\Item/LargeBarrelBomb.itemData",
+                    "guid_": {
+                        "cereal_class_version": 0,
+                        "value_": "72C0F0C4-F59E-4675-8B10-62416B7B6C0C"
+                    }
+                },
+                "displayName_": "大タル爆弾G",
+                "iconSprite_": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483650,
+                            "data": {
+                                "cereal_class_version": 0,
+                                "value0": {
+                                    "value_": "F0149142-8890-4DF6-A965-E438BB4345AF"
+                                }
+                            }
+                        }
+                    }
+                },
+                "useSound_": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483651,
+                            "data": {
+                                "cereal_class_version": 0,
+                                "value0": {
+                                    "value_": "6F4A42BD-5F35-46D4-B9ED-21C2D172BCF5"
+                                }
+                            }
+                        }
+                    }
+                },
+                "maxStack_": 5,
+                "effects_": [
+                    {
+                        "polymorphic_id": 2147483650,
+                        "polymorphic_name": "GameCore::PlayerAvatar::Item::PlaceBombEffect",
+                        "ptr_wrapper": {
+                            "id": 2147483652,
+                            "data": {
+                                "cereal_class_version": 0,
+                                "value0": {
+                                    "cereal_class_version": 0
+                                },
+                                "bombPrefab_": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "polymorphic_id": 1073741824,
+                                        "ptr_wrapper": {
+                                            "id": 2147483653,
+                                            "data": {
+                                                "cereal_class_version": 0,
+                                                "value0": {
+                                                    "value_": "E05347A7-BF7F-4BCD-BEE9-A0F00C802A7A"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "power_": {
+                                    "cereal_class_version": 1,
+                                    "value_": 200,
+                                    "flinchPower_": 80
+                                },
+                                "fuse_secs_": 3.0,
+                                "distance_": 8.0
+                            }
+                        }
+                    }
+                ],
+                "pickupPrefab_": {
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483654,
+                            "data": {
+                                "value0": {
+                                    "value_": "00000000-0000-0000-0000-000000000000"
+                                }
+                            }
+                        }
+                    }
+                },
+                "descriptionLines_": [
+                    "置いて起爆する大きな樽。"
+                ],
+                "useParticle_": {
+                    "value0": {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483655,
+                            "data": {
+                                "value0": {
+                                    "value_": "54F1D511-84BB-4935-9439-0ED60EDEFF08"
+                                }
+                            }
+                        }
+                    }
+                },
+                "useMotion_": 3,
+                "useEffectTime_secs_": 1.590000033378601,
+                "useTotalDuration_secs_": 2.7799999713897707
+            }
+        }
+    }
+}

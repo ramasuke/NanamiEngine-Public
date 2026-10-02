@@ -1,0 +1,139 @@
+﻿#include "EditorApplication.h"
+
+#include <DxLib.h>
+#include <memory>
+
+#include "../../../../Libs/LibCore/ImGui/Wrapper/ImGuiWrapper.h"
+#include "../../../../Libs/ImGui/ImGuiHelper.h"
+#include "ImGuizmo.h"
+#include "gtc/type_ptr.hpp"
+#include "../Window/Toolbar/EditorToolbarWindow.h"
+#include "../Window/Popup/Inspector/InspectorWindow.h"
+#include "../../../Module/GameObject/Transform/Transform.h"
+#include "EffekseerForDXLib.h"
+#include "../../Engine/Module/Namespace/EngineNamespace.h"
+#include "../LifeCycle/ApplicationLifeCycle.h"
+#include "../Window/Popup/Group/PopupWindowGroup.h"
+#include "../../../Module/Log/NanamiEngine_Module_Log.h"
+#include "../../../Module/SafeExecute/Engine_Module_SafeExecute.h"
+#include "../AutoMcp/AutoMcpServer.h"
+#include "../Build/GameBuilder.h"
+#include "../../../../Libs/LibCore/DxLib/DxMath.h"
+
+Core::Application::EditorApplication::EditorApplication()
+{
+    SetDrawScreen   (DX_SCREEN_BACK);
+    SetMouseDispFlag(true          );
+
+    ImGuiWrapper::CreateInstance();
+
+    AutoMcp::AutoMcpServer::Instance().ApplyConfiguration();
+}
+
+void Core::Application::EditorApplication::OnFrame()
+{
+    ImGuiWrapper::Instance().Update();
+    ImGuizmo::BeginFrame();
+    AutoMcp::AutoMcpServer::Instance().OnFrameBegin();
+    
+    std::string frameErrorMessage;
+    if (!Module::SafeExecutor::Execute([this]()
+        {
+            ApplicationLifeCycle_().OnUpdate();
+            GetMainWindow()->OnUpdate();
+        }, frameErrorMessage))
+    {
+        Module::LogError("[Frame] " + frameErrorMessage);
+    }
+
+    OnDrawGui();
+    ImGui::EndFrame();
+
+    RenderVertex();
+    // ImGui はバックバッファに直接重ねて描くので、3D だけの絵はこの間でしか取れない
+    AutoMcp::AutoMcpServer::Instance().OnSceneRendered();
+    ImGuiWrapper::Instance().Draw();
+    AutoMcp::AutoMcpServer::Instance().OnFrameEnd();
+}
+
+void Core::Application::EditorApplication::OnExit()
+{
+    AutoMcp::AutoMcpServer::Instance().Stop();
+    Build::GameBuilder::Instance().Stop();
+}
+
+void Core::Application::EditorApplication::OnDrawGui()
+{
+    EditorToolbarWindow::OnDraw(PopupWindows());
+    GetMainWindow()->OnDrawGui(MainWindow::MainWindowDrawGuiContext(FileDraggingHand()));
+    PopupWindows_().OnDraw(FileDraggingHand());
+    OnDrawGizmo();
+}
+
+void Core::Application::EditorApplication::OnDrawGizmo()
+{
+    // 選択中の GameObject を解決する。Inspector が複数あるときは最後に選択されたものを優先。
+    std::shared_ptr<Module::GameObject::IGameObject> target;
+    int bestOrder = -1;
+    for (auto* inspector : PopupWindows().Catch<PopupWindow::InspectorWindow>())
+    {
+        if (inspector == nullptr || inspector->SelectionOrder() <= bestOrder)
+            continue;
+
+        auto object = std::dynamic_pointer_cast<Module::GameObject::IGameObject>(inspector->DisplayObject().lock());
+        if (object)
+        {
+            target    = object;
+            bestOrder = inspector->SelectionOrder();
+        }
+    }
+    if (!target)
+        return;
+
+    const ImGuiIO& io = ImGui::GetIO();
+
+    // 右ドラッグ中・テキスト入力中はツール切替を受け付けない
+    const bool cameraControlling = ImGui::IsMouseDown(ImGuiMouseButton_Right);
+    if (!cameraControlling && !io.WantTextInput)
+    {
+        if (ImGui::IsKeyPressed(ImGuiKey_W)) gizmoOperation_ = ImGuizmo::TRANSLATE;
+        if (ImGui::IsKeyPressed(ImGuiKey_E)) gizmoOperation_ = ImGuizmo::ROTATE;
+        if (ImGui::IsKeyPressed(ImGuiKey_R)) gizmoOperation_ = ImGuizmo::SCALE;
+        if (ImGui::IsKeyPressed(ImGuiKey_X)) gizmoMode_ = (gizmoMode_ == ImGuizmo::LOCAL) ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
+    }
+    const auto operation = static_cast<ImGuizmo::OPERATION>(gizmoOperation_);
+    const auto mode      = static_cast<ImGuizmo::MODE>(gizmoMode_);
+
+    ImGuizmo::SetOrthographic(false);
+    ImGuizmo::SetDrawlist(ImGui::GetBackgroundDrawList());
+    ImGuizmo::SetRect(0.0f, 0.0f, io.DisplaySize.x, io.DisplaySize.y);
+
+    glm::mat4 view  = LibCore::Dxlib::FromDxMatrix(GetCameraViewMatrix());
+    glm::mat4 proj  = LibCore::Dxlib::FromDxMatrix(GetCameraProjectionMatrix());
+    glm::mat4 world = target->Transform().GetWorldMatrix();
+
+    const bool  useSnap = ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl);
+    float       snapValues[3] = {};
+    const float* snap = nullptr;
+    if (useSnap)
+    {
+        const float step = (operation == ImGuizmo::ROTATE) ? gizmoSnapRotate_
+                         : (operation == ImGuizmo::SCALE)  ? gizmoSnapScale_
+                         :                                   gizmoSnapTranslate_;
+        snapValues[0] = snapValues[1] = snapValues[2] = step;
+        snap = snapValues;
+    }
+
+    if (ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(proj),
+                             operation, mode, glm::value_ptr(world), nullptr, snap)
+        && ImGuizmo::IsUsing())
+    {
+        target->Transform().SetWorldMatrix(world);
+    }
+}
+
+Core::FileSystem::EditorDraggingHand& Core::Application::EditorApplication::FileDraggingHand()
+{
+    static FileSystem::EditorDraggingHand fileDraggingHand;
+    return fileDraggingHand;
+}

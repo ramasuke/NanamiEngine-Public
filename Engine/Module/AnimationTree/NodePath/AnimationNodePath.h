@@ -1,0 +1,90 @@
+﻿#pragma once
+#include "Engine/Core/Api/NanamiApi.h"
+#include "../../../Core/Object/Field/Field.h"
+#include "../../../../Libs/LibCore/BlackBoard/Group/ParameterGroup.h"
+#include "../Node/IAnimationNode.h"
+#include "AdditionConditionGroup/AnimationNodePathAdditionConditionGroup.h"
+
+namespace NanamiEngine::Module::AnimationTree
+{
+    class NANAMI_API AnimationNodePath final : public Object::IObject
+    {
+    public:
+        void InitNodePath(const std::shared_ptr<BlackBoard::ParameterGroup>& additionParams,
+                          const std::function<std::weak_ptr<IAnimationNode>(const Guid&)>& findNode,
+                          const std::function<void(const std::shared_ptr<IAnimationNode>&)>& onAddCurrentNode,
+                          const std::function<void(const std::shared_ptr<IAnimationNode>&)>& onRemoveCurrentNode,
+                          const std::function<void(AnimationNodePath*, float)>& onAddNextCurrentNodePath);
+        void OnUpdateNodeAnimationBlend(float timeScale);
+        ///TODO: 初期化時に設定するようにした方が良い(カプセル化)
+        void SetFromNode  (const std::shared_ptr<IAnimationNode>& node);
+        void SetFromNodeForGraphEditorGui(const std::shared_ptr<IAnimationNode>& visualNode, const std::shared_ptr<IAnimationNode>& node);
+        ///TODO: 初期化時に設定するようにした方が良い(カプセル化) 
+        void SetTargetNode(const std::shared_ptr<IAnimationNode>& node);
+        void RemoveCurrentNodePath();
+
+        std::shared_ptr<IAnimationNode> GetFromNode() const { return fromNode_.lock(); }
+        std::shared_ptr<IAnimationNode> GetTargetNode() const { return nextNode_.lock(); }
+        std::shared_ptr<IAnimationNode> GetVisualFromNode() const { return visualFromNode_.lock(); }
+        [[nodiscard]] glm::vec2   GetVisualFromNodePos  () const { return visualFromNode_.lock()->Position(); }
+        [[nodiscard]] glm::vec2   GetVisualTargetNodePos() const { return nextNode_      .lock()->Position(); }
+        [[nodiscard]] const Guid& GetGuid()                const override;
+        
+
+    private:
+        void SubscribeUpdateNodeAnimationCallback();
+        void TryAddNextCurrentNodePath (IAnimationNode::UpdateCallbackContext);
+
+        std::shared_ptr<BlackBoard::ParameterGroup> additionParams_;
+        std::weak_ptr<IAnimationNode> fromNode_;
+        std::weak_ptr<IAnimationNode> nextNode_;
+        std::weak_ptr<IAnimationNode> visualFromNode_;
+        std::function<void(const std::shared_ptr<IAnimationNode>&)> onAddCurrentNode_;
+        std::function<void(const std::shared_ptr<IAnimationNode>&)> onRemoveCurrentNode_;
+        std::function<void(AnimationNodePath*, float)> onAddNextCurrentNodePath_;
+        
+        bool  isFirstBlendingAnimation_ = true;
+        bool  isBlending_               = false;
+        float transitionDuring_secs_    = 0;
+        R4::SerialDisposable fromNodeSubscription_;
+        R4::Subject<IAnimationNode::UpdateCallbackContext> onUpdated_;
+
+        [[serialize(0)]] std::unique_ptr<AnimationNodePathAdditionConditionGroup> additionConditionGroup_ = std::make_unique<AnimationNodePathAdditionConditionGroup>();
+        [[serialize(0)]] float transitionDuration_secs_ = 0;
+        [[serialize(0)]] Guid fromNodeGuid_;
+        [[serialize(0)]] Guid nextNodeGuid_;
+        [[serialize(1)]] Guid visualFromNodeGuid_;
+        // false: クリップの終端を待たず、条件を満たした瞬間に遷移する(怯みなどの割り込み用)
+        [[serialize(2)]] bool hasExitTime_ = true;
+#pragma region Serialization Function
+public:
+void OnDrawGui() override;
+
+        template<class Archive>
+void save(Archive& archive, const std::uint32_t version) const {
+    archive(cereal::base_class<Object::IObject>(this));
+    archive(CEREAL_NVP(additionConditionGroup_));
+    archive(CEREAL_NVP(transitionDuration_secs_));
+    archive(CEREAL_NVP(fromNodeGuid_));
+    archive(CEREAL_NVP(nextNodeGuid_));
+    archive(CEREAL_NVP(visualFromNodeGuid_));
+    archive(CEREAL_NVP(hasExitTime_));
+}
+
+template<class Archive>
+void load(Archive& archive, const std::uint32_t version) {
+    archive(cereal::base_class<Object::IObject>(this));
+    if (version >= 0) archive(CEREAL_NVP(additionConditionGroup_));
+    if (version >= 0) archive(CEREAL_NVP(transitionDuration_secs_));
+    if (version >= 0) archive(CEREAL_NVP(fromNodeGuid_));
+    if (version >= 0) archive(CEREAL_NVP(nextNodeGuid_));
+    if (version >= 1) archive(CEREAL_NVP(visualFromNodeGuid_));
+    if (version >= 2) archive(CEREAL_NVP(hasExitTime_));
+}
+#pragma endregion
+};
+}
+
+#pragma region SerializationMacro
+CEREAL_CLASS_VERSION(NanamiEngine::Module::AnimationTree::AnimationNodePath, 2);
+#pragma endregion

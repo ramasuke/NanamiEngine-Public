@@ -1,0 +1,91 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "NanamiEngine::Module::Asset::NpcChat",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "cereal_class_version": 0,
+                "value0": {
+                    "cereal_class_version": 0,
+                    "value0": {
+                        "cereal_class_version": 0
+                    },
+                    "contentPath_": "Assets\\Data\\NpcChatText/EndActionInstructChat.npcChat",
+                    "guid_": {
+                        "cereal_class_version": 0,
+                        "value_": "AFFC2CF4-657F-4440-9DC1-285DEE2D4BC2"
+                    }
+                },
+                "count": 3,
+                "item_0": {
+                    "cereal_class_version": 0,
+                    "font_": {
+                        "cereal_class_version": 0,
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483650,
+                                "data": {
+                                    "cereal_class_version": 0,
+                                    "value0": {
+                                        "value_": "6D43D6EC-D243-4885-93B0-797597486A82"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "……よし、そこまでだ。",
+                    "textColor_": {
+                        "cereal_class_version": 0,
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_1": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483651,
+                                "data": {
+                                    "value0": {
+                                        "value_": "6D43D6EC-D243-4885-93B0-797597486A82"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "走る、跳ぶ、斬る、転がって躱す。\nそれだけ出来れば、簡単には死なん。",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                },
+                "item_2": {
+                    "font_": {
+                        "value0": {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483652,
+                                "data": {
+                                    "value0": {
+                                        "value_": "6D43D6EC-D243-4885-93B0-797597486A82"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "text_": "今日はもう休め。\n明日からは本物の狩りに――",
+                    "textColor_": {
+                        "r_": 255,
+                        "g_": 255,
+                        "b_": 255
+                    }
+                }
+            }
+        }
+    }
+}
