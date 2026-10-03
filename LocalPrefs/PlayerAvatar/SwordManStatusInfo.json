@@ -21,7 +21,7 @@
                         "id": 2147483650,
                         "data": {
                             "value0": {
-                                "value_": 150
+                                "value_": 118
                             }
                         }
                     }
@@ -176,7 +176,7 @@
                             "balance_": {
                                 "value": {
                                     "cereal_class_version": 0,
-                                    "value_": 30
+                                    "value_": 3060
                                 }
                             }
                         }
@@ -219,7 +219,7 @@
                                     }
                                 }
                             },
-                            "count_": 3
+                            "count_": 4
                         },
                         {
                             "item_": {
@@ -235,7 +235,7 @@
                                     }
                                 }
                             },
-                            "count_": 4
+                            "count_": 2
                         }
                     ]
                 }
