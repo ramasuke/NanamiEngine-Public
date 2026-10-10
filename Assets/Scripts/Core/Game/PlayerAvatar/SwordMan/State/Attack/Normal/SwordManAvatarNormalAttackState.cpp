@@ -21,7 +21,7 @@ namespace GameCore::PlayerAvatar::SwordMan::State
 
     void SwordManAvatarNormalAttackState::DoFixedUpdate()
     {
-        // 各段の発生までは自機の向きへ踏み込む。以降はその場に留める
+        // NOTE: 各段の発生までは自機の向きへ踏み込む。以降はその場に留める
         if (isAttacked_)
         {
             HoldHorizontalVelocity();
@@ -36,11 +36,10 @@ namespace GameCore::PlayerAvatar::SwordMan::State
         if (UpdateTransitions())
             return;
 
-        // 発生前に攻撃対象へ向く
+        // NOTE: 発生前に攻撃対象へ向く
         if (!isAttacked_)
             RotateTowardsAttackTarget(attackTurn_, Status().AttackRotateSmoothTime_secs(), Status().LockOnAttackRotateSpeed());
 
-        // 入力バッファ
         if (Input().NormalAttack().IsPressed())
             bufferedAttackTimer_secs_ = Status().ComboInputBufferWindow_secs();
         else if (bufferedAttackTimer_secs_ > 0.0f)
@@ -65,7 +64,6 @@ namespace GameCore::PlayerAvatar::SwordMan::State
 
     void SwordManAvatarNormalAttackState::VisitTransitions(ISwordManAvatarTransitionVisitor& visitor) const
     {
-        // アイテム欄は出したままにするが、この State では使えない。宣言しないと大砲と同じ扱いでアイテム欄ごと消えてしまう
         visitor.Action(SwordManAvatarStateAction::CycleItem, false);
         visitor.Action(SwordManAvatarStateAction::UseItem, false);
         visitor.Automatic(SwordManAvatarStateType::Hurt, Status().IsDamaged());
@@ -87,7 +85,7 @@ namespace GameCore::PlayerAvatar::SwordMan::State
 
         if (During_secs() < attackStatus.Duration_secs() && bufferedAttackTimer_secs_ > 0.0f && isAttacked_)
         {
-            // 最終段では追加入力を無視（同一スイングの再ヒット防止）
+            // NOTE: 最終段では追加入力を無視（同一スイングの再ヒット防止）
             if (currentCombo_ + 1 >= static_cast<int>(comboNormalAttack.size()))
                 return;
 

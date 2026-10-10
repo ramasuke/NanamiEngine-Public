@@ -15,11 +15,11 @@ namespace NanamiEngine::Core::Toolbar
             context.popupWindows.Catch<PopupWindow::BuildSettingsWindow>().front()->RequestFocus();
         }
 
-        // Build Settings を閉じていても進み具合が分かるよう、ビルド中はツールバーにも出す
+        // NOTE: Build Settings を閉じていても進み具合が分かるよう、ビルド中はツールバーにも出す
         if (auto& gameBuilder = Application::Build::GameBuilder::Instance(); gameBuilder.IsBusy())
         {
             ImGui::SameLine();
-            ImGui::Text("Building: %s %s", gameBuilder.PhaseLabel(), gameBuilder.ElapsedLabel().c_str());
+            ImGui::Text("Building %s", gameBuilder.ElapsedLabel().c_str());
             ImGui::SameLine();
             if (ImGui::Button("Cancel Build"))
             {

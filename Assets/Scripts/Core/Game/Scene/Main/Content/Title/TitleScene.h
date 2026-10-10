@@ -7,7 +7,9 @@ namespace GameCore::Scene::Main
     class TitleScene final : public GameMainSceneBase<TitleSceneContext>
     {
     public:
-        explicit TitleScene(const std::weak_ptr<TitleSceneContext>& context, GameSceneBaseContext baseContext);
+        explicit TitleScene(
+            const std::weak_ptr<TitleSceneContext>& context,
+            GameSceneBaseContext baseContext);
 
     private:
         void OnInit() override;
@@ -17,7 +19,7 @@ namespace GameCore::Scene::Main
         void Enter    () override;
         void DoExit() override;
         void OnDrawGui() override;
-        /** @brief タイトルが読めなければ逃げ場が無いので、そのまま画面を明ける */
+        // NOTE: タイトルが読めなければ逃げ場が無いので、そのまま画面を明ける
         [[nodiscard]] std::optional<SceneType> FallbackSceneOnFailure() const override { return std::nullopt; }
     };
 }
