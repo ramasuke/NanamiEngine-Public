@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Engine/Core/Api/NanamiApi.h"
 
-// NOTE: exe 側の起動処理 (docs/HotReload.md §8)
+// NOTE: exe 側の起動処理
 namespace NanamiEngine::Core::Application::Launch
 {
     // NOTE: -project <フォルダ> があればそこを作業ディレクトリにする。失敗ならダイアログを出して false

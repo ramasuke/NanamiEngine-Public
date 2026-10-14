@@ -107,7 +107,7 @@ namespace NanamiEngine::Core::Toolbar
         if (ImGui::Checkbox("Keep old DLL", &keepOld))
             gameModule.SetKeepOldModules(keepOld);
         if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("古い DLL を FreeLibrary しない保険モード。掃除漏れがあっても落ちない。\n外して落ちる箇所があれば docs/HotReload.md §5 の掃除漏れ");
+            ImGui::SetTooltip("古い DLL を FreeLibrary しない保険モード。掃除漏れがあっても落ちない。\n外して落ちる箇所があれば掃除漏れ");
         if (!gameModule.LastReport().empty() && ImGui::IsItemHovered())
             ImGui::SetTooltip("%s", gameModule.LastReport().c_str());
         ImGui::SameLine();

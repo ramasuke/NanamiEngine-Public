@@ -17,7 +17,7 @@ namespace NanamiEngine::DebugSheet
     class NANAMI_API Sheet final : public SingletonBase<Sheet>
     {
     public:
-        // NOTE: モジュール (exe / DLL) ごとに実体が分かれないよう .cpp で定義する (docs/HotReload.md §3.1)
+        // NOTE: モジュール (exe / DLL) ごとに実体が分かれないよう .cpp で定義する
         static Sheet& Instance();
 
         friend class SingletonBase<Sheet>;

@@ -117,7 +117,7 @@ namespace NanamiEngine::Core::Application
             OnFrame();
             ScreenFlip();
             Display::WindowDisplayModeController::OnFrameEnd();
-            // NOTE: ゲーム DLL の差し替えは、どのシーン・ウィンドウも触っていないフレームの切れ目で行う (docs/HotReload.md §5)
+            // NOTE: ゲーム DLL の差し替えは、どのシーン・ウィンドウも触っていないフレームの切れ目で行う
             if constexpr (Configuration::APPLICATION_MODE == Configuration::ApplicationMode::Editor)
                 HotReload::GameModule::Instance().OnFrameEnd();
         }

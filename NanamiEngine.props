@@ -6,10 +6,10 @@
     <NanamiEngineDir Condition="!HasTrailingSlash('$(NanamiEngineDir)')">$(NanamiEngineDir)\</NanamiEngineDir>
     <!-- Editor | Game -->
     <NanamiApplicationMode Condition="'$(NanamiApplicationMode)'==''">Editor</NanamiApplicationMode>
-    <!-- CRT: true で /MD (DLL 化の前提, docs/HotReload.md §1)。Effekseer 系 lib の MD 版は tools/effekseer_md で作って同梱済み。
+    <!-- CRT: true で /MD (DLL 化の前提)。Effekseer 系 lib の MD 版は再ビルドして同梱済み。
          false にすると従来の /MT (MT 版の lib を使う) に戻る -->
     <NanamiUseDynamicCrt Condition="'$(NanamiUseDynamicCrt)'==''">true</NanamiUseDynamicCrt>
-    <!-- エンジンを DLL にするか (docs/HotReload.md §9, 段階 2)。Editor モードは exe + NanamiEngine.dll、Game モード (出荷) は静的 lib のまま。
+    <!-- エンジンを DLL にするか。Editor モードは exe + NanamiEngine.dll、Game モード (出荷) は静的 lib のまま。
          -p:NanamiEngineShared=false で Editor モードも従来の静的 lib に戻せる。NanamiEngine.vcxproj の ConfigurationType も同じ既定で決める -->
     <NanamiEngineShared Condition="'$(NanamiEngineShared)'=='' and '$(NanamiApplicationMode)'!='Game'">true</NanamiEngineShared>
     <NanamiEngineShared Condition="'$(NanamiEngineShared)'==''">false</NanamiEngineShared>
@@ -72,7 +72,7 @@
       <PreprocessorDefinitions>NANAMI_GAME_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
-  <!-- DLL 構成でエンジン・ゲームの両方に要る定義 (docs/HotReload.md §2, §3.2)。
+  <!-- DLL 構成でエンジン・ゲームの両方に要る定義。
        CEREAL_NANAMI_SHARED_STATIC_OBJECT: cereal の多相登録表を全モジュールで 1 つにする (Libs/cereal の static_object.hpp パッチ)
        ENET_DLL: enet はエンジン DLL が export する (ゲーム側は dllimport)
        C4251 / C4275: dll-interface の無い std:: 型のメンバ・基底に対する警告。全モジュールが同じコンパイラ・CRT (/MD) なので問題ない -->

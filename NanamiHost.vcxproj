@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- Host exe (docs/HotReload.md 段階 3): WinMain だけを持ち、NanamiEngine.dll を import して、ゲーム DLL (<exe 名>.dll) を LoadLibrary する。
+<!-- Host exe: WinMain だけを持ち、NanamiEngine.dll を import して、ゲーム DLL (<exe 名>.dll) を LoadLibrary する。
      Editor モード (NanamiEngineShared=true) でだけ意味がある。ゲームプロジェクトは NanamiEngine.Game.props で
      lib/Editor/<Config>/NanamiHost.exe を $(OutDir)$(TargetName).exe にコピーする。Game モードでは何もビルドしない -->
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">

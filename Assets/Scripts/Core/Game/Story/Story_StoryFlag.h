@@ -4,7 +4,7 @@
 
 namespace GameCore::Story
 {
-    // WARNING: セーブに int で残るので、新しい値は必ず末尾に足す。一覧は docs/Story.md
+    // WARNING: セーブに int で残るので、新しい値は必ず末尾に足す。
     enum class StoryFlag : int
     {
         // NOTE: 序章でドラゴンを撃退し、拠点の島に降りた

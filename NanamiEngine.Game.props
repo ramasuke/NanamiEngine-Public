@@ -11,7 +11,7 @@
     <IntDir>x64\Game\$(Configuration)\obj\</IntDir>
   </PropertyGroup>
   <ItemGroup Condition="'$(NanamiEngineShared)'!='true'">
-    <!-- WinMain と NvOptimusEnablement は exe に無いといけない (docs/HotReload.md §8)。静的 lib 構成ではゲーム exe がコンパイルする。
+    <!-- WinMain と NvOptimusEnablement は exe に無いといけない。静的 lib 構成ではゲーム exe がコンパイルする。
          DLL 構成では NanamiHost.exe (NanamiHost.vcxproj) が持つ -->
     <ClCompile Include="$(NanamiEngineDir)Main.cpp" />
   </ItemGroup>
@@ -29,7 +29,7 @@
     <LocalDebuggerCommand>$(OutDir)$(TargetName).exe</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>$(ProjectDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
-  <!-- DLL 構成 (Editor モード): exe はエンジンの import lib だけをリンクする (docs/HotReload.md §2)。
+  <!-- DLL 構成 (Editor モード): exe はエンジンの import lib だけをリンクする。
        NANAMI_ENGINE_USE_DLL: NANAMI_API / IMGUI_API が dllimport になり、stdafx.h から DxLib / Effekseer が外れる
        DX_LIB_NOT_DEFAULTPATH: DxLib の自動リンクを切る。ゲーム側に DxLib の呼び出しが残っていればリンクエラーで分かる -->
   <ItemDefinitionGroup Condition="'$(NanamiEngineShared)'=='true'">

@@ -1,6 +1,6 @@
 ﻿#pragma once
 // NOTE: エンジン DLL を使う側 (NANAMI_ENGINE_USE_DLL = ゲーム exe / dll) には DxLib と Effekseer を見せない
-//       ゲーム側に残った DxLib 呼び出しをリンクエラーにするため (docs/HotReload.md §2)
+//       ゲーム側に残った DxLib 呼び出しをリンクエラーにするため
 #ifndef NANAMI_ENGINE_USE_DLL
 #include "DxLib.h"
 #include "EffekseerForDXLib.h"

@@ -50,7 +50,7 @@ namespace NanamiEngine::ControlLock
     class NANAMI_API Service final
     {
     public:
-        // NOTE: モジュール (exe / DLL) ごとに実体が分かれないよう .cpp で定義する (docs/HotReload.md §3.1)
+        // NOTE: モジュール (exe / DLL) ごとに実体が分かれないよう .cpp で定義する
         static Service& Instance();
 
         Service(const Service&)            = delete;

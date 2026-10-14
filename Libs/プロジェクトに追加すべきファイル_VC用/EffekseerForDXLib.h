@@ -14,7 +14,7 @@
 
 #if _MSC_VER >= 1920
 
-// NanamiEngine patch: /MD (_DLL) のときは tools/effekseer_md で再ビルドした MD 版を使う (docs/HotReload.md §1)
+// NanamiEngine patch: /MD (_DLL) のときは 再ビルドした MD 版を使う
 #ifdef _DLL
 #if _DEBUG
 #pragma comment(lib, "Effekseer_vs2019_x64_MDd.lib")

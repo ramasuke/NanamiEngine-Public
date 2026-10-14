@@ -37,7 +37,7 @@
 // NanamiEngine patch: CEREAL_NANAMI_SHARED_STATIC_OBJECT が定義されていると、StaticObject<T> の実体を
 // モジュール (exe / dll) ごとに持たず、エンジン DLL が export する 1 つの表 (Engine/Module/Serialization/
 // Engine_Module_SharedStaticObject.cpp) から取る。多相登録の表 (InputBindingMap など) を全モジュールで共有するため。
-// 定義されていなければ元の cereal と同じ (モジュールごとの関数ローカル static)。docs/HotReload.md §3.2
+// 定義されていなければ元の cereal と同じ (モジュールごとの関数ローカル static)。
 #ifdef CEREAL_NANAMI_SHARED_STATIC_OBJECT
 #include <typeinfo>
 #ifndef CEREAL_NANAMI_SHARED_STATIC_OBJECT_API

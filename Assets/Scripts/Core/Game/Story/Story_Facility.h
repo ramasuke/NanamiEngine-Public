@@ -4,7 +4,7 @@
 
 namespace GameCore::Story
 {
-    // WARNING: セーブとシーンに int で残るので、新しい値は必ず末尾に足す。一覧は docs/Story.md
+    // WARNING: セーブとシーンに int で残るので、新しい値は必ず末尾に足す。
     enum class Facility : int
     {
         // WARNING: Dock..Field は削除済みの施設。番号は再利用しない
